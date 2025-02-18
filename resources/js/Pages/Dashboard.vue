@@ -2,7 +2,7 @@
 <template>
     <Head title="Dashboard" />
 
-    <AuthenticatedLayout>
+    <DashboardLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Dashboard
@@ -21,9 +21,9 @@
                 </v-col>
             </v-row>
         </v-container>
-    </AuthenticatedLayout>
+    </DashboardLayout>
 </template>
 
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 </script>

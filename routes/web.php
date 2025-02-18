@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\CategoryController;
+use App\Http\Controllers\Web\DataController;
+use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,6 +26,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::get('/home', [HomeController::class, 'index'])->name('index');
+
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+
+Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
+
+
+Route::group(['prefix' => 'data', 'as' => 'data.'], function () {
+    Route::get('categories', [DataController::class, 'categories'])->name('categories');
 });
 
 require __DIR__.'/auth.php';
