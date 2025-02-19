@@ -18,7 +18,7 @@ class CategoryDataResource extends JsonResource
             'id'                => $this->id,
             'name'              => $this->name,
             'slug'              => $this->slug,
-            // 'children'          => CategoryChildrenDataResource::collection($this->children),
+            'children'          => CategoryChildrenDataResource::collection($this->children),
             'image_url'         => $this->image_url,
             // 'products_count'    => $this->products_count,
             // 'color'             => $this->color ?? $this->color(),

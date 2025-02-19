@@ -1,401 +1,393 @@
 <template>
-  <v-app>
-    <!-- Top Bar with Contact Info -->
-    <v-app-bar class="bg-primary" density="compact">
-      <v-container class="d-flex align-center justify-space-between">
-        <div class="d-none d-sm-flex align-center">
-          <span class="text-white mr-4">
-            <v-icon size="small" class="mr-1">mdi-phone</v-icon>
-            +855 12 345 678
-          </span>
-          <span class="text-white">
-            <v-icon size="small" class="mr-1">mdi-email</v-icon>
-            info@techstore.com
-          </span>
-        </div>
-        <div class="d-flex align-center">
-          <v-btn variant="text" class="text-white" href="https://www.facebook.com/" target="_blank">
-            <v-icon>mdi-facebook</v-icon>
-          </v-btn>
-          <v-btn variant="text" class="text-white" href="https://t.me/" target="_blank">
-            <v-icon>mdi-telegram</v-icon>
-          </v-btn>
-        </div>
-      </v-container>
-    </v-app-bar>
+    <v-app>
+        <!-- Top Bar with Contact Info -->
+        <v-app-bar class="bg-primary" density="compact">
+            <v-container class="d-flex align-center justify-space-between">
+                <div class="d-none d-sm-flex align-center">
+                    <span class="text-white mr-4">
+                        <v-icon size="small" class="mr-1">mdi-phone</v-icon>
+                        +855 12 345 678
+                    </span>
+                    <span class="text-white">
+                        <v-icon size="small" class="mr-1">mdi-email</v-icon>
+                        info@techstore.com
+                    </span>
+                </div>
+                <div class="d-flex align-center">
+                    <v-btn variant="text" class="text-white" href="https://www.facebook.com/" target="_blank">
+                        <v-icon>mdi-facebook</v-icon>
+                    </v-btn>
+                    <v-btn variant="text" class="text-white" href="https://www.tiktok.com/" target="_blank">
+                        <v-icon>mdi-music-box-outline</v-icon>
+                    </v-btn>
+                    <v-btn variant="text" class="text-white" href="https://www.instagram.com/" target="_blank">
+                        <v-icon>mdi-instagram</v-icon>
+                    </v-btn>
+                    <v-btn variant="text" class="text-white" href="https://t.me/" target="_blank">
+                        <v-icon>mdi-send</v-icon>
+                    </v-btn>
+                    <v-btn variant="text" class="text-white" href="https://www.youtube.com/" target="_blank">
+                        <v-icon>mdi-youtube</v-icon>
+                    </v-btn>
+                </div>
+            </v-container>
+        </v-app-bar>
 
-    <!-- Main Header with Logo and Search -->
-    <v-app-bar class="bg-white" height="80">
-      <v-container class="d-flex align-center">
-        <!-- Mobile Menu Button -->
-        <v-app-bar-nav-icon class="d-flex d-sm-none" @click="drawer = !drawer"></v-app-bar-nav-icon>
+        <!-- Main Header with Logo and Search -->
+        <v-app-bar class="bg-white" height="80">
+            <v-container class="d-flex align-center">
+                <!-- Mobile Menu Button -->
+                <v-app-bar-nav-icon class="d-flex d-sm-none" @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-        <!-- Logo -->
-        <inertia-link :href="route('index')" class="mr-4">
-          <v-img src="/logo.png" width="180" height="60" contain></v-img>
-        </inertia-link>
+                <!-- Logo -->
+                <inertia-link :href="route('index')" class="mr-4">
+                    <v-img src="/logo.png" width="180" height="60" contain></v-img>
+                </inertia-link>
 
-        <!-- Search Bar -->
-        <v-text-field
-          v-model="search"
-          density="compact"
-          placeholder="Search products..."
-          append-inner-icon="mdi-magnify"
-          single-line
-          hide-details
-          variant="outlined"
-          class="search-field mx-4"
-          @update:modelValue="searchCallback">
-        </v-text-field>
+                <!-- Search Bar -->
+                <v-text-field v-model="search" density="compact" placeholder="Search products..."
+                    append-inner-icon="mdi-magnify" single-line hide-details variant="outlined"
+                    class="search-field mx-4" @update:modelValue="searchCallback">
+                </v-text-field>
 
-        <!-- Cart & Account -->
-        <div class="d-flex align-center">
-          <v-btn prepend-icon="mdi-cart-outline" variant="text" class="mr-2">
-            <span class="d-none d-sm-block">Cart</span>
-            <template v-slot:append>
-              <v-badge color="error" content="2" floating></v-badge>
-            </template>
-          </v-btn>
-          <v-btn prepend-icon="mdi-account-circle-outline" variant="text">
-            <span class="d-none d-sm-block">Account</span>
-          </v-btn>
-        </div>
-      </v-container>
-    </v-app-bar>
+                <!-- Cart & Account -->
+                <div class="d-flex align-center">
+                    <v-btn prepend-icon="mdi-cart-outline" variant="text" class="mr-2">
+                        <span class="d-none d-sm-block">Cart</span>
+                        <template v-slot:append>
+                            <v-badge color="error" content="2" floating></v-badge>
+                        </template>
+                    </v-btn>
+                    <v-btn prepend-icon="mdi-account-circle-outline" variant="text">
+                        <span class="d-none d-sm-block">Account</span>
+                    </v-btn>
+                </div>
+            </v-container>
+        </v-app-bar>
 
-    <!-- Navigation Bar with Categories -->
-    <v-app-bar class="bg-grey-lighten-4" height="48">
-      <v-container class="d-flex align-center">
-        <!-- All Categories Dropdown -->
-        <v-menu open-on-hover>
-          <template v-slot:activator="{ props }">
-            <v-btn
-              color="primary"
-              v-bind="props"
-              class="text-none mr-4"
-              prepend-icon="mdi-menu">
-              All Categories
-            </v-btn>
-          </template>
-          <v-list width="250">
-            <template v-for="(category, index) in categories" :key="index">
-              <v-list-item v-if="!category.children?.length"
-                :href="route('categories.show', category.slug)"
-                :title="category.name"
-                link>
-              </v-list-item>
-
-              <v-list-group v-else>
-                <template v-slot:activator="{ props }">
-                  <v-list-item v-bind="props"
-                    :title="category.name">
-                    <template v-slot:append>
-                      <v-icon>mdi-chevron-right</v-icon>
+        <!-- Navigation Bar with Categories -->
+        <v-app-bar class="bg-grey-lighten-4" height="48">
+            <v-container class="d-flex align-center">
+                <!-- All Categories Dropdown -->
+                <v-menu open-on-hover>
+                    <template v-slot:activator="{ props }">
+                        <v-btn color="primary" v-bind="props" class="text-none mr-4" prepend-icon="mdi-menu">
+                            All Categories
+                        </v-btn>
                     </template>
-                  </v-list-item>
-                </template>
-                <v-list-item v-for="child in category.children"
-                  :key="child.id"
-                  :href="route('categories.show', child.slug)"
-                  :title="child.name"
-                  link
-                  density="compact">
+                    <v-list width="250">
+                        <template v-for="(category, index) in categories" :key="index">
+                            <v-list-item v-if="!category.children?.length"
+                                :href="route('categories.show', category.slug)" :title="category.name" link>
+                            </v-list-item>
+
+                            <v-list-group v-else>
+                                <template v-slot:activator="{ props }">
+                                    <v-list-item v-bind="props" :title="category.name">
+                                        <template v-slot:append>
+                                            <v-icon>mdi-chevron-right</v-icon>
+                                        </template>
+                                    </v-list-item>
+                                </template>
+                                <v-list-item v-for="child in category.children" :key="child.id"
+                                    :href="route('categories.show', child.slug)" :title="child.name" link
+                                    density="compact">
+                                </v-list-item>
+                            </v-list-group>
+                        </template>
+                    </v-list>
+                </v-menu>
+
+                <!-- Main Navigation Links -->
+                <div class="d-none d-sm-flex">
+                    <template v-for="(category, index) in categories.slice(0, 6)" :key="index">
+                        <v-btn variant="text" class="text-none" :to="route('categories.show', category.slug)">
+                            {{ category.name }}
+                        </v-btn>
+                    </template>
+                </div>
+            </v-container>
+        </v-app-bar>
+
+        <!-- Navigation Drawer -->
+        <v-navigation-drawer v-model="drawer" temporary>
+            <v-list>
+                <v-list-item prepend-avatar="/logo.png" :title="'Tech Store'"></v-list-item>
+            </v-list>
+
+            <v-divider></v-divider>
+
+            <!-- Main Menu -->
+            <v-list density="compact" nav>
+                <v-list-item v-for="(item, i) in menuItems" :key="i" :value="item" :to="item.route" link>
+                    <template v-slot:prepend>
+                        <v-icon :icon="item.icon"></v-icon>
+                    </template>
+                    <v-list-item-title>{{ item.text }}</v-list-item-title>
                 </v-list-item>
-              </v-list-group>
-            </template>
-          </v-list>
-        </v-menu>
-
-        <!-- Main Navigation Links -->
-        <div class="d-none d-sm-flex">
-          <template v-for="(category, index) in categories.slice(0,6)" :key="index">
-            <v-btn variant="text" class="text-none" :to="route('categories.show', category.slug)">
-              {{ category.name }}
-            </v-btn>
-          </template>
-        </div>
-      </v-container>
-    </v-app-bar>
-
-    <!-- Navigation Drawer -->
-    <v-navigation-drawer v-model="drawer" temporary>
-      <v-list>
-        <v-list-item prepend-avatar="/logo.png" :title="'Tech Store'"></v-list-item>
-      </v-list>
-
-      <v-divider></v-divider>
-
-      <!-- Main Menu -->
-      <v-list density="compact" nav>
-        <v-list-item v-for="(item, i) in menuItems" :key="i" :value="item" :to="item.route" link>
-          <template v-slot:prepend>
-            <v-icon :icon="item.icon"></v-icon>
-          </template>
-          <v-list-item-title>{{ item.text }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-
-      <v-divider class="my-2"></v-divider>
-
-      <!-- All Categories Menu -->
-      <v-list nav>
-        <v-list-subheader>Shop By Category</v-list-subheader>
-        <template v-for="(category, index) in categories" :key="index">
-          <v-list-group v-if="category.children?.length > 0" :value="category.name">
-            <template v-slot:activator="{ props }">
-              <v-list-item v-bind="props" :prepend-icon="category.icon || 'mdi-shape-outline'"
-                :title="category.name">
-              </v-list-item>
-            </template>
-
-            <v-list-item v-for="child in category.children" :key="child.id"
-              :href="route('categories.show', child.slug)" :title="child.name" link density="compact">
-            </v-list-item>
-          </v-list-group>
-
-          <v-list-item v-else :href="route('categories.show', category.slug)"
-            :prepend-icon="category.icon || 'mdi-shape-outline'" :title="category.name" link>
-          </v-list-item>
-        </template>
-      </v-list>
-    </v-navigation-drawer>
-
-    <!-- Main Content -->
-    <v-main>
-      <slot />
-    </v-main>
-
-    <!-- Footer -->
-    <v-footer class="bg-grey-lighten-3">
-      <v-container>
-        <v-row>
-          <v-col cols="12" md="3">
-            <h3>Contact</h3>
-            <p class="text-body-2">
-              123 Street Name<br>
-              City, State 12345<br>
-              Phone: (123) 456-7890<br>
-              Email: info@techstore.com
-            </p>
-          </v-col>
-
-          <v-col cols="12" md="3">
-            <h3>Quick Links</h3>
-            <v-list density="compact" nav>
-              <v-list-item>About Us</v-list-item>
-              <v-list-item>Contact</v-list-item>
-              <v-list-item>Terms & Conditions</v-list-item>
             </v-list>
-          </v-col>
 
-          <v-col cols="12" md="3">
-            <h3>Categories</h3>
-            <v-list density="compact" nav>
-              <v-list-item v-for="(category, i) in categories.slice(0, 4)" :key="i">
-                {{ category.name }}
-              </v-list-item>
+            <v-divider class="my-2"></v-divider>
+
+            <!-- All Categories Menu -->
+            <v-list nav>
+                <v-list-subheader>Shop By Category</v-list-subheader>
+                <template v-for="(category, index) in categories" :key="index">
+                    <v-list-group v-if="category.children?.length > 0" :value="category.name">
+                        <template v-slot:activator="{ props }">
+                            <v-list-item v-bind="props" :prepend-icon="category.icon || 'mdi-shape-outline'"
+                                :title="category.name">
+                            </v-list-item>
+                        </template>
+
+                        <v-list-item v-for="child in category.children" :key="child.id"
+                            :href="route('categories.show', child.slug)" :title="child.name" link density="compact">
+                        </v-list-item>
+                    </v-list-group>
+
+                    <v-list-item v-else :href="route('categories.show', category.slug)"
+                        :prepend-icon="category.icon || 'mdi-shape-outline'" :title="category.name" link>
+                    </v-list-item>
+                </template>
             </v-list>
-          </v-col>
+        </v-navigation-drawer>
 
-          <v-col cols="12" md="3">
-            <h3>Follow Us</h3>
-            <div class="d-flex gap-2 mt-2">
-              <v-btn icon="mdi-facebook" variant="text"></v-btn>
-              <v-btn icon="mdi-twitter" variant="text"></v-btn>
-              <v-btn icon="mdi-instagram" variant="text"></v-btn>
-            </div>
-          </v-col>
+        <!-- Main Content -->
+        <v-main>
+            <slot />
+        </v-main>
 
-          <v-col cols="12" class="text-center mt-4">
-            <small>&copy; {{ new Date().getFullYear() }} Tech Store. All rights reserved.</small>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-footer>
-  </v-app>
+        <!-- Footer -->
+        <v-footer class="bg-grey-lighten-3">
+            <v-container>
+                <v-row>
+                    <v-col cols="12" md="3">
+                        <h3>Contact</h3>
+                        <p class="text-body-2">
+                            123 Street Name<br>
+                            City, State 12345<br>
+                            Phone: (123) 456-7890<br>
+                            Email: info@techstore.com
+                        </p>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <h3>Quick Links</h3>
+                        <v-list density="compact" nav>
+                            <v-list-item>About Us</v-list-item>
+                            <v-list-item>Contact</v-list-item>
+                            <v-list-item>Terms & Conditions</v-list-item>
+                        </v-list>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <h3>Categories</h3>
+                        <v-list density="compact" nav>
+                            <v-list-item v-for="(category, i) in categories.slice(0, 4)" :key="i">
+                                {{ category.name }}
+                            </v-list-item>
+                        </v-list>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <h3>Follow Us</h3>
+                        <div class="d-flex gap-2 mt-2">
+                            <v-btn icon="mdi-facebook" variant="text"></v-btn>
+                            <v-btn icon="mdi-twitter" variant="text"></v-btn>
+                            <v-btn icon="mdi-instagram" variant="text"></v-btn>
+                        </div>
+                    </v-col>
+
+                    <v-col cols="12" class="text-center mt-4">
+                        <small>&copy; {{ new Date().getFullYear() }} Tech Store. All rights reserved.</small>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-footer>
+    </v-app>
 </template>
 
 <script setup>
-  import { ref, onMounted } from 'vue'
-  import { router } from '@inertiajs/vue3'
+    import { ref, onMounted } from 'vue'
+    import { router } from '@inertiajs/vue3'
 
-  const drawer = ref(false)
-  const tab = ref('menu')
-  const search = ref('')
-  const categories = ref([])
+    const drawer = ref(false)
+    const tab = ref('menu')
+    const search = ref('')
+    const categories = ref([])
 
-  // Updated menu items (removed categories since they'll be dynamic)
-  const menuItems = [
-    { text: 'New Arrivals', icon: 'mdi-star', route: '/new' },
-    { text: 'Best Sellers', icon: 'mdi-fire', route: '/best' },
-    { text: 'Special Offers', icon: 'mdi-tag', route: '/offers' },
-    { text: 'Brands', icon: 'mdi-tag-multiple', route: '/brands' }
-  ]
+    // Updated menu items (removed categories since they'll be dynamic)
+    const menuItems = [
+        { text: 'New Arrivals', icon: 'mdi-star', route: '/new' },
+        { text: 'Best Sellers', icon: 'mdi-fire', route: '/best' },
+        { text: 'Special Offers', icon: 'mdi-tag', route: '/offers' },
+        { text: 'Brands', icon: 'mdi-tag-multiple', route: '/brands' }
+    ]
 
-  // Get categories
-  const getCategories = async () => {
-    try {
-      const { data } = await axios.get(route("data.categories"));
-      if (data.success) {
-        categories.value = data.data;
-      }
-    } catch (error) {
-      console.error(error);
+    // Get categories
+    const getCategories = async () => {
+        try {
+            const { data } = await axios.get(route("data.categories"));
+            if (data.success) {
+                categories.value = data.data;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    onMounted(() => {
+        getCategories()
+    })
+
+    const searchCallback = () => {
+        if (!search.value) return
+        // Add your search logic here
     }
-  };
-
-  onMounted(() => {
-    getCategories()
-  })
-
-  const searchCallback = () => {
-    if (!search.value) return
-    // Add your search logic here
-  }
 </script>
 
 <style scoped>
-  .search-field {
-    max-width: 500px;
-  }
+    .search-field {
+        max-width: 500px;
+    }
 
-  .search-field :deep(.v-field) {
-    border-radius: 4px;
-  }
+    .search-field :deep(.v-field) {
+        border-radius: 4px;
+    }
 
-  :deep(.v-btn) {
-    text-transform: none;
-    letter-spacing: 0;
-  }
-
-  .search-field {
-    max-width: 500px;
-    border-radius: 8px;
-  }
-
-  .search-field :deep(.v-field__outline__start),
-  .search-field :deep(.v-field__outline__end) {
-    border-radius: 8px;
-  }
-
-  :deep(.v-btn) {
-    text-transform: none;
-    letter-spacing: 0;
-  }
-
-  .header-bar {
-    background: #fff;
-    border-bottom: 1px solid #eee;
-  }
-
-  .top-bar {
-    min-height: 80px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .nav-bar {
-    min-height: 50px;
-    background: #f8f9fa;
-  }
-
-  .search-field {
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .search-field :deep(.v-field__outline__start) {
-    border-radius: 20px 0 0 20px;
-  }
-
-  .search-field :deep(.v-field__outline__end) {
-    border-radius: 0 20px 20px 0;
-  }
-
-  .categories-btn {
-    height: 40px;
-    border-radius: 4px;
-    text-transform: none;
-    font-weight: 500;
-  }
-
-  .nav-link {
-    color: #333;
-    text-transform: none;
-    font-weight: 400;
-    letter-spacing: 0;
-  }
-
-  /* Mobile Styles */
-  @media (max-width: 960px) {
-    .top-bar {
-      min-height: 60px;
+    :deep(.v-btn) {
+        text-transform: none;
+        letter-spacing: 0;
     }
 
     .search-field {
-      display: none;
+        max-width: 500px;
+        border-radius: 8px;
     }
-  }
 
-  /* Dropdown Menu Styles */
-  :deep(.v-list) {
-    border-radius: 4px;
-    padding: 8px 0;
-  }
+    .search-field :deep(.v-field__outline__start),
+    .search-field :deep(.v-field__outline__end) {
+        border-radius: 8px;
+    }
 
-  :deep(.v-list-item) {
-    min-height: 40px;
-    padding: 0 16px;
-  }
+    :deep(.v-btn) {
+        text-transform: none;
+        letter-spacing: 0;
+    }
 
-  :deep(.v-list-item:hover) {
-    background: #f5f5f5;
-  }
+    .header-bar {
+        background: #fff;
+        border-bottom: 1px solid #eee;
+    }
 
-  /* Footer Styles */
-  .v-footer {
-    background: #f8f9fa;
-    border-top: 1px solid #eee;
-  }
+    .top-bar {
+        min-height: 80px;
+        border-bottom: 1px solid #eee;
+    }
 
-  .footer-title {
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-  }
+    .nav-bar {
+        min-height: 50px;
+        background: #f8f9fa;
+    }
 
-  .footer-link {
-    color: #666;
-    text-decoration: none;
-    display: block;
-    padding: 4px 0;
-  }
+    .search-field {
+        max-width: 600px;
+        margin: 0 auto;
+    }
 
-  .footer-link:hover {
-    color: var(--v-primary-base);
-  }
+    .search-field :deep(.v-field__outline__start) {
+        border-radius: 20px 0 0 20px;
+    }
 
-  /* Category Menu Styles */
-  :deep(.v-list-group__items) {
-    margin-left: 12px;
-  }
+    .search-field :deep(.v-field__outline__end) {
+        border-radius: 0 20px 20px 0;
+    }
 
-  :deep(.v-list-item--density-compact) {
-    min-height: 32px;
-  }
+    .categories-btn {
+        height: 40px;
+        border-radius: 4px;
+        text-transform: none;
+        font-weight: 500;
+    }
 
-  :deep(.v-list-group__items .v-list-item) {
-    padding-left: 24px;
-  }
+    .nav-link {
+        color: #333;
+        text-transform: none;
+        font-weight: 400;
+        letter-spacing: 0;
+    }
 
-  /* Add these new styles */
-  .v-btn.text-none {
-    text-transform: none;
-    font-weight: 400;
-    letter-spacing: 0;
-    margin-right: 4px;
-  }
+    /* Mobile Styles */
+    @media (max-width: 960px) {
+        .top-bar {
+            min-height: 60px;
+        }
 
-  :deep(.v-list-item--density-compact) {
-    min-height: 32px;
-  }
+        .search-field {
+            display: none;
+        }
+    }
+
+    /* Dropdown Menu Styles */
+    :deep(.v-list) {
+        border-radius: 4px;
+        padding: 8px 0;
+    }
+
+    :deep(.v-list-item) {
+        min-height: 40px;
+        padding: 0 16px;
+    }
+
+    :deep(.v-list-item:hover) {
+        background: #f5f5f5;
+    }
+
+    /* Footer Styles */
+    .v-footer {
+        background: #f8f9fa;
+        border-top: 1px solid #eee;
+    }
+
+    .footer-title {
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+
+    .footer-link {
+        color: #666;
+        text-decoration: none;
+        display: block;
+        padding: 4px 0;
+    }
+
+    .footer-link:hover {
+        color: var(--v-primary-base);
+    }
+
+    /* Category Menu Styles */
+    :deep(.v-list-group__items) {
+        margin-left: 12px;
+    }
+
+    :deep(.v-list-item--density-compact) {
+        min-height: 32px;
+    }
+
+    :deep(.v-list-group__items .v-list-item) {
+        padding-left: 24px;
+    }
+
+    /* Add these new styles */
+    .v-btn.text-none {
+        text-transform: none;
+        font-weight: 400;
+        letter-spacing: 0;
+        margin-right: 4px;
+    }
+
+    :deep(.v-list-item--density-compact) {
+        min-height: 32px;
+    }
 </style>

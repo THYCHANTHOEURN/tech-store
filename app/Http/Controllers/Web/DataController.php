@@ -29,8 +29,8 @@ class DataController extends Controller
             $categories = CategoryDataResource::collection($categories);
 
             return response()->json([
-                'success' => true,
-                'data' => $categories
+                'success'   => true,
+                'data'      => $categories
             ]);
         } catch (\Exception $e) {
             return response()->json([

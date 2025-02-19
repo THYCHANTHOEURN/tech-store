@@ -7,13 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class ProductImage extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductImageFactory> */
-    use HasFactory;
-    use HasUuidTrait;
-    use SoftDeletes;
+    use HasFactory, HasUuidTrait, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -44,12 +42,31 @@ class ProductImage extends Model
     ];
 
     /**
+     * The attributes that should be appended.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'image_url',
+    ];
+
+    /**
      * Get the product that owns the image.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function product():BelongsTo
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    /**
+     * Get the image URL attribute.
+     *
+     * @return string
+     */
+    public function getImageUrlAttribute(): string
+    {
+        return $this->image ? Storage::url($this->image) : '';
     }
 }

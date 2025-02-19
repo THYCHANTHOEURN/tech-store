@@ -43,4 +43,27 @@ class Banner extends Model
     protected $casts = [
         'status' => 'boolean',
     ];
+
+    /**
+     * Banner position constants
+     */
+    const POSITION_SLIDER   = 'slider';
+    const POSITION_SIDE     = 'side';
+    const POSITION_PROMO    = 'promo';
+
+    /**
+     * Scope a query to only include active banners.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', true);
+    }
+
+    /**
+     * Scope a query to get banners by position.
+     */
+    public function scopePosition($query, $position)
+    {
+        return $query->where('position', $position);
+    }
 }

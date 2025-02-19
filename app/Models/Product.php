@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -55,6 +56,12 @@ class Product extends Model
     protected $casts = [
         'status'    => 'boolean',
         'featured'  => 'boolean',
+    ];
+
+    protected $with = ['primaryImage'];
+
+    protected $appends = [
+        'primary_image_url',
     ];
 
     /**
@@ -115,6 +122,36 @@ class Product extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Get only the primary image for the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function primaryImage(): HasOne
+    {
+        return $this->hasOne(ProductImage::class)->where('is_primary', true);
+    }
+
+    /**
+     * Get all images for the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)->orderBy('is_primary', 'desc');
+    }
+
+    /**
+     * Get the primary image URL attribute.
+     *
+     * @return string|null
+     */
+    public function getPrimaryImageUrlAttribute(): ?string
+    {
+        return $this->primaryImage?->image_url;
     }
 
 }

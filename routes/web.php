@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\DataController;
@@ -35,9 +36,12 @@ Route::get('/categories', [CategoryController::class, 'index'])->name('categorie
 Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
 
-
 Route::group(['prefix' => 'data', 'as' => 'data.'], function () {
     Route::get('categories', [DataController::class, 'categories'])->name('categories');
 });
+
+// Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+//     Route::post('/upload', [UploadController::class, 'store'])->name('upload.store');
+// });
 
 require __DIR__.'/auth.php';

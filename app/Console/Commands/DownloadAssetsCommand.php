@@ -1,0 +1,92 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
+
+class DownloadAssetsCommand extends Command
+{
+    protected $signature = 'assets:download';
+    protected $description = 'Download all required assets for the store';
+
+    private $assets = [
+        'brands' => [
+            'asus-rog' => 'https://images.unsplash.com/photo-1625842268584-8f3296236761?w=500',
+            'asus-tuf' => 'https://images.unsplash.com/photo-1603946877690-d410437c29aa?w=500',
+            'razer' => 'https://images.unsplash.com/photo-1618478594486-c65b899c4936?w=500',
+            'msi' => 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=500',
+        ],
+        'products' => [
+            'rog-ally' => [
+                'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800', // Gaming device
+                'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800', // Gaming device
+                'https://images.unsplash.com/photo-1527814050087-3793815479db?w=800', // Gaming device
+            ],
+            'rog-strix-g15' => [
+                'https://images.unsplash.com/photo-1605134513573-384dcf99a44c?w=800',
+                'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800', // Gaming laptop
+            ]
+        ],
+        'categories' => [
+            'gaming-laptops' => 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800',
+            'gaming-accessories' => 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800',
+            'gaming-consoles' => 'https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=800', // Updated gaming console image
+        ],
+        'banners' => [
+            'rog-ally-banner' => 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1400&h=400',
+            'gaming-laptops' => 'https://images.unsplash.com/photo-1593642634443-44adaa06623a?w=1400&h=400',
+            'gaming-accessories' => 'https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?w=1400&h=400'
+        ]
+    ];
+
+    public function handle()
+    {
+        $this->info('Starting asset download...');
+
+        // Create storage link if it doesn't exist
+        if (!file_exists(public_path('storage'))) {
+            $this->call('storage:link');
+        }
+
+        foreach ($this->assets as $type => $items) {
+            $this->info("\nDownloading {$type} images...");
+
+            $path = storage_path("app/public/{$type}");
+            if (!File::exists($path)) {
+                File::makeDirectory($path, 0755, true);
+            }
+
+            foreach ($items as $name => $urls) {
+                $urls = is_array($urls) ? $urls : [$urls];
+                foreach ($urls as $index => $url) {
+                    $filename = is_array($urls) ? "{$name}-" . ($index + 1) . ".jpg" : "{$name}.jpg";
+                    $filepath = "{$path}/{$filename}";
+
+                    $this->info("Downloading: {$filename}");
+
+                    try {
+                        $response = Http::withHeaders([
+                            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124'
+                        ])->timeout(30)->get($url);
+
+                        if ($response->successful()) {
+                            File::put($filepath, $response->body());
+                            $this->info("✓ Successfully downloaded: {$filename}");
+                        } else {
+                            $this->error("✗ Failed to download {$filename}: HTTP {$response->status()}");
+                        }
+                    } catch (\Exception $e) {
+                        $this->error("✗ Error downloading {$filename}: " . $e->getMessage());
+                    }
+
+                    // Add a small delay between requests
+                    usleep(500000); // 0.5 second delay
+                }
+            }
+        }
+
+        $this->info("\nAsset download process completed!");
+    }
+}
