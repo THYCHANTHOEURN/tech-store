@@ -33,9 +33,28 @@ class DownloadAssetsCommand extends Command
             'rog-mouse' => 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800',
         ],
         'categories' => [
+            // Main categories
             'gaming-laptops' => 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800',
             'gaming-accessories' => 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800',
-            'gaming-consoles' => 'https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=800', // Updated gaming console image
+            'gaming-consoles' => 'https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=800',
+
+            // Gaming Laptops subcategories
+            'rog' => 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800',        // ROG specific laptop
+            'tuf-gaming' => 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800', // TUF specific laptop
+            'razer' => 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800',      // Razer laptop
+            'msi' => 'https://images.unsplash.com/photo-1593642634443-44adaa06623a?w=800',        // MSI gaming laptop
+
+            // Gaming Accessories subcategories
+            'gaming-mouse' => 'https://images.unsplash.com/photo-1613141411244-0e4ac259d217?w=800',    // Gaming mouse closeup
+            'gaming-keyboard' => 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800', // RGB keyboard
+            'gaming-headset' => 'https://images.unsplash.com/photo-1599669454699-248893623440?w=800',  // Gaming headset
+            'gaming-monitor' => 'https://images.unsplash.com/photo-1619953942547-233eab5a70d6?w=800',  // Gaming monitor setup
+
+            // Gaming Consoles subcategories
+            'playstation' => 'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=800',    // PS5 console
+            'xbox' => 'https://images.unsplash.com/photo-1605901309584-818e25960a8f?w=800',          // Updated Xbox image
+            'nintendo' => 'https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=800',    // Nintendo Switch
+            'rog-ally' => 'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800'       // Handheld gaming
         ],
         'banners' => [
             'rog-ally-banner' => 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1400&h=400',
