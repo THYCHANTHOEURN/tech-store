@@ -17,15 +17,15 @@
 </template>
 
 <script setup>
-import ProductCard from '@/Components/ProductCard.vue';
+    import ProductCard from '@/Components/ProductCard.vue';
 
-defineProps({
-    title: String,
-    products: Array,
-    viewAllLink: String,
-    background: {
-        type: String,
-        default: ''
-    }
-});
+    defineProps({
+        title: String,
+        products: Array,
+        viewAllLink: String,
+        background: {
+            type: String,
+            default: ''
+        }
+    });
 </script>

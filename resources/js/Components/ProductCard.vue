@@ -12,7 +12,7 @@
                 <v-card-title class="text-subtitle-1">{{ product.name }}</v-card-title>
                 <v-card-subtitle>
                     <div class="d-flex align-center">
-                        <span :class="{'text-decoration-line-through': product.sale_price}" class="mr-2">
+                        <span :class="{ 'text-decoration-line-through': product.sale_price }" class="mr-2">
                             ${{ product.price }}
                         </span>
                         <span v-if="product.sale_price" class="error--text">${{ product.sale_price }}</span>
@@ -30,28 +30,28 @@
 </template>
 
 <script setup>
-const props = defineProps({
-    product: {
-        type: Object,
-        required: true
-    }
-});
+    const props = defineProps({
+        product: {
+            type: Object,
+            required: true
+        }
+    });
 
-const addToCart = () => {
-    // Implement cart functionality
-    console.log('Adding to cart:', props.product.id);
-};
+    const addToCart = () => {
+        // Implement cart functionality
+        console.log('Adding to cart:', props.product.id);
+    };
 </script>
 
 <style scoped>
-.product-overlay {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
+    .product-overlay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
 
-.on-hover {
-    transform: scale(1.02);
-    transition: all 0.3s;
-}
+    .on-hover {
+        transform: scale(1.02);
+        transition: all 0.3s;
+    }
 </style>

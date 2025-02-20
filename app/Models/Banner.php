@@ -6,6 +6,7 @@ use App\Traits\HasUuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Banner extends Model
 {
@@ -45,6 +46,16 @@ class Banner extends Model
     ];
 
     /**
+     * The attributes that should be appended.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'image_url',
+    ];
+
+
+    /**
      * Banner position constants
      */
     const POSITION_SLIDER   = 'slider';
@@ -65,5 +76,15 @@ class Banner extends Model
     public function scopePosition($query, $position)
     {
         return $query->where('position', $position);
+    }
+
+    /**
+     * Get the image URL attribute.
+     *
+     * @return string
+     */
+    public function getImageUrlAttribute(): string
+    {
+        return $this->image ? Storage::url($this->image) : '';
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
 {
@@ -48,6 +49,15 @@ class Category extends Model
     ];
 
     /**
+     * The attributes that should be appended.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'image_url',
+    ];
+
+    /**
      * Get the parent category that owns the category.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -75,5 +85,15 @@ class Category extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    /**
+     * Get the image URL attribute.
+     *
+     * @return string
+     */
+    public function getImageUrlAttribute(): string
+    {
+        return $this->image ? Storage::url($this->image) : '';
     }
 }
