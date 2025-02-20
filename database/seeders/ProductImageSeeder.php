@@ -20,7 +20,16 @@ class ProductImageSeeder extends Seeder
             'rog-strix-g15' => [
                 ['image' => 'products/rog-strix-g15-1.jpg', 'is_primary' => true],
                 ['image' => 'products/rog-strix-g15-2.jpg', 'is_primary' => false],
-            ]
+            ],
+            'msi-katana-gf66' => [
+                ['image' => 'products/msi-katana.jpg', 'is_primary' => true],
+            ],
+            'razer-blackwidow-v3' => [
+                ['image' => 'products/razer-keyboard.jpg', 'is_primary' => true],
+            ],
+            'rog-chakram-mouse' => [
+                ['image' => 'products/rog-mouse.jpg', 'is_primary' => true],
+            ],
         ];
 
         foreach ($images as $productSlug => $productImages) {

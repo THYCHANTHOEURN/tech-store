@@ -27,7 +27,10 @@ class DownloadAssetsCommand extends Command
             'rog-strix-g15' => [
                 'https://images.unsplash.com/photo-1605134513573-384dcf99a44c?w=800',
                 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800', // Gaming laptop
-            ]
+            ],
+            'msi-katana' => 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800',
+            'razer-keyboard' => 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800',
+            'rog-mouse' => 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800',
         ],
         'categories' => [
             'gaming-laptops' => 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800',
@@ -37,7 +40,13 @@ class DownloadAssetsCommand extends Command
         'banners' => [
             'rog-ally-banner' => 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1400&h=400',
             'gaming-laptops' => 'https://images.unsplash.com/photo-1593642634443-44adaa06623a?w=1400&h=400',
-            'gaming-accessories' => 'https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?w=1400&h=400'
+            'gaming-accessories' => 'https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?w=1400&h=400',
+            'rog-laptops-side' => 'https://images.unsplash.com/photo-1593642634402-b0eb5e2eebc9?w=600&h=400',
+            'msi-gaming-side' => 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=600&h=400', // Updated MSI side banner
+            'razer-gear-side' => 'https://images.unsplash.com/photo-1618478594486-c65b899c4936?w=600&h=400',
+            'summer-sale-promo' => 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&h=300',
+            'new-arrivals-promo' => 'https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?w=800&h=300',
+            'special-bundles-promo' => 'https://images.unsplash.com/photo-1593642634524-b40b5baae6bb?w=800&h=300'
         ]
     ];
 
@@ -61,7 +70,10 @@ class DownloadAssetsCommand extends Command
             foreach ($items as $name => $urls) {
                 $urls = is_array($urls) ? $urls : [$urls];
                 foreach ($urls as $index => $url) {
-                    $filename = is_array($urls) ? "{$name}-" . ($index + 1) . ".jpg" : "{$name}.jpg";
+                    // Modified naming logic
+                    $filename = count($urls) > 1 ?
+                        "{$name}-" . ($index + 1) . ".jpg" :
+                        "{$name}.jpg";
                     $filepath = "{$path}/{$filename}";
 
                     $this->info("Downloading: {$filename}");
