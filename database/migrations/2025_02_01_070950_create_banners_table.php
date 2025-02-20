@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('image');
             $table->string('link');
             $table->boolean('status')->default(true);
-            $table->string('position');
+            $table->string('position')->comment('slider, side, promo');
 
             $table->timestamps();
             $table->softDeletes();

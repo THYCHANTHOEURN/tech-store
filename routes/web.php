@@ -32,8 +32,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/home', [HomeController::class, 'index'])->name('index');
 
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-
 Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('categories.show');
+
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
 
 Route::group(['prefix' => 'data', 'as' => 'data.'], function () {
