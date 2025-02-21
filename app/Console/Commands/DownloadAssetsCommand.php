@@ -37,6 +37,9 @@ class DownloadAssetsCommand extends Command
             'gaming-laptops' => 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800',
             'gaming-accessories' => 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800',
             'gaming-consoles' => 'https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=800',
+            'gaming-pc-components' => 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800',
+            'mobile-gaming' => 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?w=800',      // Person playing on phone
+            'gaming-software' => 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800',
 
             // Gaming Laptops subcategories
             'rog' => 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800',        // ROG specific laptop
@@ -54,7 +57,26 @@ class DownloadAssetsCommand extends Command
             'playstation' => 'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=800',    // PS5 console
             'xbox' => 'https://images.unsplash.com/photo-1605901309584-818e25960a8f?w=800',          // Updated Xbox image
             'nintendo' => 'https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=800',    // Nintendo Switch
-            'rog-ally' => 'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800'       // Handheld gaming
+            'rog-ally' => 'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800',       // Handheld gaming
+
+
+            // Gaming PC Components subcategories
+            'graphics-cards' => 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800',
+            'processors' => 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=800',
+            'ram' => 'https://images.unsplash.com/photo-1562976540-1502c2145186?w=800',
+            'gaming-cases' => 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=800',
+
+            // Mobile Gaming subcategories
+            'gaming-phones' => 'https://images.unsplash.com/photo-1616348436168-de43ad0db179?w=800',
+            'mobile-controllers' => 'https://images.unsplash.com/photo-1527814050087-3793815479db?w=800',
+            'phone-cooling' => 'https://images.unsplash.com/photo-1601944179066-29786cb9d32a?w=800',      // Gaming phone
+
+
+            // Gaming Software subcategories
+            'pc-games' => 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800',
+            'console-games' => 'https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?w=800',
+            'game-credits' => 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800',
+            'gaming-services' => 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800',
         ],
         'banners' => [
             'rog-ally-banner' => 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1400&h=400',

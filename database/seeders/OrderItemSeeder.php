@@ -20,7 +20,7 @@ class OrderItemSeeder extends Seeder
             'rog-strix-g15',
             'msi-katana-gf66',
             'razer-blackwidow-v3',
-            'rog-chakram-mouse',
+            // 'rog-chakram-mouse',
         ];
 
         $products       = Product::whereIn('slug', $popularProducts)->get();

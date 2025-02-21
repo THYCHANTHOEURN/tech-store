@@ -46,18 +46,52 @@ class CategorySeeder extends Seeder
                     ['name' => 'ROG Ally', 'slug' => 'rog-ally'],
                 ]
             ],
-            // Add more categories as needed
+            [
+                'name' => 'Gaming PC Components',
+                'slug' => 'gaming-pc-components',
+                'image' => 'categories/gaming-pc-components.jpg',
+                'status' => true,
+                'children' => [
+                    ['name' => 'Graphics Cards', 'slug' => 'graphics-cards'],
+                    ['name' => 'Processors', 'slug' => 'processors'],
+                    ['name' => 'RAM', 'slug' => 'ram'],
+                    ['name' => 'Gaming Cases', 'slug' => 'gaming-cases'],
+                ]
+            ],
+            [
+                'name' => 'Mobile Gaming',
+                'slug' => 'mobile-gaming',
+                'image' => 'categories/mobile-gaming.jpg',
+                'status' => true,
+                'children' => [
+                    ['name' => 'Gaming Phones', 'slug' => 'gaming-phones'],
+                    ['name' => 'Mobile Controllers', 'slug' => 'mobile-controllers'],
+                    ['name' => 'Phone Cooling', 'slug' => 'phone-cooling'],
+                ]
+            ],
+            [
+                'name' => 'Gaming Software',
+                'slug' => 'gaming-software',
+                'image' => 'categories/gaming-software.jpg',
+                'status' => true,
+                'children' => [
+                    ['name' => 'PC Games', 'slug' => 'pc-games'],
+                    ['name' => 'Console Games', 'slug' => 'console-games'],
+                    ['name' => 'Game Credits', 'slug' => 'game-credits'],
+                    ['name' => 'Gaming Services', 'slug' => 'gaming-services'],
+                ]
+            ]
         ];
 
         foreach ($categories as $category) {
-            $children   = $category['children'] ?? [];
+            $children = $category['children'] ?? [];
             unset($category['children']);
-            $parent     = Category::create($category);
+            $parent = Category::create($category);
 
             foreach ($children as $child) {
-                $child['parent_id'] = $parent->id;
-                $child['status']    = true;
-                $child['image']     = 'categories/' . $child['slug'] . '.jpg';
+                $child['image']         = 'categories/' . $child['slug'] . '.jpg';
+                $child['status']        = true;
+                $child['parent_id']     = $parent->id;
                 Category::create($child);
             }
         }
