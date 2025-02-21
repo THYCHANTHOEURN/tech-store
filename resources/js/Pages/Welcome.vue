@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Welcome" />
     <!-- <v-app> -->
         <WebLayout>

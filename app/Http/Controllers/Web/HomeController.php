@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class HomeController extends Controller

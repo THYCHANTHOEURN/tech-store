@@ -8,7 +8,7 @@
                             <v-img :src="banner.image_url" height="200" cover>
                                 <div class="banner-content">
                                     <h3 class="text-h6 white--text font-weight-bold">{{ banner.title }}</h3>
-                                    <p class="text-subtitle-1 white--text mt-2">{{ banner.subtitle }}</p>
+                                    <!-- <p class="text-subtitle-1 white--text mt-2">{{ banner.subtitle }}</p> -->
                                     <v-btn color="white" class="mt-4" :to="banner.link">Shop Now</v-btn>
                                 </div>
                             </v-img>
@@ -39,5 +39,6 @@
         width: 100%;
         padding: 1rem;
         background: rgba(0, 0, 0, 0.4);
+        color: white;
     }
 </style>

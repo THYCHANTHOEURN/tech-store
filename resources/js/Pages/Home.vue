@@ -1,10 +1,12 @@
 <template>
+    <Head title="Home" />
     <WebLayout>
         <v-container class="px-0" fluid>
             <!-- Hero Section -->
             <v-container>
                 <v-row>
 
+                    <!-- slider section -->
                     <v-col cols="12" md="9">
                         <v-card>
                             <v-carousel cycle height="450" hide-delimiter-background show-arrows="hover">
@@ -21,6 +23,7 @@
                         </v-card>
                     </v-col>
 
+                    <!-- side banners -->
                     <v-col cols="12" md="3" class="d-none d-md-block">
                         <v-card>
                             <v-row>
@@ -56,7 +59,7 @@
                 </v-container>
             </section>
 
-            <!-- Banner Section -->
+            <!-- Promo Banners -->
             <BannerSection :banners="promoBanners" />
 
             <!-- Featured Products -->
@@ -70,6 +73,7 @@
             <!-- Best Sellers -->
             <ProductList title="Best Sellers" :products="bestSellers"
                 :view-all-link="route('categories.index', { sort: 'best-selling' })" />
+
         </v-container>
     </WebLayout>
 </template>
@@ -89,6 +93,7 @@
         bestSellers: Array,
         promoBanners: Array
     })
+
 </script>
 
 <style scoped>

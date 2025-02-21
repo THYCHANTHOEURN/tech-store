@@ -52,10 +52,16 @@
 
                 <!-- Cart & Account -->
                 <div class="d-flex align-center">
+                    <v-btn prepend-icon="mdi-heart-outline" variant="text" class="mr-2">
+                        <span class="d-none d-sm-block">Wishlist</span>
+                        <template v-slot:append>
+                            <v-badge color="error" content="0" floating></v-badge>
+                        </template>
+                    </v-btn>
                     <v-btn prepend-icon="mdi-cart-outline" variant="text" class="mr-2">
                         <span class="d-none d-sm-block">Cart</span>
                         <template v-slot:append>
-                            <v-badge color="error" content="2" floating></v-badge>
+                            <v-badge color="error" content="0" floating></v-badge>
                         </template>
                     </v-btn>
                     <v-btn prepend-icon="mdi-account-circle-outline" variant="text">
