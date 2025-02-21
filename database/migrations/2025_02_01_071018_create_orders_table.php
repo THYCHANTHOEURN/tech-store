@@ -21,7 +21,12 @@ return new class extends Migration
             $table->enum('status', ['pending', 'processing', 'completed', 'cancelled']);
             $table->text('shipping_address');
             $table->string('payment_method');
-            $table->enum('payment_status', ['paid', 'unpaid']);
+            $table->enum('payment_status', [
+                'pending', //When payment is initiated but not yet confirmed (e.g., awaiting bank transfer)
+                'paid', //Successfully completed payment
+                'unpaid', //No payment received or payment cancelled
+                'failed', //Payment attempt made but failed (e.g., declined card)
+            ]);
 
             $table->timestamps();
             $table->softDeletes();

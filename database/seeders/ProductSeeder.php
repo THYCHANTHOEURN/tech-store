@@ -12,12 +12,12 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        $rogAllyCategory = Category::where('slug', 'gaming-consoles')->first();
-        $rogCategory = Category::where('slug', 'gaming-laptops')->first();
-        $accessoryCategory = Category::where('slug', 'gaming-accessories')->first();
+        $rogAllyCategory    = Category::where('slug', 'gaming-consoles')->first();
+        $rogCategory        = Category::where('slug', 'gaming-laptops')->first();
+        $accessoryCategory  = Category::where('slug', 'gaming-accessories')->first();
 
-        $rogBrand = Brand::where('slug', 'asus-rog')->first();
-        $msiBrand = Brand::where('slug', 'msi')->first();
+        $rogBrand   = Brand::where('slug', 'asus-rog')->first();
+        $msiBrand   = Brand::where('slug', 'msi')->first();
         $razerBrand = Brand::where('slug', 'razer')->first();
 
         $products = [
@@ -114,9 +114,9 @@ class ProductSeeder extends Seeder
 
             foreach ($images as $imageData) {
                 ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => $imageData['image'],
-                    'is_primary' => $imageData['is_primary']
+                    'product_id'    => $product->id,
+                    'image'         => $imageData['image'],
+                    'is_primary'    => $imageData['is_primary']
                 ]);
             }
         }

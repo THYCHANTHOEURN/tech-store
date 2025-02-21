@@ -50,14 +50,14 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            $children = $category['children'] ?? [];
+            $children   = $category['children'] ?? [];
             unset($category['children']);
-            $parent = Category::create($category);
+            $parent     = Category::create($category);
 
             foreach ($children as $child) {
                 $child['parent_id'] = $parent->id;
-                $child['status'] = true;
-                $child['image'] = 'categories/' . $child['slug'] . '.jpg';
+                $child['status']    = true;
+                $child['image']     = 'categories/' . $child['slug'] . '.jpg';
                 Category::create($child);
             }
         }

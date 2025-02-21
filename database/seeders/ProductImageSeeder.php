@@ -37,9 +37,9 @@ class ProductImageSeeder extends Seeder
             if ($product) {
                 foreach ($productImages as $imageData) {
                     ProductImage::create([
-                        'product_id' => $product->id,
-                        'image' => $imageData['image'],
-                        'is_primary' => $imageData['is_primary']
+                        'product_id'    => $product->id,
+                        'image'         => $imageData['image'],
+                        'is_primary'    => $imageData['is_primary']
                     ]);
                 }
             }

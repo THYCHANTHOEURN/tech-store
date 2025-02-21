@@ -36,9 +36,9 @@ class HomeController extends Controller
             ->get();
 
         $bestSellers = Product::with(['category', 'brand', 'productImages'])
-            ->whereHas('orderItems', function($query) {
-                $query->havingRaw('COUNT(*) > 0');
-            })
+            ->withCount('orderItems')
+            ->having('order_items_count', '>', 0)
+            ->orderByDesc('order_items_count')
             ->take(8)
             ->get();
 
