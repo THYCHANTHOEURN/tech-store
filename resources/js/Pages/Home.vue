@@ -64,15 +64,15 @@
 
             <!-- Featured Products -->
             <ProductList title="Featured Products" :products="featuredProducts"
-                :view-all-link="{ name: 'categories.index', query: { featured: true } }" />
+                :view-all-link="{ name: 'categories.index', params: { featured: true } }" />
 
             <!-- New Arrivals -->
             <ProductList title="New Arrivals" :products="newArrivals"
-                :view-all-link="{ name: 'categories.index', query: { sort: 'newest' } }" background="bg-grey-lighten-4" />
+                :view-all-link="{ name: 'categories.index', params: { sort: 'newest' } }" background="bg-grey-lighten-4" />
 
             <!-- Best Sellers -->
             <ProductList title="Best Sellers" :products="bestSellers"
-                :view-all-link="{ name: 'categories.index', query: { sort: 'best-selling' } }" />
+                :view-all-link="{ name: 'categories.index', params: { sort: 'best-selling' } }" />
 
         </v-container>
     </WebLayout>

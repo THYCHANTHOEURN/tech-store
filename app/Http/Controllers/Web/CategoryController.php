@@ -10,6 +10,13 @@ use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
+    /**
+     * Display list of products in a category
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Inertia\Response
+     */
     public function index(Request $request)
     {
         $query = Product::query()->where('status', true);
@@ -32,8 +39,8 @@ class CategoryController extends Controller
         }
 
         $products = $query->with(['category', 'brand', 'productImages'])
-                         ->paginate(12)
-                         ->withQueryString();
+                        ->withQueryString()
+                        ->paginate(12);
 
         $breadcrumbs = [
             ['title' => 'Home', 'href' => '/'],
@@ -42,13 +49,18 @@ class CategoryController extends Controller
         ];
 
         return Inertia::render('Categories/Index', [
-            'products' => $products,
-            'title' => $title,
-            'breadcrumbs' => $breadcrumbs,
-            'filters' => $request->only(['featured', 'sort']),
+            'products'      => $products,
+            'title'         => $title,
+            'breadcrumbs'   => $breadcrumbs,
+            'filters'       => $request->only(['featured', 'sort']),
         ]);
     }
 
+    /**
+     * Method to show all categories
+     *
+     * @return \Inertia\Response
+     */
     private function showCategories()
     {
         $mainCategories = Category::where('status', true)
@@ -66,9 +78,9 @@ class CategoryController extends Controller
         ];
 
         return Inertia::render('Categories/Index', [
-            'mainCategories' => $mainCategories,
-            'breadcrumbs' => $breadcrumbs,
-            'filters' => [],
+            'mainCategories'    => $mainCategories,
+            'breadcrumbs'       => $breadcrumbs,
+            'filters'           => [],
         ]);
     }
 }
