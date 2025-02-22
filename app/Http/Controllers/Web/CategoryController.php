@@ -39,7 +39,6 @@ class CategoryController extends Controller
         }
 
         $products = $query->with(['category', 'brand', 'productImages'])
-                        ->withQueryString()
                         ->paginate(12);
 
         $breadcrumbs = [
