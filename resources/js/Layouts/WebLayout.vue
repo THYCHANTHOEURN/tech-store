@@ -106,8 +106,11 @@
 
                 <!-- Main Navigation Links -->
                 <div class="d-none d-sm-flex">
+                    <v-btn variant="text" class="text-none" :href="route('index')">
+                        Home
+                    </v-btn>
                     <template v-for="(category, index) in categories.slice(0, 6)" :key="index">
-                        <v-btn variant="text" class="text-none" :to="route('categories.show', category.slug)">
+                        <v-btn variant="text" class="text-none" :href="route('categories.show', category.slug)">
                             {{ category.name }}
                         </v-btn>
                     </template>

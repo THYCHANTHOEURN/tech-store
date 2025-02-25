@@ -12,33 +12,84 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        $rogAllyCategory    = Category::where('slug', 'gaming-consoles')->first();
-        $rogCategory        = Category::where('slug', 'gaming-laptops')->first();
-        $accessoryCategory  = Category::where('slug', 'gaming-accessories')->first();
+        // Get parent categories
+        $gamingLaptopsCategory = Category::where('slug', 'gaming-laptops')->first();
+        $gamingAccessoriesCategory = Category::where('slug', 'gaming-accessories')->first();
+        $gamingConsolesCategory = Category::where('slug', 'gaming-consoles')->first();
 
-        $rogBrand   = Brand::where('slug', 'asus-rog')->first();
-        $msiBrand   = Brand::where('slug', 'msi')->first();
+        // Get child categories
+        $rogCategory = Category::where('slug', 'rog')->first();
+        $tufCategory = Category::where('slug', 'tuf-gaming')->first();
+        $razerLaptopCategory = Category::where('slug', 'razer')->first();
+        $msiLaptopCategory = Category::where('slug', 'msi')->first();
+
+        $mouseCategory = Category::where('slug', 'gaming-mouse')->first();
+        $keyboardCategory = Category::where('slug', 'gaming-keyboard')->first();
+        $headsetCategory = Category::where('slug', 'gaming-headset')->first();
+        $monitorCategory = Category::where('slug', 'gaming-monitor')->first();
+
+        $playstationCategory = Category::where('slug', 'playstation')->first();
+        $xboxCategory = Category::where('slug', 'xbox')->first();
+        $nintendoCategory = Category::where('slug', 'nintendo')->first();
+        $rogAllyCategory = Category::where('slug', 'rog-ally')->first();
+
+        // Get brands
+        $rogBrand = Brand::where('slug', 'asus-rog')->first();
+        $msiBrand = Brand::where('slug', 'msi')->first();
         $razerBrand = Brand::where('slug', 'razer')->first();
 
         $products = [
+            // Parent Category Products
             [
-                'name' => 'ROG Ally',
-                'slug' => 'rog-ally',
-                'category_id' => $rogAllyCategory->id,
+                'name' => 'Gaming Laptop Bundle',
+                'slug' => 'gaming-laptop-bundle',
+                'category_id' => $gamingLaptopsCategory->id,
                 'brand_id' => $rogBrand->id,
-                'sku' => 'ROG-ALLY-Z1E',
-                'price' => 699.99,
-                'sale_price' => 649.99,
-                'stock' => 50,
+                'sku' => 'GLB-2023',
+                'price' => 2499.99,
+                'sale_price' => 2299.99,
+                'stock' => 15,
                 'featured' => true,
                 'status' => true,
-                'description' => 'The ROG Ally is a powerful handheld gaming device...',
+                'description' => 'Complete gaming laptop bundle with accessories...',
                 'images' => [
-                    ['image' => 'products/rog-ally-1.jpg', 'is_primary' => true],
-                    ['image' => 'products/rog-ally-2.jpg', 'is_primary' => false],
-                    ['image' => 'products/rog-ally-3.jpg', 'is_primary' => false],
+                    ['image' => 'products/gaming-laptop-bundle.jpg', 'is_primary' => true],
                 ]
             ],
+            [
+                'name' => 'Pro Gaming Setup',
+                'slug' => 'pro-gaming-setup',
+                'category_id' => $gamingAccessoriesCategory->id,
+                'brand_id' => $razerBrand->id,
+                'sku' => 'PGS-2023',
+                'price' => 899.99,
+                'sale_price' => 799.99,
+                'stock' => 20,
+                'featured' => true,
+                'status' => true,
+                'description' => 'Complete professional gaming setup bundle...',
+                'images' => [
+                    ['image' => 'products/pro-gaming-setup.jpg', 'is_primary' => true],
+                ]
+            ],
+            [
+                'name' => 'Ultimate Console Package',
+                'slug' => 'ultimate-console-package',
+                'category_id' => $gamingConsolesCategory->id,
+                'brand_id' => $msiBrand->id,
+                'sku' => 'UCP-2023',
+                'price' => 799.99,
+                'sale_price' => 749.99,
+                'stock' => 25,
+                'featured' => true,
+                'status' => true,
+                'description' => 'Ultimate gaming console package with accessories...',
+                'images' => [
+                    ['image' => 'products/ultimate-console-package.jpg', 'is_primary' => true],
+                ]
+            ],
+
+            // ROG Products
             [
                 'name' => 'ROG Strix G15',
                 'slug' => 'rog-strix-g15',
@@ -56,10 +107,11 @@ class ProductSeeder extends Seeder
                     ['image' => 'products/rog-strix-g15-2.jpg', 'is_primary' => false],
                 ]
             ],
+            // MSI Products
             [
                 'name' => 'MSI Katana GF66',
                 'slug' => 'msi-katana-gf66',
-                'category_id' => $rogCategory->id,
+                'category_id' => $msiLaptopCategory->id,
                 'brand_id' => $msiBrand->id,
                 'sku' => 'MSI-KT-RTX3060',
                 'price' => 1099.99,
@@ -72,10 +124,11 @@ class ProductSeeder extends Seeder
                     ['image' => 'products/msi-katana.jpg', 'is_primary' => true],
                 ]
             ],
+            // Gaming Keyboard Category
             [
                 'name' => 'Razer BlackWidow V3',
                 'slug' => 'razer-blackwidow-v3',
-                'category_id' => $accessoryCategory->id,
+                'category_id' => $keyboardCategory->id,
                 'brand_id' => $razerBrand->id,
                 'sku' => 'RZ-BW-V3',
                 'price' => 139.99,
@@ -88,10 +141,11 @@ class ProductSeeder extends Seeder
                     ['image' => 'products/razer-keyboard.jpg', 'is_primary' => true],
                 ]
             ],
+            // Gaming Mouse Category
             [
                 'name' => 'ROG Chakram Mouse',
                 'slug' => 'rog-chakram-mouse',
-                'category_id' => $accessoryCategory->id,
+                'category_id' => $mouseCategory->id,
                 'brand_id' => $rogBrand->id,
                 'sku' => 'ROG-CHK-X',
                 'price' => 149.99,
@@ -102,6 +156,25 @@ class ProductSeeder extends Seeder
                 'description' => 'ROG Chakram wireless gaming mouse with programmable joystick...',
                 'images' => [
                     ['image' => 'products/rog-mouse.jpg', 'is_primary' => true],
+                ]
+            ],
+            // ROG Ally Category
+            [
+                'name' => 'ROG Ally',
+                'slug' => 'rog-ally',
+                'category_id' => $rogAllyCategory->id,
+                'brand_id' => $rogBrand->id,
+                'sku' => 'ROG-ALLY-Z1E',
+                'price' => 699.99,
+                'sale_price' => 649.99,
+                'stock' => 50,
+                'featured' => true,
+                'status' => true,
+                'description' => 'The ROG Ally is a powerful handheld gaming device...',
+                'images' => [
+                    ['image' => 'products/rog-ally-1.jpg', 'is_primary' => true],
+                    ['image' => 'products/rog-ally-2.jpg', 'is_primary' => false],
+                    ['image' => 'products/rog-ally-3.jpg', 'is_primary' => false],
                 ]
             ],
         ];

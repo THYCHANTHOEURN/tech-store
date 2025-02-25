@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Home" />
     <WebLayout>
         <v-container class="px-0" fluid>
@@ -45,7 +46,7 @@
                         <v-col v-for="category in featuredCategories" :key="category.id" cols="6" sm="4" md="2">
                             <v-hover v-slot="{ isHovering, props }">
                                 <v-card v-bind="props" :elevation="isHovering ? 4 : 1"
-                                    :to="route('categories.show', category.slug)">
+                                    :href="route('categories.show', category.slug)">
                                     <v-img :src="category.image_url" height="150" cover>
                                         <div class="category-overlay">
                                             <span class="text-subtitle-1 font-weight-bold">{{ category.name }}</span>
@@ -68,7 +69,8 @@
 
             <!-- New Arrivals -->
             <ProductList title="New Arrivals" :products="newArrivals"
-                :view-all-link="{ name: 'categories.index', params: { sort: 'newest' } }" background="bg-grey-lighten-4" />
+                :view-all-link="{ name: 'categories.index', params: { sort: 'newest' } }"
+                background="bg-grey-lighten-4" />
 
             <!-- Best Sellers -->
             <ProductList title="Best Sellers" :products="bestSellers"
