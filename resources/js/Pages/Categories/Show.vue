@@ -11,7 +11,7 @@
             <template v-if="childCategories.length > 0">
                 <v-row class="mb-8">
                     <v-col v-for="child in childCategories" :key="child.id" cols="12" sm="6" md="3">
-                        <v-card :to="{ name: 'categories.show', params: { slug: child.slug } }" :title="child.name"
+                        <v-card :href="route('categories.show', { slug: child.slug })" :title="child.name"
                             :text="child.description" class="h-100">
                             <v-img v-if="child.image_url" :src="child.image_url" height="200" cover />
                         </v-card>
