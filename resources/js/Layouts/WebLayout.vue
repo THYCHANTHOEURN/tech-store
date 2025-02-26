@@ -40,9 +40,9 @@
                 <v-app-bar-nav-icon class="d-flex d-sm-none" @click="drawer = !drawer"></v-app-bar-nav-icon>
 
                 <!-- Logo -->
-                <inertia-link :href="route('index')" class="mr-4">
-                    <v-img src="/logo.png" width="180" height="60" contain></v-img>
-                </inertia-link>
+                <Link :href="route('index')" class="mr-4">
+                <v-img src="/logo.png" width="180" height="60" contain></v-img>
+                </Link>
 
                 <!-- Search Bar -->
                 <v-text-field v-model="search" density="compact" placeholder="Search products..."
@@ -83,9 +83,12 @@
                     </template>
                     <v-list width="250">
                         <template v-for="(category, index) in categories" :key="index">
-                            <v-list-item v-if="!category.children?.length"
-                                :href="route('categories.show', category.slug)" :title="category.name" link>
+                            <Link v-if="!category.children?.length" :href="route('categories.show', category.slug)"
+                                :title="category.name">
+                            <v-list-item link>
+                                {{ category.name }}
                             </v-list-item>
+                            </Link>
 
                             <v-list-group v-else>
                                 <template v-slot:activator="{ props }">
@@ -95,10 +98,12 @@
                                         </template>
                                     </v-list-item>
                                 </template>
-                                <v-list-item v-for="child in category.children" :key="child.id"
-                                    :href="route('categories.show', child.slug)" :title="child.name" link
-                                    density="compact">
+                                <Link v-for="child in category.children" :key="child.id"
+                                    :href="route('categories.show', child.slug)" :title="child.name">
+                                <v-list-item link density="compact">
+                                    {{ child.name }}
                                 </v-list-item>
+                                </Link>
                             </v-list-group>
                         </template>
                     </v-list>
@@ -106,12 +111,16 @@
 
                 <!-- Main Navigation Links -->
                 <div class="d-none d-sm-flex">
-                    <v-btn variant="text" class="text-none" :href="route('index')">
+                    <v-btn variant="text" class="text-none">
+                        <Link :href="route('index')">
                         Home
+                        </Link>
                     </v-btn>
                     <template v-for="(category, index) in categories.slice(0, 6)" :key="index">
-                        <v-btn variant="text" class="text-none" :href="route('categories.show', category.slug)">
+                        <v-btn variant="text" class="text-none">
+                            <Link :href="route('categories.show', category.slug)">
                             {{ category.name }}
+                            </Link>
                         </v-btn>
                     </template>
                 </div>
@@ -149,14 +158,19 @@
                             </v-list-item>
                         </template>
 
-                        <v-list-item v-for="child in category.children" :key="child.id"
-                            :href="route('categories.show', child.slug)" :title="child.name" link density="compact">
-                        </v-list-item>
+                        <Link v-for="child in category.children" :key="child.id"
+                            :href="route('categories.show', child.slug)" :title="child.name">
+                            <v-list-item link density="compact">
+                                {{ child.name }}
+                            </v-list-item>
+                        </Link>
                     </v-list-group>
 
-                    <v-list-item v-else :href="route('categories.show', category.slug)"
-                        :prepend-icon="category.icon || 'mdi-shape-outline'" :title="category.name" link>
-                    </v-list-item>
+                    <Link v-else :href="route('categories.show', category.slug)" :title="category.name">
+                        <v-list-item link :prepend-icon="category.icon || 'mdi-shape-outline'">
+                            {{ category.name }}
+                        </v-list-item>
+                    </Link>
                 </template>
             </v-list>
         </v-navigation-drawer>

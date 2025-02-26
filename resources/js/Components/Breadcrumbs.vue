@@ -14,3 +14,13 @@
         }
     });
 </script>
+
+<style scoped>
+    :deep(.v-breadcrumbs-item--link) {
+        text-decoration: none !important;
+    }
+
+    :deep(.v-breadcrumbs-item--link:hover) {
+        color: rgb(var(--v-theme-primary)) !important;
+    }
+</style>

@@ -9,7 +9,7 @@
                                 <div class="banner-content">
                                     <h3 class="text-h6 white--text font-weight-bold">{{ banner.title }}</h3>
                                     <!-- <p class="text-subtitle-1 white--text mt-2">{{ banner.subtitle }}</p> -->
-                                    <v-btn color="white" class="mt-4" :to="banner.link">Shop Now</v-btn>
+                                    <v-btn color="white" class="mt-4" :href="banner.link">Shop Now</v-btn>
                                 </div>
                             </v-img>
                         </v-card>

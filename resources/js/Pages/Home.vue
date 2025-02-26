@@ -16,8 +16,11 @@
                                     <div class="slider-content pa-8">
                                         <h2 class="text-h4 font-weight-bold">{{ slide.title }}</h2>
                                         <p class="mt-4 text-body-1">{{ slide.description }}</p>
-                                        <v-btn :to="slide.link" color="primary" size="large" class="mt-6">Shop
-                                            Now</v-btn>
+                                        <Link :href="slide.link">
+                                        <v-btn color="primary" size="large" class="mt-6">
+                                            Shop Now
+                                        </v-btn>
+                                        </Link>
                                     </div>
                                 </v-carousel-item>
                             </v-carousel>
@@ -45,8 +48,8 @@
                     <v-row>
                         <v-col v-for="category in featuredCategories" :key="category.id" cols="6" sm="4" md="2">
                             <v-hover v-slot="{ isHovering, props }">
-                                <v-card v-bind="props" :elevation="isHovering ? 4 : 1"
-                                    :href="route('categories.show', category.slug)">
+                                <Link :href="route('categories.show', category.slug)">
+                                <v-card v-bind="props" :elevation="isHovering ? 4 : 1">
                                     <v-img :src="category.image_url" height="150" cover>
                                         <div class="category-overlay">
                                             <span class="text-subtitle-1 font-weight-bold">{{ category.name }}</span>
@@ -54,6 +57,7 @@
                                         </div>
                                     </v-img>
                                 </v-card>
+                                </Link>
                             </v-hover>
                         </v-col>
                     </v-row>
