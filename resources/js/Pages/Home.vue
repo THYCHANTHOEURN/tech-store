@@ -41,6 +41,9 @@
                 </v-row>
             </v-container>
 
+            <!-- Information Section -->
+            <InformationSection />
+
             <!-- Categories Section -->
             <section class="py-12 bg-grey-lighten-4">
                 <v-container>
@@ -88,6 +91,7 @@
     import WebLayout from '@/Layouts/WebLayout.vue'
     import BannerSection from '@/Components/BannerSection.vue'
     import ProductList from '@/Components/ProductList.vue'
+    import InformationSection from '@/Components/InformationSection.vue'
     import { defineProps } from 'vue'
 
     defineProps({

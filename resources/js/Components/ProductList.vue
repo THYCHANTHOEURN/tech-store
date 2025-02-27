@@ -6,7 +6,7 @@
                 <Link v-if="viewAllLink"
                     class="v-btn v-btn--variant-text v-btn--density-default v-btn--size-default v-theme--light text-primary"
                     :href="typeof viewAllLink === 'string' ? viewAllLink : route(viewAllLink.name, viewAllLink.params || {})">
-                    View All
+                View All
                 </Link>
             </div>
             <v-row>
