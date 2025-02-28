@@ -24,6 +24,13 @@
 
                 <!-- Product Details -->
                 <v-col cols="12" md="6">
+                    <!-- Stock Status -->
+                    <div class="mb-4">
+                        <v-chip :color="product.stock > 0 ? 'success' : 'error'">
+                            {{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                        </v-chip>
+                    </div>
+
                     <h1 class="text-h4 mb-2">{{ product.name }}</h1>
 
                     <!-- Category -->
@@ -49,13 +56,6 @@
                         </v-chip>
                     </div>
 
-                    <!-- Stock Status -->
-                    <div class="mb-4">
-                        <v-chip :color="product.stock > 0 ? 'success' : 'error'">
-                            {{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }}
-                        </v-chip>
-                    </div>
-
                     <!-- Add to Cart -->
                     <div class="mb-6">
                         <v-row>
@@ -64,7 +64,8 @@
                                     density="compact" hide-details></v-text-field>
                             </v-col>
                             <v-col cols="8">
-                                <v-btn color="primary" block :disabled="product.stock === 0" @click="addToCart">
+                                <v-btn color="primary" block :disabled="product.stock === 0" @click="addToCart"
+                                    prepend-icon="mdi-cart-plus">
                                     Add to Cart
                                 </v-btn>
                             </v-col>
