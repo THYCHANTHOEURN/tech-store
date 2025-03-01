@@ -41,7 +41,7 @@
 
                 <!-- Logo -->
                 <Link :href="route('index')" class="mr-4">
-                <v-img src="/logo.png" width="180" height="60" contain></v-img>
+                <v-img src="/images/logo.png" width="180" height="60" contain></v-img>
                 </Link>
 
                 <!-- Search Bar -->
@@ -130,7 +130,7 @@
         <!-- Navigation Drawer -->
         <v-navigation-drawer v-model="drawer" temporary>
             <v-list>
-                <v-list-item prepend-avatar="/logo.png" :title="'Tech Store'"></v-list-item>
+                <v-list-item prepend-avatar="/images/logo.png" :title="'Tech Store'"></v-list-item>
             </v-list>
 
             <v-divider></v-divider>
@@ -160,16 +160,16 @@
 
                         <Link v-for="child in category.children" :key="child.id"
                             :href="route('categories.show', child.slug)" :title="child.name">
-                            <v-list-item link density="compact">
-                                {{ child.name }}
-                            </v-list-item>
+                        <v-list-item link density="compact">
+                            {{ child.name }}
+                        </v-list-item>
                         </Link>
                     </v-list-group>
 
                     <Link v-else :href="route('categories.show', category.slug)" :title="category.name">
-                        <v-list-item link :prepend-icon="category.icon || 'mdi-shape-outline'">
-                            {{ category.name }}
-                        </v-list-item>
+                    <v-list-item link :prepend-icon="category.icon || 'mdi-shape-outline'">
+                        {{ category.name }}
+                    </v-list-item>
                     </Link>
                 </template>
             </v-list>
