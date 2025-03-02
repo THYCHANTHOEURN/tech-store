@@ -7,7 +7,7 @@
                         <v-row style="min-height: 40vh;" align="center" justify="center">
                             <div class="text-center">
                                 <Link :href="route('index')">
-                                    <ApplicationLogo width="180" height="60" />
+                                <ApplicationLogo width="180" height="60" />
                                 </Link>
                             </div>
                         </v-row>
