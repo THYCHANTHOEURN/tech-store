@@ -1,9 +1,13 @@
 <script setup>
     import { ref } from 'vue';
     import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-    import { Link } from '@inertiajs/vue3';
+    import { Link, router } from '@inertiajs/vue3';
 
     const drawer = ref(false);
+
+    const logout = () => {
+        router.post(route('logout'));
+    };
 </script>
 
 <template>
@@ -38,7 +42,7 @@
                         <v-list-item :href="route('profile.edit')" link>
                             <v-list-item-title>Profile</v-list-item-title>
                         </v-list-item>
-                        <v-list-item :href="route('logout')" method="post" as="button" link>
+                        <v-list-item @click="logout" link>
                             <v-list-item-title>Log Out</v-list-item-title>
                         </v-list-item>
                     </v-list>
@@ -75,7 +79,7 @@
                     Profile
                 </v-list-item>
 
-                <v-list-item :href="route('logout')" method="post" as="button" link>
+                <v-list-item @click="logout" link>
                     <template v-slot:prepend>
                         <v-icon>mdi-logout</v-icon>
                     </template>

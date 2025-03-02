@@ -1,61 +1,65 @@
 <script setup>
-import { computed } from 'vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+    import { computed } from 'vue';
+    import GuestLayout from '@/Layouts/GuestLayout.vue';
+    import { Head, Link, useForm, router } from '@inertiajs/vue3';
 
-const props = defineProps({
-    status: {
-        type: String,
-    },
-});
+    const props = defineProps({
+        status: {
+            type: String,
+        },
+    });
 
-const form = useForm({});
+    const form = useForm({});
 
-const submit = () => {
-    form.post(route('verification.send'));
-};
+    const submit = () => {
+        form.post(route('verification.send'));
+    };
 
-const verificationLinkSent = computed(
-    () => props.status === 'verification-link-sent',
-);
+    const verificationLinkSent = computed(
+        () => props.status === 'verification-link-sent',
+    );
+
+    const logout = () => {
+        router.post(route('logout'));
+    };
 </script>
 
 <template>
     <GuestLayout>
+
         <Head title="Email Verification" />
 
-        <div class="mb-4 text-sm text-gray-600">
-            Thanks for signing up! Before getting started, could you verify your
-            email address by clicking on the link we just emailed to you? If you
-            didn't receive the email, we will gladly send you another.
-        </div>
+        <v-card flat>
+            <v-card-text>
+                <v-alert type="info" variant="tonal" class="mb-4">
+                    Thanks for signing up! Before getting started, could you verify your
+                    email address by clicking on the link we just emailed to you? If you
+                    didn't receive the email, we will gladly send you another.
+                </v-alert>
 
-        <div
-            class="mb-4 text-sm font-medium text-green-600"
-            v-if="verificationLinkSent"
-        >
-            A new verification link has been sent to the email address you
-            provided during registration.
-        </div>
+                <v-alert v-if="verificationLinkSent" type="success" variant="tonal" class="mb-4">
+                    A new verification link has been sent to the email address you
+                    provided during registration.
+                </v-alert>
 
-        <form @submit.prevent="submit">
-            <div class="mt-4 flex items-center justify-between">
-                <PrimaryButton
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Resend Verification Email
-                </PrimaryButton>
+                <form @submit.prevent="submit">
+                    <v-row align="center" class="mt-4">
+                        <v-col class="d-flex justify-space-between align-center">
+                            <v-btn color="primary" type="submit" :loading="form.processing" :disabled="form.processing">
+                                Resend Verification Email
+                            </v-btn>
 
-                <Link
-                    :href="route('logout')"
-                    method="post"
-                    as="button"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >Log Out</Link
-                >
-            </div>
-        </form>
+                            <v-btn variant="text" @click="logout" color="grey-darken-1">
+                                Resend Verification Email
+                            </v-btn>
+
+                            <v-btn variant="text" @click="logout" color="grey-darken-1">
+                                Log Out
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </form>
+            </v-card-text>
+        </v-card>
     </GuestLayout>
 </template>
