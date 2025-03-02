@@ -1,22 +1,35 @@
+<template>
+    <v-app>
+        <v-main>
+            <v-container fluid>
+                <v-row style="min-height: 100vh;" align="center" justify="center">
+                    <v-col cols="12" sm="8" md="6" lg="4">
+                        <v-row style="min-height: 40vh;" align="center" justify="center">
+                            <div class="text-center">
+                                <Link :href="route('index')">
+                                    <ApplicationLogo width="180" height="60" />
+                                </Link>
+                            </div>
+                        </v-row>
+                        <v-card class="elevation-2 rounded-lg">
+                            <v-card-text class="pa-6">
+                                <slot />
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-main>
+    </v-app>
+</template>
+
 <script setup>
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import { Link } from '@inertiajs/vue3';
+    import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+    import { Link } from '@inertiajs/vue3';
 </script>
 
-<template>
-    <div
-        class="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0"
-    >
-        <div>
-            <Link href="/">
-                <ApplicationLogo class="h-20 w-20 fill-current text-gray-500" />
-            </Link>
-        </div>
-
-        <div
-            class="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg"
-        >
-            <slot />
-        </div>
-    </div>
-</template>
+<style scoped>
+    .v-container {
+        background-color: rgb(243, 244, 246);
+    }
+</style>

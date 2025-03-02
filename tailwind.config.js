@@ -18,5 +18,9 @@ export default {
         },
     },
 
+    corePlugins: {
+        preflight: false, // Disable Tailwind's global reset to prevent conflicts
+    },
+
     plugins: [forms],
 };
