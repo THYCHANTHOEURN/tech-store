@@ -43,11 +43,22 @@
                             <!-- Quantity and Add to Cart -->
                             <div class="d-flex flex-column gap-4">
                                 <div class="d-flex align-center gap-4">
+
                                     <v-text-field v-model="quantity" type="number" label="Quantity" min="1"
                                         :max="product.stock" hide-details density="compact" style="max-width: 100px" />
-                                    <v-btn color="primary" :disabled="product.stock === 0" @click="handleAddToCart" prepend-icon="mdi-cart-plus">
+                                    <v-btn color="primary" :disabled="product.stock === 0" @click="handleAddToCart"
+                                        prepend-icon="mdi-cart-plus">
                                         Add to Cart
                                     </v-btn>
+                                    
+                                    <v-btn :color="isInWishlist ? 'error' : 'primary'" variant="outlined"
+                                        @click="toggleWishlist">
+                                        <v-tooltip activator="parent">
+                                            <span>{{ isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}</span>
+                                        </v-tooltip>
+                                        <v-icon>{{ isInWishlist ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+                                    </v-btn>
+                                    
                                 </div>
 
                                 <Link :href="route('products.show', { slug: product.slug })"
@@ -103,6 +114,28 @@
     })
 
     const quantity = ref(1)
+
+    // Check if product is in user's wishlist
+    const isInWishlist = computed(() => {
+        if (!usePage().props.auth.user) return false;
+
+        const items = usePage().props.auth.wishlistItems || [];
+        return items.some(item => item.product_id === props.product.id);
+    });
+
+    // Add toggle wishlist function
+    const toggleWishlist = () => {
+        if (!usePage().props.auth.user) {
+            router.visit(route('login'));
+            return;
+        }
+
+        router.post(route('wishlist.toggle'), {
+            product_id: props.product.id
+        }, {
+            preserveScroll: true,
+        });
+    };
 
     const handleAddToCart = () => {
         if (!usePage().props.auth.user) {

@@ -28,7 +28,7 @@ class WishlistController extends Controller
     }
 
     /**
-     * Add a product to the wishlist
+     * Add a product to the wishlist or restore it if trashed
      *
      * @param  \Illuminate\Http\Request  $request
      *
@@ -43,11 +43,16 @@ class WishlistController extends Controller
 
             $product = Product::findOrFail($validated['product_id']);
 
-            $existingItem = WishlistItem::where('user_id', auth()->id())
+            $existingItem = WishlistItem::withTrashed()
+                ->where('user_id', auth()->id())
                 ->where('product_id', $validated['product_id'])
                 ->first();
 
-            if (!$existingItem) {
+            // If the product is already in the wishlist, restore it
+            // If the product is not in the wishlist, add it
+            if ($existingItem && $existingItem->trashed()) {
+                $existingItem->restore();
+            } elseif (!$existingItem) {
                 WishlistItem::create([
                     'user_id'    => auth()->id(),
                     'product_id' => $validated['product_id'],
@@ -68,18 +73,13 @@ class WishlistController extends Controller
     /**
      * Remove a product from the wishlist
      *
-     * @param  \Illuminate\Http\Request  $request
-     *
+     * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
         try {
-            $validated = $request->validate([
-                'wishlist_item_id' => ['required', 'exists:wishlist_items,id'],
-            ]);
-
-            $wishlistItem = WishlistItem::where('id', $validated['wishlist_item_id'])
+            $wishlistItem = WishlistItem::where('id', $id)
                 ->where('user_id', auth()->id())
                 ->firstOrFail();
 
@@ -87,7 +87,7 @@ class WishlistController extends Controller
 
             $wishlistCount = auth()->user()->wishlistItems()->count();
 
-            return back()->with([
+            return redirect()->route('wishlist.index')->with([
                 'success'       => 'Product removed from wishlist successfully.',
                 'wishlistCount' => $wishlistCount
             ]);
@@ -97,7 +97,7 @@ class WishlistController extends Controller
     }
 
     /**
-     * Toggle a product in the wishlist (add if not exists, remove if exists)
+     * Toggle a product in the wishlist (add if not exists, remove if exists, restore if trashed)
      *
      * @param  \Illuminate\Http\Request  $request
      *
@@ -110,16 +110,26 @@ class WishlistController extends Controller
                 'product_id' => ['required', 'exists:products,id'],
             ]);
 
-            $existingItem = WishlistItem::where('user_id', auth()->id())
+            // Check for existing item including trashed ones
+            $existingItem = WishlistItem::withTrashed()
+                ->where('user_id', auth()->id())
                 ->where('product_id', $validated['product_id'])
                 ->first();
 
             $message = '';
 
             if ($existingItem) {
-                $existingItem->delete();
-                $message = 'Product removed from wishlist successfully.';
+                if ($existingItem->trashed()) {
+                    // If item exists but is trashed, restore it
+                    $existingItem->restore();
+                    $message = 'Product added back to wishlist successfully.';
+                } else {
+                    // If item exists and is not trashed, delete it
+                    $existingItem->delete();
+                    $message = 'Product removed from wishlist successfully.';
+                }
             } else {
+                // If item doesn't exist at all, create it
                 WishlistItem::create([
                     'user_id'    => auth()->id(),
                     'product_id' => $validated['product_id'],

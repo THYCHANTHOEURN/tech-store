@@ -116,10 +116,11 @@
     };
 
     const removeFromWishlist = (wishlistItemId) => {
-        router.delete(route('wishlist.destroy'), {
-            wishlist_item_id: wishlistItemId
-        }, {
-            preserveScroll: true
+        router.delete(route('wishlist.destroy', wishlistItemId), {
+            preserveScroll: true,
+            onSuccess: () => {
+                // This will keep the response fresh with updated data
+            }
         });
     };
 </script>
