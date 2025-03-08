@@ -56,17 +56,21 @@
                         </v-chip>
                     </div>
 
-                    <!-- Add to Cart -->
+                    <!-- Add to Cart and Wishlist -->
                     <div class="mb-6">
                         <v-row>
                             <v-col cols="4">
                                 <v-text-field v-model="quantity" type="number" min="1" :max="product.stock"
                                     density="compact" hide-details></v-text-field>
                             </v-col>
-                            <v-col cols="8">
-                                <v-btn color="primary" block :disabled="product.stock === 0" @click="addToCart"
+                            <v-col cols="8" class="d-flex gap-2">
+                                <v-btn color="primary" :disabled="product.stock === 0" @click="addToCart"
                                     prepend-icon="mdi-cart-plus">
                                     Add to Cart
+                                </v-btn>
+                                <v-btn :color="isInWishlist ? 'error' : 'primary'" variant="outlined"
+                                    @click="toggleWishlist" prepend-icon="mdi-heart">
+                                    {{ isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}
                                 </v-btn>
                             </v-col>
                         </v-row>
@@ -187,7 +191,7 @@
     import ProductCard from '@/Components/ProductCard.vue'
     import WebLayout from '@/Layouts/WebLayout.vue'
     import { ref, computed } from 'vue'
-    import { router } from '@inertiajs/vue3'
+    import { router, usePage } from '@inertiajs/vue3'
 
     const props = defineProps({
         product: {
@@ -219,6 +223,28 @@
             },
         });
     }
+
+    // Check if product is in user's wishlist
+    const isInWishlist = computed(() => {
+        if (!usePage().props.auth.user) return false;
+        
+        const items = usePage().props.auth.wishlistItems || [];
+        return items.some(item => item.product_id === props.product.id);
+    });
+    
+    // Add toggle wishlist function
+    const toggleWishlist = () => {
+        if (!usePage().props.auth.user) {
+            router.visit(route('login'));
+            return;
+        }
+        
+        router.post(route('wishlist.toggle'), {
+            product_id: props.product.id
+        }, {
+            preserveScroll: true,
+        });
+    };
 
     const productCategories = computed(() => {
         const categories = []

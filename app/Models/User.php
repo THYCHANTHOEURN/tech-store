@@ -54,7 +54,7 @@ class User extends Authenticatable
         ];
     }
 
-        /**
+    /**
      * Get the orders for the user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -82,5 +82,15 @@ class User extends Authenticatable
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Get the wishlist items for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function wishlistItems(): HasMany
+    {
+        return $this->hasMany(WishlistItem::class, 'user_id');
     }
 }

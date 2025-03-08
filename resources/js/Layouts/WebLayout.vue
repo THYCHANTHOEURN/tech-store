@@ -60,10 +60,11 @@
 
                 <!-- Cart & Account -->
                 <div class="d-flex align-center">
-                    <v-btn prepend-icon="mdi-heart-outline" variant="text" class="mr-2">
+                    <!-- Wishlist Button with Badge -->
+                    <v-btn prepend-icon="mdi-heart-outline" variant="text" class="mr-2" :href="route('wishlist.index')">
                         <span class="d-none d-sm-block">Wishlist</span>
                         <template v-slot:append>
-                            <v-badge color="error" content="0" floating></v-badge>
+                            <v-badge color="error" :content="wishlistCount" :model-value="wishlistCount > 0" floating></v-badge>
                         </template>
                     </v-btn>
 
@@ -175,6 +176,15 @@
                         <v-icon :icon="item.icon"></v-icon>
                     </template>
                     <v-list-item-title>{{ item.text }}</v-list-item-title>
+                </v-list-item>
+                <v-list-item :href="route('wishlist.index')" link>
+                    <template v-slot:prepend>
+                        <v-icon>mdi-heart-outline</v-icon>
+                    </template>
+                    <v-list-item-title>
+                        Wishlist
+                        <v-badge v-if="wishlistCount > 0" color="error" :content="wishlistCount" inline></v-badge>
+                    </v-list-item-title>
                 </v-list-item>
             </v-list>
 
@@ -307,6 +317,10 @@
 
     const cartCount = computed(() => {
         return usePage().props.cartCount || 0;
+    });
+
+    const wishlistCount = computed(() => {
+        return usePage().props.wishlistCount || 0;
     });
 
     const showMessage = ref(false);
