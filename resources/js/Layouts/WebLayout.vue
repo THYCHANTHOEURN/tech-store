@@ -232,7 +232,7 @@
 
 <script setup>
     import { ref, onMounted } from 'vue'
-    import { router } from '@inertiajs/vue3'
+    import { router } from '@inertiajs/vue3'  // Import useRouter
 
     const drawer = ref(false)
     const tab = ref('menu')
@@ -265,7 +265,11 @@
 
     const searchCallback = () => {
         if (!search.value) return
-        // Add your search logic here
+        router.visit(route('search', {
+            searchTerm: search.value
+        }), {
+            preserveScroll: true
+        })
     }
 </script>
 

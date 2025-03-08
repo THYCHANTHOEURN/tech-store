@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\DataController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\ProductController;
+use App\Http\Controllers\Web\SearchController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,6 +36,8 @@ Route::get('/categories', [CategoryController::class, 'index'])->name('categorie
 Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('categories.show');
 
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
+
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 Route::group(['prefix' => 'data', 'as' => 'data.'], function () {
     Route::get('categories', [DataController::class, 'categories'])->name('categories');
