@@ -47,7 +47,7 @@ class CategoryController extends Controller
             ['title' => $title, 'href' => null],
         ];
 
-        return Inertia::render('Categories/Index', [
+        return Inertia::render('Web/Categories/Index', [
             'products'      => $products,
             'title'         => $title,
             'breadcrumbs'   => $breadcrumbs,
@@ -76,7 +76,7 @@ class CategoryController extends Controller
             ['title' => 'Categories', 'href' => '/categories'],
         ];
 
-        return Inertia::render('Categories/Index', [
+        return Inertia::render('Web/Categories/Index', [
             'mainCategories'    => $mainCategories,
             'breadcrumbs'       => $breadcrumbs,
             'filters'           => [],
@@ -129,7 +129,7 @@ class CategoryController extends Controller
                                    }])
                                    ->get();
 
-        return Inertia::render('Categories/Show', [
+        return Inertia::render('Web/Categories/Show', [
             'category'          => $category,
             'products'          => $products,
             'childCategories'   => $childCategories,

@@ -37,7 +37,7 @@ class ProductController extends Controller
             ['title' => $product->name, 'href' => null],
         ];
 
-        return Inertia::render('Products/Show', [
+        return Inertia::render('Web/Products/Show', [
             'product'           => $product,
             'relatedProducts'   => $relatedProducts,
             'breadcrumbs'       => $breadcrumbs,

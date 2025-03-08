@@ -32,7 +32,7 @@ class SearchController extends Controller
             ->where('status', true)
             ->paginate(12);
 
-        return Inertia::render('Search/Index', [
+        return Inertia::render('Web/Search/Index', [
             'products'      => $products,
             'searchTerm'    => $searchTerm
         ]);

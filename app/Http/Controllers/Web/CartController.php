@@ -21,7 +21,7 @@ class CartController extends Controller
             ->with(['product.primaryImage', 'product.category'])
             ->get();
 
-        return Inertia::render('Cart/Index', [
+        return Inertia::render('Web/Cart/Index', [
             'cartItems' => $cartItems,
             'cartCount' => $cartItems->sum('quantity')
         ]);

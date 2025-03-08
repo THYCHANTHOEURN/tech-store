@@ -57,7 +57,7 @@ class HomeController extends Controller
             ->orderBy('position')
             ->get();
 
-        return Inertia::render('Home', [
+        return Inertia::render('Web/Home', [
             'featuredProducts'      => $featuredProducts,
             'featuredCategories'    => $featuredCategories,
             'newArrivals'           => $newArrivals,
