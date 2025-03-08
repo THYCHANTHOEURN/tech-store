@@ -46,6 +46,7 @@
     import { Link } from '@inertiajs/vue3'
     import { ref } from 'vue'
     import ProductQuickView from './ProductQuickView.vue'
+    import { router, usePage } from '@inertiajs/vue3'
 
     const props = defineProps({
         product: {
@@ -57,8 +58,29 @@
     const quickViewDialog = ref(false)
 
     const addToCart = () => {
-        // Implement cart functionality
-        console.log('Adding to cart:', props.product.id);
+        if (!usePage().props.auth.user) {
+            router.visit(route('login'), {
+                only: ['auth']
+            });
+            return;
+        }
+        
+        router.post(route('cart.store'), {
+            product_id: props.product.id,
+            quantity: 1
+        }, {
+            preserveScroll: true,
+            onError: (errors) => {
+                // Handle errors here
+                console.error(errors);
+            },
+            onSuccess: (page) => {
+                // Show success message
+                if (page.props.flash.success) {
+                    // Optionally show success message
+                }
+            }
+        });
     };
 
     const showQuickView = () => {

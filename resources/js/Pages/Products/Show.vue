@@ -187,6 +187,7 @@
     import ProductCard from '@/Components/ProductCard.vue'
     import WebLayout from '@/Layouts/WebLayout.vue'
     import { ref, computed } from 'vue'
+    import { router } from '@inertiajs/vue3'
 
     const props = defineProps({
         product: {
@@ -208,11 +209,15 @@
     const copySuccess = ref(false)
 
     const addToCart = () => {
-        console.log('Adding to cart:', {
-            product: props.product.id,
-            quantity: quantity.value,
-        })
-        // Implement cart functionality
+        router.post(route('cart.store'), {
+            product_id: props.product.id,
+            quantity: quantity.value
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                // Optional: Show success message
+            },
+        });
     }
 
     const productCategories = computed(() => {

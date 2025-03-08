@@ -1,5 +1,13 @@
 <template>
     <v-app>
+        <v-snackbar
+            v-model="showMessage"
+            :color="messageType"
+            :timeout="3000"
+            location="top"
+        >
+            {{ message }}
+        </v-snackbar>
         <!-- Top Bar with Contact Info -->
         <v-app-bar class="bg-primary" density="compact">
             <v-container class="d-flex align-center justify-space-between">
@@ -58,15 +66,40 @@
                             <v-badge color="error" content="0" floating></v-badge>
                         </template>
                     </v-btn>
-                    <v-btn prepend-icon="mdi-cart-outline" variant="text" class="mr-2">
+
+                    <v-btn prepend-icon="mdi-cart-outline" variant="text" class="mr-2" :href="route('cart.index')">
                         <span class="d-none d-sm-block">Cart</span>
                         <template v-slot:append>
-                            <v-badge color="error" content="0" floating></v-badge>
+                            <v-badge color="error" :content="cartCount" :model-value="cartCount > 0" floating></v-badge>
                         </template>
                     </v-btn>
-                    <v-btn prepend-icon="mdi-account-circle-outline" variant="text">
-                        <span class="d-none d-sm-block">Account</span>
-                    </v-btn>
+
+                    <!-- User Account Menu -->
+                    <template v-if="$page.props.auth.user">
+                        <v-menu location="bottom end">
+                            <template v-slot:activator="{ props }">
+                                <v-btn variant="text" v-bind="props" prepend-icon="mdi-account-circle">
+                                    <span class="d-none d-sm-block">{{ $page.props.auth.user.name }}</span>
+                                </v-btn>
+                            </template>
+                            <v-list>
+                                <v-list-item :href="route('profile.edit')" link>
+                                    <v-list-item-title>Profile</v-list-item-title>
+                                </v-list-item>
+                                <v-list-item @click="logout" link>
+                                    <v-list-item-title>Logout</v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                    </template>
+                    <template v-else>
+                        <v-btn variant="text" :href="route('login')" class="mr-2">
+                            <span>Login</span>
+                        </v-btn>
+                        <v-btn color="primary" :href="route('register')">
+                            <span>Register</span>
+                        </v-btn>
+                    </template>
                 </div>
             </v-container>
         </v-app-bar>
@@ -231,8 +264,8 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from 'vue'
-    import { router } from '@inertiajs/vue3'
+    import { ref, onMounted, computed, watch } from 'vue'
+    import { router, usePage } from '@inertiajs/vue3'
 
     const drawer = ref(false)
     const tab = ref('menu')
@@ -271,6 +304,33 @@
             preserveScroll: true
         })
     }
+
+    const cartCount = computed(() => {
+        return usePage().props.cartCount || 0;
+    });
+
+    const showMessage = ref(false);
+    const message = ref('');
+    const messageType = ref('');
+
+    // Watch for flash messages
+    watch(() => usePage().props.flash, (flash) => {
+        if (flash.success) {
+            message.value = flash.success;
+            messageType.value = 'success';
+            showMessage.value = true;
+        }
+        if (flash.error) {
+            message.value = flash.error;
+            messageType.value = 'error';
+            showMessage.value = true;
+        }
+    }, { deep: true });
+
+    // Add logout function
+    const logout = () => {
+        router.post(route('logout'));
+    };
 </script>
 
 <style scoped>

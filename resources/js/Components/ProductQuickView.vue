@@ -85,6 +85,7 @@
 <script setup>
     import { Link } from '@inertiajs/vue3'
     import { computed, ref } from 'vue'
+    import { router, usePage } from '@inertiajs/vue3'
 
     const props = defineProps({
         modelValue: Boolean,
@@ -104,11 +105,20 @@
     const quantity = ref(1)
 
     const handleAddToCart = () => {
-        emit('add-to-cart', {
-            productId: props.product.id,
+        if (!usePage().props.auth.user) {
+            router.visit(route('login'));
+            return;
+        }
+
+        router.post(route('cart.store'), {
+            product_id: props.product.id,
             quantity: quantity.value
-        })
-        dialog.value = false
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                dialog.value = false;
+            },
+        });
     }
 </script>
 

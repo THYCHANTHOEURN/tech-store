@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Enums\RolesEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,17 +16,32 @@ class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
+     * 
+     * @param \Illuminate\Http\Request  $request
+     * @return \Inertia\Response
      */
     public function edit(Request $request): Response
     {
+        // Check if user is customer and render web profile view
+        if ($request->user()->hasRole(RolesEnum::CUSTOMER->value)) {
+            return Inertia::render('Profile/CustomerEdit', [
+                'mustVerifyEmail'   => $request->user() instanceof MustVerifyEmail,
+                'status'            => session('status'),
+            ]);
+        }
+
+        // For admin users, show dashboard profile view
         return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => session('status'),
+            'mustVerifyEmail'   => $request->user() instanceof MustVerifyEmail,
+            'status'            => session('status'),
         ]);
     }
 
     /**
      * Update the user's profile information.
+     * 
+     * @param \App\Http\Requests\ProfileUpdateRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {

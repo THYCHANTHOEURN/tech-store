@@ -9,6 +9,13 @@ use Inertia\Inertia;
 
 class SearchController extends Controller
 {
+    /**
+     * Display list of products based on search term
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Inertia\Response
+     */
     public function index(Request $request)
     {
         $searchTerm = $request->query('searchTerm');

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Enums\RolesEnum;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -19,8 +20,8 @@ class AuthenticatedSessionController extends Controller
     public function create(): Response
     {
         return Inertia::render('Auth/Login', [
-            'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
+            'canResetPassword'  => Route::has('password.request'),
+            'status'            => session('status'),
         ]);
     }
 
@@ -33,6 +34,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Always redirect customers to home page
+        if ($request->user()->hasRole(RolesEnum::CUSTOMER->value)) {
+            return redirect()->intended(route('index'));
+        }
+
+        // For admins, redirect to dashboard
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
