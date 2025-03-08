@@ -47,7 +47,7 @@
                 <!-- Search Bar -->
                 <v-text-field v-model="search" density="compact" placeholder="Search products..."
                     append-inner-icon="mdi-magnify" single-line hide-details variant="outlined"
-                    class="search-field mx-4" @update:modelValue="searchCallback">
+                    class="search-field mx-4" @keyup.enter="searchCallback" @click:append-inner="searchCallback">
                 </v-text-field>
 
                 <!-- Cart & Account -->
@@ -232,7 +232,7 @@
 
 <script setup>
     import { ref, onMounted } from 'vue'
-    import { router } from '@inertiajs/vue3'  // Import useRouter
+    import { router } from '@inertiajs/vue3'
 
     const drawer = ref(false)
     const tab = ref('menu')
@@ -264,9 +264,9 @@
     })
 
     const searchCallback = () => {
-        if (!search.value) return
+        if (!search.value.trim()) return  // Check for empty or whitespace-only search
         router.visit(route('search', {
-            searchTerm: search.value
+            searchTerm: search.value.trim()
         }), {
             preserveScroll: true
         })
