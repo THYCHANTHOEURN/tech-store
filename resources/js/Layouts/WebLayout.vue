@@ -1,113 +1,152 @@
 <template>
     <v-app>
-        <v-snackbar
-            v-model="showMessage"
-            :color="messageType"
-            :timeout="3000"
-            location="top"
-        >
+        <v-snackbar v-model="showMessage" :color="messageType" :timeout="3000" location="top">
             {{ message }}
         </v-snackbar>
+
         <!-- Top Bar with Contact Info -->
-        <v-app-bar class="bg-primary" density="compact">
-            <v-container class="d-flex align-center justify-space-between">
+        <v-app-bar class="bg-primary" density="compact" :elevation="0">
+            <v-container class="d-flex align-center justify-space-between py-1">
                 <div class="d-none d-sm-flex align-center">
-                    <span class="text-white mr-4">
+                    <span class="text-white mr-4 text-caption">
                         <v-icon size="small" class="mr-1">mdi-phone</v-icon>
                         +855 12 345 678
                     </span>
-                    <span class="text-white">
+                    <span class="text-white text-caption">
                         <v-icon size="small" class="mr-1">mdi-email</v-icon>
                         info@techstore.com
                     </span>
                 </div>
                 <div class="d-flex align-center">
-                    <v-btn variant="text" class="text-white" href="https://www.facebook.com/" target="_blank">
-                        <v-icon>mdi-facebook</v-icon>
+                    <v-btn variant="text" class="text-white icon-btn" href="https://www.facebook.com/" target="_blank">
+                        <v-icon size="small">mdi-facebook</v-icon>
                     </v-btn>
-                    <v-btn variant="text" class="text-white" href="https://www.tiktok.com/" target="_blank">
-                        <v-icon>mdi-music-box-outline</v-icon>
+                    <v-btn variant="text" class="text-white icon-btn" href="https://www.tiktok.com/" target="_blank">
+                        <v-icon size="small">mdi-music-box-outline</v-icon>
                     </v-btn>
-                    <v-btn variant="text" class="text-white" href="https://www.instagram.com/" target="_blank">
-                        <v-icon>mdi-instagram</v-icon>
+                    <v-btn variant="text" class="text-white icon-btn" href="https://www.instagram.com/" target="_blank">
+                        <v-icon size="small">mdi-instagram</v-icon>
                     </v-btn>
-                    <v-btn variant="text" class="text-white" href="https://t.me/" target="_blank">
-                        <v-icon>mdi-send</v-icon>
+                    <v-btn variant="text" class="text-white icon-btn" href="https://t.me/" target="_blank">
+                        <v-icon size="small">mdi-send</v-icon>
                     </v-btn>
-                    <v-btn variant="text" class="text-white" href="https://www.youtube.com/" target="_blank">
-                        <v-icon>mdi-youtube</v-icon>
+                    <v-btn variant="text" class="text-white icon-btn" href="https://www.youtube.com/" target="_blank">
+                        <v-icon size="small">mdi-youtube</v-icon>
                     </v-btn>
                 </div>
             </v-container>
         </v-app-bar>
 
         <!-- Main Header with Logo and Search -->
-        <v-app-bar class="bg-white" height="80">
-            <v-container class="d-flex align-center">
-                <!-- Mobile Menu Button -->
-                <v-app-bar-nav-icon class="d-flex d-sm-none" @click="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-app-bar class="bg-white" :height="$vuetify.display.xs ? 70 : 80" :elevation="1">
+            <v-container class="px-1 px-sm-2 px-md-4 py-0">
+                <div class="d-flex align-center justify-space-between w-100">
+                    <!-- Left Side: Mobile Menu Button + Logo -->
+                    <div class="d-flex align-center">
+                        <!-- Mobile Menu Button - More compact on xs -->
+                        <v-app-bar-nav-icon class="d-flex d-md-none" @click="drawer = !drawer" density="compact"
+                            :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Menu"></v-app-bar-nav-icon>
 
-                <!-- Logo -->
-                <Link :href="route('index')" class="mr-4">
-                <v-img src="/images/logo.png" width="180" height="60" contain></v-img>
-                </Link>
+                        <!-- Logo - More responsive sizing -->
+                        <Link :href="route('index')" class="header-logo ml-1 ml-sm-2">
+                        <v-img src="/images/logo.png"
+                            :width="$vuetify.display.xs ? 120 : $vuetify.display.sm ? 150 : 180"
+                            :height="$vuetify.display.xs ? 40 : $vuetify.display.sm ? 50 : 60" contain class="my-1"
+                            alt="Tech Store Logo"></v-img>
+                        </Link>
+                    </div>
 
-                <!-- Search Bar -->
-                <v-text-field v-model="search" density="compact" placeholder="Search products..."
-                    append-inner-icon="mdi-magnify" single-line hide-details variant="outlined"
-                    class="search-field mx-4" @keyup.enter="searchCallback" @click:append-inner="searchCallback">
-                </v-text-field>
+                    <!-- Center: Search Bar (visible on md and up) -->
+                    <v-text-field v-model="search" density="compact" placeholder="Search products..."
+                        append-inner-icon="mdi-magnify" single-line hide-details variant="outlined"
+                        class="search-field mx-2 mx-md-4 d-none d-md-block" @keyup.enter="searchCallback"
+                        @click:append-inner="searchCallback"></v-text-field>
 
-                <!-- Cart & Account -->
-                <div class="d-flex align-center">
-                    <!-- Wishlist Button with Badge -->
-                    <v-btn prepend-icon="mdi-heart-outline" variant="text" class="mr-2" :href="route('wishlist.index')">
-                        <span class="d-none d-sm-block">Wishlist</span>
-                        <template v-slot:append>
-                            <v-badge color="error" :content="wishlistCount" :model-value="wishlistCount > 0" floating></v-badge>
-                        </template>
-                    </v-btn>
+                    <!-- Right Side: Action buttons - Better spacing & touch targets -->
+                    <div class="d-flex align-center header-actions">
+                        <!-- Mobile search button -->
+                        <v-btn icon class="d-md-none action-btn-touch" @click="showMobileSearch = true"
+                            :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Search">
+                            <v-icon>mdi-magnify</v-icon>
+                        </v-btn>
 
-                    <v-btn prepend-icon="mdi-cart-outline" variant="text" class="mr-2" :href="route('cart.index')">
-                        <span class="d-none d-sm-block">Cart</span>
-                        <template v-slot:append>
-                            <v-badge color="error" :content="cartCount" :model-value="cartCount > 0" floating></v-badge>
-                        </template>
-                    </v-btn>
-
-                    <!-- User Account Menu -->
-                    <template v-if="$page.props.auth.user">
-                        <v-menu location="bottom end">
-                            <template v-slot:activator="{ props }">
-                                <v-btn variant="text" v-bind="props" prepend-icon="mdi-account-circle">
-                                    <span class="d-none d-sm-block">{{ $page.props.auth.user.name }}</span>
-                                </v-btn>
+                        <!-- Wishlist Button with Badge - Icon only on xs -->
+                        <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn"
+                            :href="route('wishlist.index')" :size="$vuetify.display.xs ? 'small' : 'default'"
+                            aria-label="Wishlist">
+                            <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
+                                class="mr-1">mdi-heart-outline</v-icon>
+                            <span class="d-none d-sm-block">Wishlist</span>
+                            <template v-slot:append>
+                                <v-badge color="error" :content="wishlistCount" :model-value="wishlistCount > 0"
+                                    floating location="top end" :offset-x="$vuetify.display.xs ? 8 : 2"
+                                    :offset-y="$vuetify.display.xs ? 8 : 2"
+                                    :size="$vuetify.display.xs ? 'x-small' : 'small'"></v-badge>
                             </template>
-                            <v-list>
-                                <v-list-item :href="route('profile.edit')" link>
-                                    <v-list-item-title>Profile</v-list-item-title>
-                                </v-list-item>
-                                <v-list-item @click="logout" link>
-                                    <v-list-item-title>Logout</v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
-                    </template>
-                    <template v-else>
-                        <v-btn variant="text" :href="route('login')" class="mr-2">
-                            <span>Login</span>
                         </v-btn>
-                        <v-btn color="primary" :href="route('register')">
-                            <span>Register</span>
+
+                        <!-- Cart Button with Badge - Icon only on xs -->
+                        <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn" :href="route('cart.index')"
+                            :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Cart">
+                            <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
+                                class="mr-1">mdi-cart-outline</v-icon>
+                            <span class="d-none d-sm-block">Cart</span>
+                            <template v-slot:append>
+                                <v-badge color="error" :content="cartCount" :model-value="cartCount > 0" floating
+                                    location="top end" :offset-x="$vuetify.display.xs ? 8 : 2"
+                                    :offset-y="$vuetify.display.xs ? 8 : 2"
+                                    :size="$vuetify.display.xs ? 'x-small' : 'small'"></v-badge>
+                            </template>
                         </v-btn>
-                    </template>
+
+                        <!-- User Account Menu with enhanced touch target -->
+                        <template v-if="$page.props.auth.user">
+                            <v-menu location="bottom end" :close-on-content-click="true" offset="5">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn :icon="$vuetify.display.xs" variant="text" v-bind="props" class="action-btn"
+                                        :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Account">
+                                        <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
+                                            class="mr-1">mdi-account-circle</v-icon>
+                                        <span class="d-none d-sm-block text-truncate account-name">
+                                            {{ $page.props.auth.user.name }}
+                                        </span>
+                                    </v-btn>
+                                </template>
+                                <v-card min-width="200" class="mt-1">
+                                    <v-list density="compact">
+                                        <v-list-item :href="route('profile.edit')" link prepend-icon="mdi-account-edit">
+                                            <v-list-item-title>Profile</v-list-item-title>
+                                        </v-list-item>
+                                        <v-list-item @click="logout" link prepend-icon="mdi-logout">
+                                            <v-list-item-title>Logout</v-list-item-title>
+                                        </v-list-item>
+                                    </v-list>
+                                </v-card>
+                            </v-menu>
+                        </template>
+
+                        <!-- Auth buttons with better mobile design -->
+                        <template v-else>
+                            <v-btn v-if="!$vuetify.display.xs" variant="text" :href="route('login')" class="action-btn">
+                                <span>Login</span>
+                            </v-btn>
+                            <v-btn v-if="!$vuetify.display.xs" color="primary" :href="route('register')"
+                                class="action-btn">
+                                <span>Register</span>
+                            </v-btn>
+                            <v-btn v-else icon @click="showAuthOptions = true"
+                                :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Account options">
+                                <v-icon>mdi-account</v-icon>
+                            </v-btn>
+                        </template>
+                    </div>
                 </div>
             </v-container>
         </v-app-bar>
 
-        <!-- Navigation Bar with Categories -->
-        <v-app-bar class="bg-grey-lighten-4" height="48">
-            <v-container class="d-flex align-center">
+        <!-- Navigation Bar with Categories - Hide on xs and improved scrolling -->
+        <v-app-bar class="bg-grey-lighten-4 d-none d-sm-flex" height="48" :elevation="0">
+            <v-container class="d-flex align-center px-2 px-sm-4">
                 <!-- All Categories Dropdown -->
                 <v-menu open-on-hover>
                     <template v-slot:activator="{ props }">
@@ -143,15 +182,15 @@
                     </v-list>
                 </v-menu>
 
-                <!-- Main Navigation Links -->
-                <div class="d-none d-sm-flex">
-                    <v-btn variant="text" class="text-none">
+                <!-- Main Navigation Links - Scrollable on sm -->
+                <div class="d-none d-sm-flex nav-links-container">
+                    <v-btn variant="text" class="text-none nav-link">
                         <Link :href="route('index')">
                         Home
                         </Link>
                     </v-btn>
                     <template v-for="(category, index) in categories.slice(0, 6)" :key="index">
-                        <v-btn variant="text" class="text-none">
+                        <v-btn variant="text" class="text-none nav-link">
                             <Link :href="route('categories.show', category.slug)">
                             {{ category.name }}
                             </Link>
@@ -161,8 +200,8 @@
             </v-container>
         </v-app-bar>
 
-        <!-- Navigation Drawer -->
-        <v-navigation-drawer v-model="drawer" temporary>
+        <!-- Navigation Drawer - Enhanced for mobile -->
+        <v-navigation-drawer v-model="drawer" temporary :width="280">
             <v-list>
                 <v-list-item prepend-avatar="/images/logo.png" :title="'Tech Store'"></v-list-item>
             </v-list>
@@ -194,13 +233,21 @@
             <v-list nav>
                 <v-list-subheader>Shop By Category</v-list-subheader>
                 <template v-for="(category, index) in categories" :key="index">
-                    <v-list-group v-if="category.children?.length > 0" :value="category.name">
+                    <Link v-if="!category.children?.length" :href="route('categories.show', category.slug)"
+                        :title="category.name">
+                    <v-list-item link>
+                        {{ category.name }}
+                    </v-list-item>
+                    </Link>
+
+                    <v-list-group v-else>
                         <template v-slot:activator="{ props }">
-                            <v-list-item v-bind="props" :prepend-icon="category.icon || 'mdi-shape-outline'"
-                                :title="category.name">
+                            <v-list-item v-bind="props" :title="category.name">
+                                <template v-slot:append>
+                                    <v-icon>mdi-chevron-right</v-icon>
+                                </template>
                             </v-list-item>
                         </template>
-
                         <Link v-for="child in category.children" :key="child.id"
                             :href="route('categories.show', child.slug)" :title="child.name">
                         <v-list-item link density="compact">
@@ -208,12 +255,6 @@
                         </v-list-item>
                         </Link>
                     </v-list-group>
-
-                    <Link v-else :href="route('categories.show', category.slug)" :title="category.name">
-                    <v-list-item link :prepend-icon="category.icon || 'mdi-shape-outline'">
-                        {{ category.name }}
-                    </v-list-item>
-                    </Link>
                 </template>
             </v-list>
         </v-navigation-drawer>
@@ -222,6 +263,40 @@
         <v-main>
             <slot />
         </v-main>
+
+        <!-- Mobile search modal - Improved & optimized -->
+        <v-dialog v-model="showMobileSearch" fullscreen transition="dialog-bottom-transition"
+            class="mobile-search-dialog">
+            <v-card>
+                <v-toolbar color="primary" dark>
+                    <v-text-field v-model="searchTerm" placeholder="Search products..." variant="outlined"
+                        density="compact" hide-details bg-color="white" class="mobile-search-field" autofocus
+                        @keyup.enter="searchMobile"></v-text-field>
+
+                    <v-btn icon @click="showMobileSearch = false" aria-label="Close search">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                </v-toolbar>
+            </v-card>
+        </v-dialog>
+
+        <!-- Mobile auth options dialog with better UX -->
+        <v-dialog v-model="showAuthOptions" max-width="300">
+            <v-card>
+                <v-card-title class="text-center pb-0">Account</v-card-title>
+                <v-card-text>
+                    <v-row>
+                        <v-col cols="6">
+                            <v-btn block color="primary" variant="elevated" :href="route('login')"
+                                class="mb-2">Login</v-btn>
+                        </v-col>
+                        <v-col cols="6">
+                            <v-btn block color="secondary" variant="elevated" :href="route('register')">Register</v-btn>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
 
         <!-- Footer -->
         <v-footer class="bg-grey-lighten-3">
@@ -281,6 +356,7 @@
     const tab = ref('menu')
     const search = ref('')
     const categories = ref([])
+    const showAuthOptions = ref(false)
 
     // Updated menu items (removed categories since they'll be dynamic)
     const menuItems = [
@@ -345,55 +421,47 @@
     const logout = () => {
         router.post(route('logout'));
     };
+
+    const searchTerm = ref('');
+    const showMobileSearch = ref(false);
+
+    // Function to handle searching
+    const searchProducts = () => {
+        if (searchTerm.value.trim()) {
+            router.visit(`/search?searchTerm=${encodeURIComponent(searchTerm.value.trim())}`);
+        }
+    };
+
+    // Function to handle mobile search
+    const searchMobile = () => {
+        if (searchTerm.value.trim()) {
+            showMobileSearch.value = false;
+            router.visit(`/search?searchTerm=${encodeURIComponent(searchTerm.value.trim())}`);
+        }
+    };
 </script>
 
 <style scoped>
+
+    /* Core Layout - Professional responsive optimization */
+    .header-logo {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Top bar styles - Optimized for touch */
+    .icon-btn {
+        min-width: 32px;
+        height: 32px;
+        padding: 0;
+    }
+
+    /* Modern search field with consistent styling */
     .search-field {
-        max-width: 500px;
-    }
-
-    .search-field :deep(.v-field) {
-        border-radius: 4px;
-    }
-
-    :deep(.v-btn) {
-        text-transform: none;
-        letter-spacing: 0;
-    }
-
-    .search-field {
-        max-width: 500px;
-        border-radius: 8px;
-    }
-
-    .search-field :deep(.v-field__outline__start),
-    .search-field :deep(.v-field__outline__end) {
-        border-radius: 8px;
-    }
-
-    :deep(.v-btn) {
-        text-transform: none;
-        letter-spacing: 0;
-    }
-
-    .header-bar {
-        background: #fff;
-        border-bottom: 1px solid #eee;
-    }
-
-    .top-bar {
-        min-height: 80px;
-        border-bottom: 1px solid #eee;
-    }
-
-    .nav-bar {
-        min-height: 50px;
-        background: #f8f9fa;
-    }
-
-    .search-field {
+        flex-grow: 1;
         max-width: 600px;
-        margin: 0 auto;
+        border-radius: 8px;
+        margin: 0 8px;
     }
 
     .search-field :deep(.v-field__outline__start) {
@@ -404,44 +472,126 @@
         border-radius: 0 20px 20px 0;
     }
 
-    .categories-btn {
+    /* Header action buttons - Optimized spacing */
+    .header-actions {
+        gap: 4px;
+    }
+
+    .action-btn {
+        margin: 0;
+        min-width: unset;
+    }
+
+    /* Action button touch areas */
+    .action-btn-touch {
+        margin: 0;
+        width: 40px;
         height: 40px;
-        border-radius: 4px;
-        text-transform: none;
-        font-weight: 500;
+    }
+
+    /* Account name truncation */
+    .account-name {
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Navigation styles - Improved scrolling */
+    .nav-links-container {
+        display: flex;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-links-container::-webkit-scrollbar {
+        display: none;
     }
 
     .nav-link {
+        white-space: nowrap;
         color: #333;
         text-transform: none;
         font-weight: 400;
+        margin-right: 4px;
+        height: 38px;
+    }
+
+    /* Mobile search styles - Improved UI */
+    .mobile-search-field {
+        flex: 1;
+        margin-right: 8px;
+    }
+
+    .mobile-search-field :deep(.v-field__outline__start),
+    .mobile-search-field :deep(.v-field__outline__end) {
+        border-radius: 8px;
+    }
+
+    /* Global button styles */
+    :deep(.v-btn) {
+        text-transform: none;
         letter-spacing: 0;
     }
 
-    /* Mobile Styles */
-    @media (max-width: 960px) {
-        .top-bar {
-            min-height: 60px;
+    /* Responsive breakpoints - Professional cascade */
+    @media (max-width: 599px) {
+        .v-container {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
         }
 
+        .header-actions {
+            gap: 2px;
+        }
+
+        .action-btn.v-btn--icon {
+            margin: 0;
+            height: 36px;
+            width: 36px;
+            min-width: 36px;
+        }
+    }
+
+    @media (min-width: 600px) {
+        .header-actions {
+            gap: 8px;
+        }
+
+        .action-btn {
+            margin: 0 2px;
+        }
+
+        .account-name {
+            max-width: 120px;
+        }
+    }
+
+    @media (min-width: 960px) {
         .search-field {
-            display: none;
+            margin: 0 16px;
+        }
+
+        .account-name {
+            max-width: 150px;
         }
     }
 
-    /* Dropdown Menu Styles */
-    :deep(.v-list) {
-        border-radius: 4px;
-        padding: 8px 0;
-    }
+    @media (min-width: 1264px) {
+        .search-field {
+            margin: 0 24px;
+            max-width: 600px;
+        }
 
-    :deep(.v-list-item) {
-        min-height: 40px;
-        padding: 0 16px;
-    }
+        .account-name {
+            max-width: 200px;
+        }
 
-    :deep(.v-list-item:hover) {
-        background: #f5f5f5;
+        .header-actions {
+            gap: 12px;
+        }
     }
 
     /* Footer Styles */
@@ -450,42 +600,9 @@
         border-top: 1px solid #eee;
     }
 
-    .footer-title {
-        font-size: 1.1rem;
-        font-weight: 500;
-        margin-bottom: 1rem;
-    }
-
-    .footer-link {
-        color: #666;
-        text-decoration: none;
-        display: block;
-        padding: 4px 0;
-    }
-
-    .footer-link:hover {
-        color: var(--v-primary-base);
-    }
-
     /* Category Menu Styles */
     :deep(.v-list-group__items) {
         margin-left: 12px;
-    }
-
-    :deep(.v-list-item--density-compact) {
-        min-height: 32px;
-    }
-
-    :deep(.v-list-group__items .v-list-item) {
-        padding-left: 24px;
-    }
-
-    /* Add these new styles */
-    .v-btn.text-none {
-        text-transform: none;
-        font-weight: 400;
-        letter-spacing: 0;
-        margin-right: 4px;
     }
 
     :deep(.v-list-item--density-compact) {
