@@ -43,7 +43,7 @@ class CartController extends Controller
             ]);
 
             $product = Product::findOrFail($validated['product_id']);
-            
+
             if ($product->stock < $validated['quantity']) {
                 return back()->with('error', 'Not enough stock available.');
             }
@@ -76,4 +76,31 @@ class CartController extends Controller
             return back()->with('error', 'Failed to add product to cart. Please try again.');
         }
     }
+
+    /**
+     * Remove the specified cart item.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($id)
+    {
+        try {
+            $cartItem = CartItem::where('id', $id)
+                ->where('user_id', auth()->id())
+                ->firstOrFail();
+
+            $cartItem->delete();
+
+            $cartCount = auth()->user()->cartItems()->count();
+
+            return redirect()->route('cart.index')->with([
+                'success' => 'Item removed from cart successfully.',
+                'cartCount' => $cartCount
+            ]);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to remove item from cart. Please try again.');
+        }
+    }
+
 }

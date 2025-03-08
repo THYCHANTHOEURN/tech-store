@@ -27,6 +27,7 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::middleware(['auth', 'customer'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 });
 
 /**

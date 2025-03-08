@@ -22,6 +22,10 @@
                                 <div class="text-right">
                                     <div class="text-h6">${{ (item.product.sale_price || item.product.price) *
                                         item.quantity }}</div>
+                                    <v-btn color="error" size="small" variant="text" @click="removeFromCart(item.id)"
+                                        prepend-icon="mdi-delete" class="mt-2">
+                                        Remove
+                                    </v-btn>
                                 </div>
                             </template>
                         </v-list-item>
@@ -55,7 +59,7 @@
 </template>
 
 <script setup>
-    import { Link } from '@inertiajs/vue3';
+    import { Link, router } from '@inertiajs/vue3';
     import WebLayout from '@/Layouts/WebLayout.vue';
     import { computed } from 'vue';
 
@@ -71,4 +75,16 @@
             return total + (item.quantity * (item.product.sale_price || item.product.price));
         }, 0);
     });
+
+    const removeFromCart = (cartItemId) => {
+        router.delete(route('cart.destroy', cartItemId), {
+            preserveScroll: true,
+            onSuccess: () => {
+                // This will keep the response fresh with updated data
+            },
+            onError: (errors) => {
+                console.error('Failed to remove item from cart:', errors);
+            },
+        });
+    };
 </script>
