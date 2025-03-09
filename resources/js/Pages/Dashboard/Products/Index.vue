@@ -101,15 +101,17 @@
                     </template>
 
                     <template v-slot:item.actions="{ item }">
-                        <v-btn icon size="small" color="info" class="mr-1"
-                            :href="route('dashboard.products.show', item.uuid)" title="View">
-                            <v-icon>mdi-eye</v-icon>
-                        </v-btn>
+                        <Link :href="route('dashboard.products.show', item.uuid)" class="text-decoration-none">
+                            <v-btn icon size="small" color="info" class="mr-1" title="View">
+                                <v-icon>mdi-eye</v-icon>
+                            </v-btn>
+                        </Link>
 
-                        <v-btn icon size="small" color="warning" class="mr-1"
-                            :href="route('dashboard.products.edit', item.uuid)" title="Edit">
-                            <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
+                        <Link :href="route('dashboard.products.edit', item.uuid)" class="text-decoration-none">
+                            <v-btn icon size="small" color="warning" class="mr-1" title="Edit">
+                                <v-icon>mdi-pencil</v-icon>
+                            </v-btn>
+                        </Link>
 
                         <v-btn icon size="small" color="error" @click="confirmDelete(item)" title="Delete">
                             <v-icon>mdi-delete</v-icon>
@@ -287,6 +289,11 @@
         productToDelete.value = null;
     };
 
+    /**
+     * Delete the product
+     *
+     * @return void
+     */
     const deleteProduct = () => {
         if (!productToDelete.value) return;
 

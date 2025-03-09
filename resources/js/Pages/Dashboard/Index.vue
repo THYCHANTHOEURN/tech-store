@@ -90,8 +90,9 @@
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-list two-line>
-                            <v-list-item v-for="(product, index) in popularProducts" :key="index"
-                                :to="`/dashboard/products/${product.id}`">
+                            <Link v-for="(product, index) in popularProducts" :key="index"
+                                :href="route('dashboard.products.show', product.uuid)" class="text-decoration-none">
+                            <v-list-item>
                                 <v-list-item-avatar>
                                     <v-img :src="product.primary_image_url" alt="Product Image"></v-img>
                                 </v-list-item-avatar>
@@ -105,6 +106,7 @@
                                     <v-chip color="primary" small>${{ product.price }}</v-chip>
                                 </v-list-item-action>
                             </v-list-item>
+                            </Link>
                         </v-list>
                     </v-card>
                 </v-col>
@@ -115,7 +117,7 @@
 
 <script setup>
     import DashboardLayout from '@/Layouts/DashboardLayout.vue';
-    import { Head } from '@inertiajs/vue3';
+    import { Head, Link } from '@inertiajs/vue3';
     import { defineProps } from 'vue';
 
     // Get data from controller via Inertia props
@@ -125,14 +127,23 @@
         popularProducts: Array
     });
 
+    /**
+     * Table headers for recent orders
+     */
     const orderHeaders = [
-        { text: 'Order ID', value: 'uuid', sortable: false },
-        { text: 'Customer', value: 'customer' },
-        { text: 'Status', value: 'status' },
-        { text: 'Amount', value: 'total_amount' },
-        { text: 'Date', value: 'created_at' }
+        { title: 'Order ID', value: 'uuid', sortable: false },
+        { title: 'Customer', value: 'customer' },
+        { title: 'Status', value: 'status' },
+        { title: 'Amount', value: 'total_amount' },
+        { title: 'Date', value: 'created_at' }
     ];
 
+    /**
+     * Get status color based on order status
+     *
+     * @param {string} status
+     * @returns {string}
+     */
     const getStatusColor = (status) => {
         switch (status) {
             case 'completed': return 'success';
@@ -143,6 +154,12 @@
         }
     };
 
+    /**
+     * Format date string to human-readable format
+     *
+     * @param {string} dateString
+     * @returns {string}
+     */
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString();
     };

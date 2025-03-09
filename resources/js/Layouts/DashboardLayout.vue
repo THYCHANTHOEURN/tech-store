@@ -38,15 +38,24 @@
                 <v-list>
                     <Link :href="route('profile.edit')" class="text-decoration-none">
                     <v-list-item link>
+                        <template v-slot:prepend>
+                            <v-icon>mdi-account-circle</v-icon>
+                        </template>
                         <v-list-item-title>Profile</v-list-item-title>
                     </v-list-item>
                     </Link>
                     <Link :href="route('index')" class="text-decoration-none">
                     <v-list-item link>
+                        <template v-slot:prepend>
+                            <v-icon>mdi-web</v-icon>
+                        </template>
                         <v-list-item-title>Visit Site</v-list-item-title>
                     </v-list-item>
                     </Link>
                     <v-list-item @click="logout" link>
+                        <template v-slot:prepend>
+                            <v-icon>mdi-logout</v-icon>
+                        </template>
                         <v-list-item-title>Log Out</v-list-item-title>
                     </v-list-item>
                 </v-list>
