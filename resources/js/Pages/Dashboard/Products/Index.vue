@@ -89,28 +89,27 @@
 
                     <template v-slot:item.status="{ item }">
                         <v-chip :color="item.status ? 'success' : 'error'" size="small" class="text-white">
-                            {{ item.status ? 'Active' : 'Inactive' }}
+                            {{ item.status ? 'Published' : 'UnPublished' }}
                         </v-chip>
                     </template>
 
                     <template v-slot:item.featured="{ item }">
-                        <v-chip v-if="item.featured" color="primary" size="small" class="text-white">
-                            Featured
+                        <v-chip :color="item.featured ? 'primary' : 'secondary'" size="small" class="text-white">
+                            {{ item.featured ? 'Featured' : 'Not Featured' }}
                         </v-chip>
-                        <span v-else>-</span>
                     </template>
 
                     <template v-slot:item.actions="{ item }">
                         <Link :href="route('dashboard.products.show', item.uuid)" class="text-decoration-none">
-                            <v-btn icon size="small" color="info" class="mr-1" title="View">
-                                <v-icon>mdi-eye</v-icon>
-                            </v-btn>
+                        <v-btn icon size="small" color="info" class="mr-1" title="View">
+                            <v-icon>mdi-eye</v-icon>
+                        </v-btn>
                         </Link>
 
                         <Link :href="route('dashboard.products.edit', item.uuid)" class="text-decoration-none">
-                            <v-btn icon size="small" color="warning" class="mr-1" title="Edit">
-                                <v-icon>mdi-pencil</v-icon>
-                            </v-btn>
+                        <v-btn icon size="small" color="warning" class="mr-1" title="Edit">
+                            <v-icon>mdi-pencil</v-icon>
+                        </v-btn>
                         </Link>
 
                         <v-btn icon size="small" color="error" @click="confirmDelete(item)" title="Delete">
@@ -196,8 +195,8 @@
     // Options for dropdowns
     const statusOptions = [
         { title: 'All', value: 'all' },
-        { title: 'Active', value: 'active' },
-        { title: 'Inactive', value: 'inactive' }
+        { title: 'Published', value: 'published' },
+        { title: 'UnPublished', value: 'unpublished' }
     ];
 
     const featuredOptions = [
@@ -231,9 +230,9 @@
     const applyFilters = () => {
         loading.value = true;
         router.get(route('dashboard.products.index'), {
-            search: search.value,
-            category: selectedCategory.value,
-            brand: selectedBrand.value,
+            search: search.value || undefined,
+            category: selectedCategory.value || undefined,
+            brand: selectedBrand.value || undefined,
             status: selectedStatus.value,
             featured: selectedFeatured.value,
             page: 1, // Reset to first page when filtering
@@ -257,7 +256,12 @@
         selectedBrand.value = null;
         selectedStatus.value = 'all';
         selectedFeatured.value = 'all';
-        applyFilters();
+        loading.value = true;
+        router.get(route('dashboard.products.index'), {}, {
+            onFinish: () => {
+                loading.value = false;
+            }
+        });
     };
 
     const changePage = (newPage) => {

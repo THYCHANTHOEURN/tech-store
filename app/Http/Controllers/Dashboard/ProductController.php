@@ -26,7 +26,7 @@ class ProductController extends Controller
         $query = Product::with(['category', 'brand', 'primaryImage']);
 
         // Handle search
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -36,20 +36,34 @@ class ProductController extends Controller
         }
 
         // Handle filters
-        if ($request->has('category')) {
+        if ($request->filled('category') && $request->category != 'null') {
             $query->where('category_id', $request->category);
         }
 
-        if ($request->has('brand')) {
+        if ($request->filled('brand') && $request->brand != 'null') {
             $query->where('brand_id', $request->brand);
         }
 
-        if ($request->has('status') && $request->status !== 'all') {
-            $query->where('status', $request->status === 'active');
+        if ($request->filled('status') && $request->status != 'all') {
+            switch ($request->status) {
+                case 'published':
+                    $query->where('status', true);
+                    break;
+                case 'unpublished':
+                    $query->where('status', false);
+                    break;
+            }
         }
 
-        if ($request->has('featured') && $request->featured !== 'all') {
-            $query->where('featured', $request->featured === 'featured');
+        if ($request->filled('featured') && $request->featured != 'all') {
+            switch ($request->featured) {
+                case 'featured':
+                    $query->where('featured', operator: true);
+                    break;
+                case 'not-featured':
+                    $query->where('featured', false);
+                    break;
+            }
         }
 
         // Handle sorting
