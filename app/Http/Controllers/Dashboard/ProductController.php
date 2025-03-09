@@ -1,0 +1,327 @@
+<?php
+
+namespace App\Http\Controllers\Dashboard;
+
+use App\Http\Controllers\Controller;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\ProductImage;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+
+class ProductController extends Controller
+{
+    /**
+     * Display a listing of products.
+     */
+    public function index(Request $request)
+    {
+        $query = Product::with(['category', 'brand', 'primaryImage']);
+
+        // Handle search
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Handle filters
+        if ($request->has('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->has('brand')) {
+            $query->where('brand_id', $request->brand);
+        }
+
+        if ($request->has('status') && $request->status !== 'all') {
+            $query->where('status', $request->status === 'active');
+        }
+
+        if ($request->has('featured') && $request->featured !== 'all') {
+            $query->where('featured', $request->featured === 'featured');
+        }
+
+        // Handle sorting
+        $sortField = $request->input('sort_field', 'created_at');
+        $sortOrder = $request->input('sort_order', 'desc');
+        $query->orderBy($sortField, $sortOrder);
+
+        $products = $query->paginate(10)->withQueryString();
+
+        // Get all categories and brands for filters
+        $categories = Category::all();
+        $brands = Brand::all();
+
+        return Inertia::render('Dashboard/Products/Index', [
+            'products' => $products,
+            'filters' => $request->only(['search', 'category', 'brand', 'status', 'featured']),
+            'categories' => $categories,
+            'brands' => $brands,
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new product.
+     */
+    public function create()
+    {
+        $categories = Category::where('status', true)->get();
+        $brands = Brand::where('status', true)->get();
+
+        return Inertia::render('Dashboard/Products/Create', [
+            'categories' => $categories,
+            'brands' => $brands,
+        ]);
+    }
+
+    /**
+     * Store a newly created product in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'brand_id' => 'required|exists:brands,id',
+            'price' => 'required|numeric|min:0',
+            'sale_price' => 'nullable|numeric|min:0|lt:price',
+            'stock' => 'required|integer|min:0',
+            'description' => 'nullable|string',
+            'status' => 'required|boolean',
+            'featured' => 'required|boolean',
+            'images' => 'sometimes|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        // Generate slug
+        $slug = Str::slug($validated['name']);
+        $count = 1;
+        $originalSlug = $slug;
+
+        // Check if slug exists
+        while (Product::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+
+        // Generate SKU
+        $sku = strtoupper(substr(str_replace(['-', ' '], '', $slug), 0, 8) . '-' . uniqid());
+
+        try {
+            // Start a transaction
+            return DB::transaction(function () use ($validated, $slug, $sku, $request) {
+                // Create product
+                $product = Product::create([
+                    'name' => $validated['name'],
+                    'slug' => $slug,
+                    'sku' => $sku,
+                    'category_id' => $validated['category_id'],
+                    'brand_id' => $validated['brand_id'],
+                    'price' => $validated['price'],
+                    'sale_price' => $validated['sale_price'] ?? null,
+                    'stock' => $validated['stock'],
+                    'description' => $validated['description'] ?? null,
+                    'status' => $validated['status'],
+                    'featured' => $validated['featured'],
+                ]);
+
+                // Handle image uploads
+                if ($request->hasFile('images')) {
+                    $isPrimary = true;
+                    foreach ($request->file('images') as $image) {
+                        $path = $image->store('products', 'public');
+
+                        ProductImage::create([
+                            'product_id' => $product->id,
+                            'image' => $path,
+                            'is_primary' => $isPrimary,
+                        ]);
+
+                        $isPrimary = false;
+                    }
+                } else {
+                    // Create a default image if no images are uploaded
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image' => 'products/default.jpg',
+                        'is_primary' => true,
+                    ]);
+                }
+
+                return redirect()->route('dashboard.products.index')
+                    ->with('success', 'Product created successfully');
+            });
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Error creating product: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Display the specified product.
+     */
+    public function show(Product $product)
+    {
+        $product->load(['category', 'brand', 'productImages', 'reviews.user']);
+
+        return Inertia::render('Dashboard/Products/Show', [
+            'product' => $product,
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified product.
+     */
+    public function edit(Product $product)
+    {
+        $product->load(['productImages']);
+        $categories = Category::all();
+        $brands = Brand::all();
+
+        return Inertia::render('Dashboard/Products/Edit', [
+            'product' => $product,
+            'categories' => $categories,
+            'brands' => $brands,
+        ]);
+    }
+
+    /**
+     * Update the specified product in storage.
+     */
+    public function update(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'brand_id' => 'required|exists:brands,id',
+            'price' => 'required|numeric|min:0',
+            'sale_price' => 'nullable|numeric|min:0|lt:price',
+            'stock' => 'required|integer|min:0',
+            'description' => 'nullable|string',
+            'status' => 'required|boolean',
+            'featured' => 'required|boolean',
+            'images' => 'sometimes|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'remove_images' => 'sometimes|array',
+            'remove_images.*' => 'exists:product_images,id',
+            'primary_image' => 'sometimes|nullable|exists:product_images,id',
+        ]);
+
+        try {
+            // Start a transaction
+            return DB::transaction(function () use ($validated, $product, $request) {
+                // Update product
+                $product->update([
+                    'name' => $validated['name'],
+                    'category_id' => $validated['category_id'],
+                    'brand_id' => $validated['brand_id'],
+                    'price' => $validated['price'],
+                    'sale_price' => $validated['sale_price'] ?? null,
+                    'stock' => $validated['stock'],
+                    'description' => $validated['description'] ?? null,
+                    'status' => $validated['status'],
+                    'featured' => $validated['featured'],
+                ]);
+
+                // Handle removed images
+                if ($request->has('remove_images') && is_array($request->remove_images)) {
+                    foreach ($request->remove_images as $imageId) {
+                        $image = ProductImage::find($imageId);
+                        if ($image) {
+                            // Remove from storage
+                            if (Storage::disk('public')->exists($image->image) && $image->image != 'products/default.jpg') {
+                                Storage::disk('public')->delete($image->image);
+                            }
+                            $image->delete();
+                        }
+                    }
+                }
+
+                // Handle primary image change
+                if ($request->has('primary_image')) {
+                    // Reset all images to non-primary
+                    ProductImage::where('product_id', $product->id)
+                        ->update(['is_primary' => false]);
+
+                    // Set the new primary image
+                    if ($request->primary_image) {
+                        ProductImage::where('id', $request->primary_image)
+                            ->update(['is_primary' => true]);
+                    }
+                }
+
+                // Handle new image uploads
+                if ($request->hasFile('images')) {
+                    $hasExistingImages = $product->productImages()->exists();
+
+                    foreach ($request->file('images') as $image) {
+                        $path = $image->store('products', 'public');
+
+                        ProductImage::create([
+                            'product_id' => $product->id,
+                            'image' => $path,
+                            'is_primary' => !$hasExistingImages && !$request->has('primary_image'),
+                        ]);
+
+                        $hasExistingImages = true;
+                    }
+                }
+
+                // Ensure at least one image exists
+                if (!$product->productImages()->exists()) {
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image' => 'products/default.jpg',
+                        'is_primary' => true,
+                    ]);
+                }
+
+                // Ensure there is a primary image
+                if (!$product->productImages()->where('is_primary', true)->exists()) {
+                    $firstImage = $product->productImages()->first();
+                    if ($firstImage) {
+                        $firstImage->update(['is_primary' => true]);
+                    }
+                }
+
+                return redirect()->route('dashboard.products.index')
+                    ->with('success', 'Product updated successfully');
+            });
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Error updating product: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Remove the specified product from storage.
+     */
+    public function destroy(Product $product)
+    {
+        try {
+            // Delete associated images from storage
+            foreach ($product->productImages as $image) {
+                if (Storage::disk('public')->exists($image->image)) {
+                    Storage::disk('public')->delete($image->image);
+                }
+            }
+
+            $product->delete();
+
+            return redirect()->route('dashboard.products.index')
+                ->with('success', 'Product deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('dashboard.products.index')
+                ->with('error', 'Error deleting product: ' . $e->getMessage());
+        }
+    }
+}

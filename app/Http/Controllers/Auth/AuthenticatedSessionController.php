@@ -40,7 +40,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         // For admins, redirect to dashboard
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('dashboard.index', absolute: false));
     }
 
     /**

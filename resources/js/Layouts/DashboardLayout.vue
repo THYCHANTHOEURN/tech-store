@@ -1,110 +1,91 @@
 <script setup>
     import { ref } from 'vue';
     import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-    import { Link, router } from '@inertiajs/vue3';
+    import { Link, usePage, router } from '@inertiajs/vue3';
 
-    const drawer = ref(false);
+    const drawer = ref(true);
+    const user = usePage().props.auth.user;
 
     const logout = () => {
         router.post(route('logout'));
     };
+
+    // navigateTo function can be removed since we're using Link component
 </script>
 
 <template>
     <v-app>
         <!-- Main Toolbar -->
         <v-app-bar elevation="1">
-            <v-app-bar-nav-icon class="d-sm-none" @click="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
             <v-toolbar-title>
-                <Link :href="route('dashboard')">
+                <Link :href="route('dashboard.index')">
                 <ApplicationLogo class="h-9 w-auto" />
                 </Link>
             </v-toolbar-title>
 
             <v-spacer></v-spacer>
 
-            <!-- Desktop Navigation -->
-            <div class="d-none d-sm-flex align-center">
-                <v-btn variant="text" :href="route('dashboard')"
-                    :color="route().current('dashboard') ? 'primary' : 'default'">
-                    Dashboard
-                </v-btn>
-
-                <v-menu>
-                    <template v-slot:activator="{ props }">
-                        <v-btn v-bind="props" variant="text">
-                            {{ $page.props.auth.user.name }}
-                            <v-icon>mdi-chevron-down</v-icon>
-                        </v-btn>
-                    </template>
-                    <v-list>
-                        <v-list-item :href="route('profile.edit')" link>
-                            <v-list-item-title>Profile</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="logout" link>
-                            <v-list-item-title>Log Out</v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-            </div>
+            <!-- User Menu -->
+            <v-menu>
+                <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" variant="text">
+                        {{ user.name }}
+                        <v-icon right>mdi-chevron-down</v-icon>
+                    </v-btn>
+                </template>
+                <v-list>
+                    <Link :href="route('profile.edit')" class="text-decoration-none">
+                    <v-list-item link>
+                        <v-list-item-title>Profile</v-list-item-title>
+                    </v-list-item>
+                    </Link>
+                    <Link :href="route('index')" class="text-decoration-none">
+                    <v-list-item link>
+                        <v-list-item-title>Visit Site</v-list-item-title>
+                    </v-list-item>
+                    </Link>
+                    <v-list-item @click="logout" link>
+                        <v-list-item-title>Log Out</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
         </v-app-bar>
 
-        <!-- Mobile Navigation Drawer -->
-        <v-navigation-drawer v-model="drawer" temporary>
+        <!-- Sidebar Navigation -->
+        <v-navigation-drawer v-model="drawer" permanent>
             <v-list>
-                <v-list-item>
-                    <v-list-item-title class="text-body-2">
-                        {{ $page.props.auth.user.name }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                        {{ $page.props.auth.user.email }}
-                    </v-list-item-subtitle>
-                </v-list-item>
-
-                <v-divider></v-divider>
-
-                <v-list-item :href="route('dashboard')" link
-                    :color="route().current('dashboard') ? 'primary' : 'default'">
+                <Link :href="route('dashboard.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.index')">
                     <template v-slot:prepend>
                         <v-icon>mdi-view-dashboard</v-icon>
                     </template>
-                    Dashboard
+                    <v-list-item-title>Dashboard</v-list-item-title>
                 </v-list-item>
+                </Link>
 
-                <v-list-item :href="route('profile.edit')" link>
+                <!-- Products Menu Item -->
+                <Link :href="route('dashboard.products.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.products.*')">
                     <template v-slot:prepend>
-                        <v-icon>mdi-account</v-icon>
+                        <v-icon>mdi-package-variant-closed</v-icon>
                     </template>
-                    Profile
+                    <v-list-item-title>Products</v-list-item-title>
                 </v-list-item>
-
-                <v-list-item @click="logout" link>
-                    <template v-slot:prepend>
-                        <v-icon>mdi-logout</v-icon>
-                    </template>
-                    Log Out
-                </v-list-item>
+                </Link>
             </v-list>
         </v-navigation-drawer>
 
         <!-- Main Content -->
         <v-main>
             <!-- Page Header -->
-            <template v-if="$slots.header">
-                <v-container fluid class="py-6 bg-grey-lighten-4">
-                    <v-row>
-                        <v-col>
-                            <slot name="header" />
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </template>
+            <v-container fluid class="py-3 bg-grey-lighten-4" v-if="$slots.header">
+                <slot name="header" />
+            </v-container>
 
             <!-- Page Content -->
-            <v-container fluid>
-                <slot />
-            </v-container>
+            <slot />
         </v-main>
     </v-app>
 </template>

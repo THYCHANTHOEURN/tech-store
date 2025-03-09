@@ -8,6 +8,8 @@ use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\Web\SearchController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\WishlistController;
+use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\ProductController as DashboardProductController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -30,16 +32,6 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 });
 
-/**
- * Admin routes (accessible by super_admin, admin, and manager)
- */
-Route::middleware(['auth', 'verified', 'admin'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-
-    // Add other admin routes here...
-});
 
 /**
  * Authentication routes
@@ -63,4 +55,6 @@ Route::group(['prefix' => 'data', 'as' => 'data.'], function () {
     Route::get('categories', [DataController::class, 'categories'])->name('categories');
 });
 
+// Include dashboard routes
+require __DIR__.'/dashboard.php';
 require __DIR__.'/auth.php';

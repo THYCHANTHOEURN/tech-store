@@ -17,7 +17,7 @@ const logout = () => {
             <v-app-bar-nav-icon class="d-sm-none" @click="drawer = !drawer"></v-app-bar-nav-icon>
 
             <v-toolbar-title>
-                <Link :href="route('dashboard')">
+                <Link :href="route('dashboard.index')">
                 <ApplicationLogo class="h-9 w-auto" />
                 </Link>
             </v-toolbar-title>
@@ -26,8 +26,8 @@ const logout = () => {
 
             <!-- Desktop Navigation -->
             <div class="d-none d-sm-flex align-center">
-                <v-btn variant="text" :href="route('dashboard')"
-                    :color="route().current('dashboard') ? 'primary' : 'default'">
+                <v-btn variant="text" :href="route('dashboard.index')"
+                    :color="route().current('dashboard.index') ? 'primary' : 'default'">
                     Dashboard
                 </v-btn>
 
@@ -64,8 +64,8 @@ const logout = () => {
 
                 <v-divider></v-divider>
 
-                <v-list-item :href="route('dashboard')" link
-                    :color="route().current('dashboard') ? 'primary' : 'default'">
+                <v-list-item :href="route('dashboard.index')" link
+                    :color="route().current('dashboard.index') ? 'primary' : 'default'">
                     <template v-slot:prepend>
                         <v-icon>mdi-view-dashboard</v-icon>
                     </template>
