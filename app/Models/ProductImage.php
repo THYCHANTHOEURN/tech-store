@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductImage extends Model
 {
-    use HasFactory, HasUuidTrait, SoftDeletes;
+    use HasFactory;
+    use HasUuidTrait;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
