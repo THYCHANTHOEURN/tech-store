@@ -15,8 +15,10 @@
                             required></v-text-field>
 
                         <!-- Description -->
-                        <v-textarea v-model="form.description" label="Description" :error-messages="errors.description"
-                            rows="5"></v-textarea>
+                        <RichTextEditor v-model="form.description" label="Product Description"
+                            :error="errors.description" required placeholder="Enter product description here..."
+                            :min-height="300" />
+
 
                         <!-- Category & Brand -->
                         <v-row>
