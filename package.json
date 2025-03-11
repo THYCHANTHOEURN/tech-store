@@ -22,6 +22,7 @@
     },
     "dependencies": {
         "@mdi/font": "^7.4.47",
+        "@vee-validate/yup": "^4.15.0",
         "vuetify-pro-tiptap": "^2.5.7"
     }
 }

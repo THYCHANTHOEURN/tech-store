@@ -152,15 +152,6 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-
-        <!-- Flash Messages -->
-        <v-snackbar v-model="showSuccessMessage" color="success" timeout="3000" location="top">
-            {{ flashMessage }}
-        </v-snackbar>
-
-        <v-snackbar v-model="showErrorMessage" color="error" timeout="3000" location="top">
-            {{ errorMessage }}
-        </v-snackbar>
     </DashboardLayout>
 </template>
 
@@ -174,6 +165,7 @@
         filters: Object,
         categories: Array,
         brands: Array
+
     });
 
     // Table headers
@@ -215,21 +207,9 @@
     const deleteDialog = ref(false);
     const productToDelete = ref(null);
     const deleting = ref(false);
-    const showSuccessMessage = ref(false);
-    const showErrorMessage = ref(false);
-    const flashMessage = ref('');
-    const errorMessage = ref('');
 
-    // Check for flash messages from the backend
-    if (props.flash?.success) {
-        flashMessage.value = props.flash.success;
-        showSuccessMessage.value = true;
-    }
-
-    if (props.flash?.error) {
-        errorMessage.value = props.flash.error;
-        showErrorMessage.value = true;
-    }
+    // Removed custom flash message handling variables and logic
+    // The FlashMessage component in DashboardLayout will handle this automatically
 
     // Filter methods
     const applyFilters = () => {
@@ -308,14 +288,13 @@
 
         deleting.value = true;
         router.delete(route('dashboard.products.destroy', productToDelete.value.uuid), {
+            preserveScroll: true,
             onSuccess: () => {
                 closeDeleteDialog();
-                flashMessage.value = 'Product deleted successfully';
-                showSuccessMessage.value = true;
+                // Flash messages will be handled by the backend and FlashMessage component
             },
-            onError: (error) => {
-                errorMessage.value = error.message || 'Failed to delete product';
-                showErrorMessage.value = true;
+            onError: () => {
+                // Error handling will be done by the FlashMessage component
             },
             onFinish: () => {
                 deleting.value = false;

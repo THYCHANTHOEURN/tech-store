@@ -1,7 +1,7 @@
 <template>
     <!-- Success Message -->
     <v-snackbar app v-model="showSuccess" location="bottom right" position="sticky"
-                :multi-line="false" color="black" dark>
+                :multi-line="false" color="success" dark>
         {{ successMessage }}
 
         <template v-slot:actions>
