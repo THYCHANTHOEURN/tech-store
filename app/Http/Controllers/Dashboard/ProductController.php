@@ -71,7 +71,7 @@ class ProductController extends Controller
         $sortOrder  = $request->input('sort_order', 'desc');
         $query->orderBy($sortField, $sortOrder);
 
-        $products   = $query->paginate(10)->withQueryString();
+        $products   = $query->withQueryString()->paginate(10);
 
         // Get all categories and brands for filters
         $categories = Category::all();

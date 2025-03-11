@@ -88,25 +88,15 @@
                     </template>
 
                     <template v-slot:item.status="{ item }">
-                        <v-btn
-                            :color="item.status ? 'success' : 'error'"
-                            size="small"
-                            variant="flat"
-                            density="compact"
-                            class="text-white"
-                        >
+                        <v-btn :color="item.status ? 'success' : 'error'" size="small" variant="flat" density="compact"
+                            class="text-white">
                             {{ item.status ? 'Published' : 'UnPublished' }}
                         </v-btn>
                     </template>
 
                     <template v-slot:item.featured="{ item }">
-                        <v-btn
-                            :color="item.featured ? 'primary' : 'secondary'"
-                            size="small"
-                            variant="flat"
-                            density="compact"
-                            class="text-white"
-                        >
+                        <v-btn :color="item.featured ? 'primary' : 'secondary'" size="small" variant="flat"
+                            density="compact" class="text-white">
                             {{ item.featured ? 'Featured' : 'Not Featured' }}
                         </v-btn>
                     </template>
@@ -114,18 +104,19 @@
                     <template v-slot:item.actions="{ item }">
                         <div class="d-flex flex-nowrap justify-center justify-sm-end">
                             <Link :href="route('dashboard.products.show', item.uuid)" class="text-decoration-none">
-                                <v-btn icon size="x-small" color="info" class="mr-1" title="View" rounded="lg">
-                                    <v-icon>mdi-eye</v-icon>
-                                </v-btn>
+                            <v-btn icon size="x-small" color="info" class="mr-1" title="View" rounded="lg">
+                                <v-icon>mdi-eye</v-icon>
+                            </v-btn>
                             </Link>
 
                             <Link :href="route('dashboard.products.edit', item.uuid)" class="text-decoration-none">
-                                <v-btn icon size="x-small" color="warning" class="mr-1" title="Edit" rounded="lg">
-                                    <v-icon>mdi-pencil</v-icon>
-                                </v-btn>
+                            <v-btn icon size="x-small" color="warning" class="mr-1" title="Edit" rounded="lg">
+                                <v-icon>mdi-pencil</v-icon>
+                            </v-btn>
                             </Link>
 
-                            <v-btn icon size="x-small" color="error" class="mr-1" @click="confirmDelete(item)" title="Delete" rounded="lg">
+                            <v-btn icon size="x-small" color="error" class="mr-1" @click="confirmDelete(item)"
+                                title="Delete" rounded="lg">
                                 <v-icon>mdi-delete</v-icon>
                             </v-btn>
                         </div>
@@ -195,7 +186,7 @@
         { title: 'Stock', key: 'stock' },
         { title: 'Status', key: 'status', sortable: false },
         { title: 'Featured', key: 'featured', sortable: false },
-        { title: 'Actions', key: 'actions', sortable: false, align: 'center'},
+        { title: 'Actions', key: 'actions', sortable: false, align: 'center' },
     ];
 
     // Filter states

@@ -1,5 +1,4 @@
 <template>
-
     <Head :title="`Edit ${product.name}`" />
 
     <DashboardLayout>
@@ -22,8 +21,16 @@
                 <v-col cols="12" md="10" lg="8">
                     <v-card>
                         <v-card-text>
-                            <ProductForm :categories="categories" :brands="brands" :product="product"
-                                @submit="updateProduct" :processing="processing" :errors="errors" />
+                            <ProductForm
+                                :modelValue="formData"
+                                @update:modelValue="formData = $event"
+                                :product="product"
+                                :categories="categories"
+                                :brands="brands"
+                                :processing="processing"
+                                :errors="errors"
+                                @submit="updateProduct"
+                            />
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -44,8 +51,8 @@
 <script setup>
     import DashboardLayout from '@/Layouts/DashboardLayout.vue';
     import ProductForm from '@/Components/Dashboard/ProductForm.vue';
-    import { Head, Link, useForm } from '@inertiajs/vue3';
-    import { ref } from 'vue';
+    import { Head, Link, router } from '@inertiajs/vue3';
+    import { ref, onMounted } from 'vue';
 
     const props = defineProps({
         product: Object,
@@ -61,49 +68,73 @@
     const flashMessage = ref('');
     const errorMessage = ref('');
 
-    // Check for flash messages from the backend
-    if (props.flash?.success) {
-        flashMessage.value = props.flash.success;
-        showSuccessMessage.value = true;
-    }
-
-    if (props.flash?.error) {
-        errorMessage.value = props.flash.error;
-        showErrorMessage.value = true;
-    }
-
-    const form = useForm({
+    // Form data initialized from product
+    const formData = ref({
         name: props.product.name,
+        description: props.product.description || '',
         category_id: props.product.category_id,
         brand_id: props.product.brand_id,
         price: props.product.price,
-        sale_price: props.product.sale_price || '',
+        sale_price: props.product.sale_price || null,
         stock: props.product.stock,
-        description: props.product.description || '',
         status: props.product.status,
         featured: props.product.featured,
         images: [],
         remove_images: [],
-        primary_image: null
+        primary_image: props.product.product_images?.find(img => img.is_primary)?.id || null
     });
 
-    const updateProduct = (formData) => {
+    // Check for flash messages from the backend
+    onMounted(() => {
+        if (props.flash?.success) {
+            flashMessage.value = props.flash.success;
+            showSuccessMessage.value = true;
+        }
+
+        if (props.flash?.error) {
+            errorMessage.value = props.flash.error;
+            showErrorMessage.value = true;
+        }
+    });
+
+    const updateProduct = (data) => {
         processing.value = true;
 
-        form.name = formData.name;
-        form.category_id = formData.category_id;
-        form.brand_id = formData.brand_id;
-        form.price = formData.price;
-        form.sale_price = formData.sale_price;
-        form.stock = formData.stock;
-        form.description = formData.description;
-        form.status = formData.status;
-        form.featured = formData.featured;
-        form.images = formData.images;
-        form.remove_images = formData.remove_images || [];
-        form.primary_image = formData.primary_image;
+        // Create FormData for file uploads
+        const form = new FormData();
 
-        form.put(route('dashboard.products.update', props.product.uuid), {
+        // Add method for Laravel to recognize as PUT request
+        form.append('_method', 'PUT');
+
+        // Add all text/number fields
+        Object.keys(data).forEach(key => {
+            // Skip image files and handle special cases
+            if (key !== 'images' && key !== 'remove_images' && data[key] !== undefined) {
+                if (key === 'primary_image' && data[key] !== null) {
+                    form.append(key, data[key]);
+                } else if (typeof data[key] === 'boolean') {
+                    form.append(key, data[key] ? '1' : '0');
+                } else if (data[key] !== null) {
+                    form.append(key, data[key]);
+                }
+            }
+        });
+
+        // Add image files
+        if (data.images && data.images.length > 0) {
+            data.images.forEach((file, index) => {
+                form.append(`images[${index}]`, file);
+            });
+        }
+
+        // Add remove_images array
+        if (data.remove_images && data.remove_images.length > 0) {
+            data.remove_images.forEach((id, index) => {
+                form.append(`remove_images[${index}]`, id);
+            });
+        }
+
+        router.post(route('dashboard.products.update', props.product.uuid), form, {
             onSuccess: () => {
                 processing.value = false;
                 flashMessage.value = 'Product updated successfully';

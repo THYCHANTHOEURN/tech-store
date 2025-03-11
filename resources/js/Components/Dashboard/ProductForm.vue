@@ -11,12 +11,12 @@
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Product Name -->
-                        <v-text-field v-model="form.name" label="Product Name*" :error-messages="errors.name"
+                        <v-text-field v-model="form.name" label="Product Name*" :error-messages="errors?.name"
                             required></v-text-field>
 
                         <!-- Description -->
                         <RichTextEditor v-model="form.description" label="Product Description"
-                            :error="errors.description" required placeholder="Enter product description here..."
+                            :error="errors?.description" required placeholder="Enter product description here..."
                             :min-height="300" />
 
 
@@ -24,12 +24,12 @@
                         <v-row>
                             <v-col cols="12" md="6">
                                 <v-select v-model="form.category_id" :items="categories" item-title="name"
-                                    item-value="id" label="Category*" :error-messages="errors.category_id"
+                                    item-value="id" label="Category*" :error-messages="errors?.category_id"
                                     required></v-select>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-select v-model="form.brand_id" :items="brands" item-title="name" item-value="id"
-                                    label="Brand*" :error-messages="errors.brand_id" required></v-select>
+                                    label="Brand*" :error-messages="errors?.brand_id" required></v-select>
                             </v-col>
                         </v-row>
 
@@ -49,19 +49,20 @@
                     <v-card-text>
                         <v-row>
                             <v-col cols="12" md="6">
-                                <v-text-field v-model="form.price" label="Regular Price*" prefix="$" type="number"
-                                    step="0.01" min="0" :error-messages="errors.price" required></v-text-field>
+                                <v-text-field v-model.number="form.price" label="Regular Price*" prefix="$"
+                                    type="number" step="0.01" min="0" :error-messages="errors?.price"
+                                    required></v-text-field>
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-text-field v-model="form.sale_price" label="Sale Price" prefix="$" type="number"
-                                    step="0.01" min="0" :error-messages="errors.sale_price"
+                                <v-text-field v-model.number="form.sale_price" label="Sale Price" prefix="$"
+                                    type="number" step="0.01" min="0" :error-messages="errors?.sale_price"
                                     hint="Leave empty for no sale price"></v-text-field>
                             </v-col>
                         </v-row>
 
                         <!-- Stock -->
-                        <v-text-field v-model="form.stock" label="Stock Quantity*" type="number" min="0"
-                            :error-messages="errors.stock" required></v-text-field>
+                        <v-text-field v-model.number="form.stock" label="Stock Quantity*" type="number" min="0"
+                            :error-messages="errors?.stock" required></v-text-field>
                     </v-card-text>
                 </v-card>
 
@@ -86,19 +87,20 @@
                         </v-file-input>
 
                         <!-- Existing Images (Edit Mode) -->
-                        <div v-if="product && product.product_images && product.product_images.length > 0" class="mt-4">
+                        <div v-if="product && filteredProductImages.length > 0" class="mt-4">
                             <h3 class="text-subtitle-1 mb-2">Existing Images</h3>
                             <div class="d-flex flex-wrap gap-3">
                                 <div v-for="image in filteredProductImages" :key="image.id"
                                     class="image-container position-relative"
-                                    :class="{ 'primary-image': image.is_primary }">
+                                    :class="{ 'primary-image': image.id === form.primary_image }">
                                     <v-img :src="image.image_url" width="100" height="100" cover
                                         class="rounded"></v-img>
 
                                     <div class="image-actions">
                                         <!-- Make Primary Button -->
                                         <v-btn icon size="small" color="primary" variant="text"
-                                            @click="setPrimaryImage(image.id)" :disabled="image.is_primary" class="mr-1"
+                                            @click="setPrimaryImage(image.id)"
+                                            :disabled="image.id === form.primary_image" class="mr-1"
                                             title="Set as primary image">
                                             <v-icon>mdi-star</v-icon>
                                         </v-btn>
@@ -106,12 +108,13 @@
                                         <!-- Delete Button -->
                                         <v-btn icon size="small" color="error" variant="text"
                                             @click="removeImage(image.id)"
-                                            :disabled="product.product_images.length === 1" title="Delete image">
+                                            :disabled="filteredProductImages.length === 1" title="Delete image">
                                             <v-icon>mdi-delete</v-icon>
                                         </v-btn>
                                     </div>
 
-                                    <v-chip v-if="image.is_primary" color="primary" size="x-small" class="image-badge">
+                                    <v-chip v-if="image.id === form.primary_image" color="primary" size="x-small"
+                                        class="image-badge">
                                         Primary
                                     </v-chip>
                                 </div>
@@ -134,14 +137,14 @@
                         <div class="mb-4">
                             <v-switch v-model="form.status" color="success" label="Published"
                                 hint="Toggle to publish or unpublish the product"
-                                :error-messages="errors.status"></v-switch>
+                                :error-messages="errors?.status"></v-switch>
                         </div>
 
                         <!-- Featured -->
                         <div class="mb-4">
                             <v-switch v-model="form.featured" color="primary" label="Featured"
                                 hint="Featured products appear on the homepage"
-                                :error-messages="errors.featured"></v-switch>
+                                :error-messages="errors?.featured"></v-switch>
                         </div>
 
                         <v-divider class="my-4"></v-divider>
@@ -164,32 +167,83 @@
 </template>
 
 <script setup>
-    import { ref, computed, watch } from 'vue';
+    import { ref, computed, onMounted } from 'vue';
+    import { Link } from '@inertiajs/vue3';
 
     const props = defineProps({
-        product: Object,
-        categories: Array,
-        brands: Array,
-        errors: Object,
-        processing: Boolean
+        product: {
+            type: Object,
+            default: null
+        },
+        categories: {
+            type: Array,
+            required: true
+        },
+        brands: {
+            type: Array,
+            required: true
+        },
+        errors: {
+            type: Object,
+            default: () => ({})
+        },
+        processing: {
+            type: Boolean,
+            default: false
+        },
+        modelValue: {
+            type: Object,
+            default: () => ({})
+        }
     });
 
-    const emit = defineEmits(['submit']);
+    const emit = defineEmits(['submit', 'update:modelValue']);
 
-    // Initialize form with product data if in edit mode, otherwise empty form
+    // Initialize form with default values and modelValue/product data
     const form = ref({
-        name: props.product?.name || '',
-        description: props.product?.description || '',
-        category_id: props.product?.category_id || null,
-        brand_id: props.product?.brand_id || null,
-        price: props.product?.price || '',
-        sale_price: props.product?.sale_price || '',
-        stock: props.product?.stock || 0,
-        status: props.product?.status !== undefined ? props.product.status : true,
-        featured: props.product?.featured || false,
+        name: '',
+        description: '',
+        category_id: null,
+        brand_id: null,
+        price: null,
+        sale_price: null,
+        stock: 0,
+        status: true,
+        featured: false,
         images: [],
         remove_images: [],
-        primary_image: props.product?.product_images?.find(img => img.is_primary)?.id || null
+        primary_image: null
+    });
+
+    // Set initial form values on component mount
+    onMounted(() => {
+        // Initialize from props.modelValue first
+        if (props.modelValue && Object.keys(props.modelValue).length) {
+            Object.keys(form.value).forEach(key => {
+                if (props.modelValue[key] !== undefined) {
+                    form.value[key] = props.modelValue[key];
+                }
+            });
+        }
+
+        // Then initialize from product if available (for edit mode)
+        if (props.product) {
+            form.value.name = props.product.name;
+            form.value.description = props.product.description || '';
+            form.value.category_id = props.product.category_id;
+            form.value.brand_id = props.product.brand_id;
+            form.value.price = props.product.price;
+            form.value.sale_price = props.product.sale_price || null;
+            form.value.stock = props.product.stock;
+            form.value.status = props.product.status;
+            form.value.featured = props.product.featured;
+            form.value.primary_image = props.product.product_images?.find(img => img.is_primary)?.id || null;
+
+            // Keep the remove_images state if already set
+            if (!form.value.remove_images?.length) {
+                form.value.remove_images = [];
+            }
+        }
     });
 
     // Filter product images to remove those marked for removal
@@ -200,26 +254,11 @@
         );
     });
 
-    // When product prop changes, update the form data
-    watch(() => props.product, (newProduct) => {
-        if (newProduct) {
-            form.value.name = newProduct.name;
-            form.value.description = newProduct.description || '';
-            form.value.category_id = newProduct.category_id;
-            form.value.brand_id = newProduct.brand_id;
-            form.value.price = newProduct.price;
-            form.value.sale_price = newProduct.sale_price || '';
-            form.value.stock = newProduct.stock;
-            form.value.status = newProduct.status;
-            form.value.featured = newProduct.featured;
-            form.value.primary_image = newProduct.product_images?.find(img => img.is_primary)?.id || null;
-            form.value.remove_images = []; // Reset remove_images when product changes
-        }
-    }, { deep: true, immediate: true });
-
     // Set primary image
     const setPrimaryImage = (imageId) => {
         form.value.primary_image = imageId;
+        // Emit form changes
+        emitFormChanges();
     };
 
     // Remove image
@@ -230,9 +269,7 @@
         // If removing the primary image, select a new primary image
         if (form.value.primary_image === imageId) {
             // Find an image that's not being removed to set as primary
-            const availableImages = props.product.product_images.filter(
-                img => !form.value.remove_images.includes(img.id)
-            );
+            const availableImages = filteredProductImages.value;
 
             if (availableImages.length > 0) {
                 form.value.primary_image = availableImages[0].id;
@@ -240,11 +277,19 @@
                 form.value.primary_image = null;
             }
         }
+
+        // Emit form changes
+        emitFormChanges();
     };
 
-    // Submit form
+    // Emit changes to the parent component - avoids recursive updates
+    const emitFormChanges = () => {
+        emit('update:modelValue', { ...form.value });
+    };
+
+    // Validate and submit form
     const submitForm = () => {
-        // Validate form before submission
+        // Basic validation
         if (!form.value.name) {
             alert('Product name is required');
             return;
@@ -265,7 +310,8 @@
             return;
         }
 
-        emit('submit', form.value);
+        // Emit the submit event with form data
+        emit('submit', { ...form.value });
     };
 </script>
 

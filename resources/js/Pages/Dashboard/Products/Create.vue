@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Create Product" />
 
     <DashboardLayout>
@@ -9,13 +10,9 @@
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.products.index')">
-                    <v-btn
-                        color="secondary"
-                        prepend-icon="mdi-arrow-left"
-                        variant="outlined"
-                    >
-                        Back to Products
-                    </v-btn>
+                <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
+                    Back to Products
+                </v-btn>
                 </Link>
             </div>
         </template>
@@ -25,13 +22,9 @@
                 <v-col cols="12" md="10" lg="8">
                     <v-card>
                         <v-card-text>
-                            <ProductForm
-                                :categories="categories"
-                                :brands="brands"
-                                @submit="createProduct"
-                                :processing="processing"
-                                :errors="errors"
-                            />
+                            <ProductForm :modelValue="formData" @update:modelValue="formData = $event"
+                                :categories="categories" :brands="brands" :processing="processing" :errors="errors"
+                                @submit="createProduct" />
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -39,79 +32,83 @@
         </v-container>
 
         <!-- Flash Messages -->
-        <v-snackbar
-            v-model="showErrorMessage"
-            color="error"
-            timeout="3000"
-            location="top"
-        >
+        <v-snackbar v-model="showErrorMessage" color="error" timeout="3000" location="top">
             {{ errorMessage }}
         </v-snackbar>
     </DashboardLayout>
 </template>
 
 <script setup>
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
-import ProductForm from '@/Components/Dashboard/ProductForm.vue';
-import { Head, router, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+    import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+    import ProductForm from '@/Components/Dashboard/ProductForm.vue';
+    import { Head, router, Link } from '@inertiajs/vue3';
+    import { ref } from 'vue';
 
-const props = defineProps({
-    categories: Array,
-    brands: Array,
-    errors: Object
-});
-
-const processing = ref(false);
-const showErrorMessage = ref(false);
-const errorMessage = ref('');
-
-const createProduct = (formData) => {
-    processing.value = true;
-
-    console.log('Submitting product data:', formData);
-
-    // Create FormData for file uploads
-    const data = new FormData();
-    data.append('name', formData.name);
-    data.append('category_id', formData.category_id);
-    data.append('brand_id', formData.brand_id);
-    data.append('price', formData.price);
-
-    if (formData.sale_price) {
-        data.append('sale_price', formData.sale_price);
-    }
-
-    data.append('stock', formData.stock);
-
-    if (formData.description) {
-        data.append('description', formData.description);
-    }
-
-    data.append('status', formData.status ? '1' : '0');
-    data.append('featured', formData.featured ? '1' : '0');
-
-    // Append image files
-    if (formData.images && formData.images.length > 0) {
-        formData.images.forEach((file, index) => {
-            data.append(`images[${index}]`, file);
-        });
-    }
-
-    router.post(route('dashboard.products.store'), data, {
-        onSuccess: () => {
-            processing.value = false;
-        },
-        onError: (errors) => {
-            processing.value = false;
-            console.error('Form submission errors:', errors);
-
-            if (errors.message) {
-                errorMessage.value = errors.message;
-                showErrorMessage.value = true;
-            }
-        },
-        forceFormData: true
+    const props = defineProps({
+        categories: Array,
+        brands: Array,
+        errors: Object
     });
-};
+
+    const processing = ref(false);
+    const showErrorMessage = ref(false);
+    const errorMessage = ref('');
+
+    // Form data with default values
+    const formData = ref({
+        name: '',
+        description: '',
+        category_id: null,
+        brand_id: null,
+        price: null,
+        sale_price: null,
+        stock: 0,
+        status: true,
+        featured: false,
+        images: [],
+        remove_images: [],
+        primary_image: null
+    });
+
+    const createProduct = (data) => {
+        processing.value = true;
+
+        // Create FormData for file uploads
+        const form = new FormData();
+
+        // Add all text/number fields
+        Object.keys(data).forEach(key => {
+            // Skip image files and arrays that need special handling
+            if (key !== 'images' && key !== 'remove_images' && data[key] !== null && data[key] !== undefined) {
+                // Handle boolean values
+                if (typeof data[key] === 'boolean') {
+                    form.append(key, data[key] ? '1' : '0');
+                } else {
+                    form.append(key, data[key]);
+                }
+            }
+        });
+
+        // Add image files
+        if (data.images && data.images.length > 0) {
+            data.images.forEach((file, index) => {
+                form.append(`images[${index}]`, file);
+            });
+        }
+
+        router.post(route('dashboard.products.store'), form, {
+            onSuccess: () => {
+                processing.value = false;
+            },
+            onError: (errors) => {
+                processing.value = false;
+
+                if (errors.message) {
+                    errorMessage.value = errors.message;
+                    showErrorMessage.value = true;
+                }
+            },
+            forceFormData: true
+        });
+    };
 </script>

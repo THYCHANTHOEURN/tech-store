@@ -10,14 +10,14 @@
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.products.edit', product.uuid)">
-                    <v-btn color="warning" prepend-icon="mdi-pencil" class="mr-2">
-                        Edit
-                    </v-btn>
+                <v-btn color="warning" prepend-icon="mdi-pencil" class="mr-2">
+                    Edit
+                </v-btn>
                 </Link>
                 <Link :href="route('dashboard.products.index')">
-                    <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
-                        Back to Products
-                    </v-btn>
+                <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
+                    Back to Products
+                </v-btn>
                 </Link>
             </div>
         </template>
@@ -84,13 +84,13 @@
                                         <v-list-item>
                                             <v-list-item-title>Category</v-list-item-title>
                                             <v-list-item-subtitle>{{ product.category?.name || 'N/A'
-                                                }}</v-list-item-subtitle>
+                                            }}</v-list-item-subtitle>
                                         </v-list-item>
 
                                         <v-list-item>
                                             <v-list-item-title>Brand</v-list-item-title>
                                             <v-list-item-subtitle>{{ product.brand?.name || 'N/A'
-                                                }}</v-list-item-subtitle>
+                                            }}</v-list-item-subtitle>
                                         </v-list-item>
                                     </v-list>
                                 </v-col>
@@ -104,7 +104,7 @@
                                         <v-list-item v-if="product.sale_price">
                                             <v-list-item-title>Sale Price</v-list-item-title>
                                             <v-list-item-subtitle class="text-error">${{ product.sale_price
-                                                }}</v-list-item-subtitle>
+                                            }}</v-list-item-subtitle>
                                         </v-list-item>
 
                                         <v-list-item>
