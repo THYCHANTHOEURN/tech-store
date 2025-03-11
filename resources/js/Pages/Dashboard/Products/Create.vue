@@ -30,11 +30,6 @@
                 </v-col>
             </v-row>
         </v-container>
-
-        <!-- Flash Messages -->
-        <v-snackbar v-model="showErrorMessage" color="error" timeout="3000" location="top">
-            {{ errorMessage }}
-        </v-snackbar>
     </DashboardLayout>
 </template>
 
@@ -47,12 +42,11 @@
     const props = defineProps({
         categories: Array,
         brands: Array,
-        errors: Object
+        errors: Object,
+        flash: Object
     });
 
     const processing = ref(false);
-    const showErrorMessage = ref(false);
-    const errorMessage = ref('');
 
     // Form data with default values
     const formData = ref({
@@ -97,16 +91,8 @@
         }
 
         router.post(route('dashboard.products.store'), form, {
-            onSuccess: () => {
+            onFinish: () => {
                 processing.value = false;
-            },
-            onError: (errors) => {
-                processing.value = false;
-
-                if (errors.message) {
-                    errorMessage.value = errors.message;
-                    showErrorMessage.value = true;
-                }
             },
             forceFormData: true
         });

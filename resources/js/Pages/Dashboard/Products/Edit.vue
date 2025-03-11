@@ -36,15 +36,6 @@
                 </v-col>
             </v-row>
         </v-container>
-
-        <!-- Flash Messages -->
-        <v-snackbar v-model="showSuccessMessage" color="success" timeout="3000" location="top">
-            {{ flashMessage }}
-        </v-snackbar>
-
-        <v-snackbar v-model="showErrorMessage" color="error" timeout="3000" location="top">
-            {{ errorMessage }}
-        </v-snackbar>
     </DashboardLayout>
 </template>
 
@@ -52,7 +43,7 @@
     import DashboardLayout from '@/Layouts/DashboardLayout.vue';
     import ProductForm from '@/Components/Dashboard/ProductForm.vue';
     import { Head, Link, router } from '@inertiajs/vue3';
-    import { ref, onMounted } from 'vue';
+    import { ref } from 'vue';
 
     const props = defineProps({
         product: Object,
@@ -63,10 +54,6 @@
     });
 
     const processing = ref(false);
-    const showSuccessMessage = ref(false);
-    const showErrorMessage = ref(false);
-    const flashMessage = ref('');
-    const errorMessage = ref('');
 
     // Form data initialized from product
     const formData = ref({
@@ -82,19 +69,6 @@
         images: [],
         remove_images: [],
         primary_image: props.product.product_images?.find(img => img.is_primary)?.id || null
-    });
-
-    // Check for flash messages from the backend
-    onMounted(() => {
-        if (props.flash?.success) {
-            flashMessage.value = props.flash.success;
-            showSuccessMessage.value = true;
-        }
-
-        if (props.flash?.error) {
-            errorMessage.value = props.flash.error;
-            showErrorMessage.value = true;
-        }
     });
 
     const updateProduct = (data) => {
@@ -135,18 +109,8 @@
         }
 
         router.post(route('dashboard.products.update', props.product.uuid), form, {
-            onSuccess: () => {
+            onFinish: () => {
                 processing.value = false;
-                flashMessage.value = 'Product updated successfully';
-                showSuccessMessage.value = true;
-            },
-            onError: (err) => {
-                processing.value = false;
-
-                if (err.message) {
-                    errorMessage.value = err.message;
-                    showErrorMessage.value = true;
-                }
             },
             preserveScroll: true
         });

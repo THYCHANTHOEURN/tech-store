@@ -71,7 +71,7 @@ class ProductController extends Controller
         $sortOrder  = $request->input('sort_order', 'desc');
         $query->orderBy($sortField, $sortOrder);
 
-        $products   = $query->withQueryString()->paginate(10);
+        $products   = $query->paginate(10)->appends($request->query());
 
         // Get all categories and brands for filters
         $categories = Category::all();
@@ -179,6 +179,7 @@ class ProductController extends Controller
             }
 
             DB::commit();
+
             return redirect()->route('dashboard.products.index')
                 ->with('success', 'Product created successfully');
 
@@ -328,6 +329,7 @@ class ProductController extends Controller
             }
 
             DB::commit();
+
             return redirect()->route('dashboard.products.index')
                 ->with('success', 'Product updated successfully');
 
@@ -361,6 +363,7 @@ class ProductController extends Controller
             $product->delete();
 
             DB::commit();
+
             return redirect()->route('dashboard.products.index')
                 ->with('success', 'Product deleted successfully');
 

@@ -2,6 +2,7 @@
     import { ref } from 'vue';
     import ApplicationLogo from '@/Components/ApplicationLogo.vue';
     import { Link, usePage, router } from '@inertiajs/vue3';
+    import FlashMessage from '@/Components/FlashMessage.vue';
 
     const drawer = ref(true);
     const user = usePage().props.auth.user;
@@ -10,11 +11,13 @@
         router.post(route('logout'));
     };
 
-    // navigateTo function can be removed since we're using Link component
 </script>
 
 <template>
     <v-app>
+        <!-- Flash messages component -->
+        <FlashMessage />
+
         <!-- Main Toolbar -->
         <v-app-bar elevation="1">
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>

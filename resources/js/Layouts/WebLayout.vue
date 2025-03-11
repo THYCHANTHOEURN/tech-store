@@ -1,5 +1,8 @@
 <template>
     <v-app>
+        <!-- Flash messages component -->
+        <FlashMessage />
+
         <v-snackbar v-model="showMessage" :color="messageType" :timeout="3000" location="top">
             {{ message }}
         </v-snackbar>
@@ -351,6 +354,7 @@
 <script setup>
     import { ref, onMounted, computed, watch } from 'vue'
     import { router, usePage } from '@inertiajs/vue3'
+    import FlashMessage from '@/Components/FlashMessage.vue'
 
     const drawer = ref(false)
     const tab = ref('menu')
@@ -398,24 +402,6 @@
     const wishlistCount = computed(() => {
         return usePage().props.wishlistCount || 0;
     });
-
-    const showMessage = ref(false);
-    const message = ref('');
-    const messageType = ref('');
-
-    // Watch for flash messages
-    watch(() => usePage().props.flash, (flash) => {
-        if (flash.success) {
-            message.value = flash.success;
-            messageType.value = 'success';
-            showMessage.value = true;
-        }
-        if (flash.error) {
-            message.value = flash.error;
-            messageType.value = 'error';
-            showMessage.value = true;
-        }
-    }, { deep: true });
 
     // Add logout function
     const logout = () => {
