@@ -86,6 +86,37 @@
                     <v-list-item-title>Products</v-list-item-title>
                 </v-list-item>
                 </Link>
+
+                <!-- Categories Menu Item -->
+                <Link :href="route('dashboard.categories.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.categories.*')">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-format-list-bulleted</v-icon>
+                    </template>
+                    <v-list-item-title>Categories</v-list-item-title>
+                </v-list-item>
+                </Link>
+
+                <!-- Brands Menu Item -->
+                <Link :href="route('dashboard.brands.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.brands.*')">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-label</v-icon>
+                    </template>
+                    <v-list-item-title>Brands</v-list-item-title>
+                </v-list-item>
+                </Link>
+
+                <!-- Banners Menu Item -->
+                <Link :href="route('dashboard.banners.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.banners.*')">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-image-multiple</v-icon>
+                    </template>
+                    <v-list-item-title>Banners</v-list-item-title>
+                </v-list-item>
+                </Link>
+
             </v-list>
         </v-navigation-drawer>
 
