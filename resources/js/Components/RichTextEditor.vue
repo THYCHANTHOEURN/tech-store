@@ -11,7 +11,12 @@
 </template>
 
 <script setup>
-    import { BaseKit, Bold, Color, Fullscreen, Heading, Highlight, History, Image, Italic, Link, Strike, Table, Underline, Video, VuetifyTiptap, VuetifyViewer } from 'vuetify-pro-tiptap'
+    import {
+        BaseKit, Bold, Color, Fullscreen, Heading, Highlight, History,
+        Image, Italic, Link, Strike, Table, Underline, Video,
+        VuetifyTiptap, VuetifyViewer,
+        BulletList, OrderedList, TextAlign
+    } from 'vuetify-pro-tiptap'
     import 'vuetify-pro-tiptap/style.css'
     import { ref, watch, computed } from 'vue'
 
@@ -58,7 +63,12 @@
         },
         toolbarOptions: {
             type: Array,
-            default: () => ['bold', 'italic', 'underline', 'strike', 'color', 'highlight', 'heading', 'link', 'image', 'video', 'table']
+            default: () => [
+                'bold', 'italic', 'underline', 'strike',
+                'color', 'highlight', 'heading', 'link',
+                'bulletList', 'orderedList',  'align',
+                'image', 'video', 'table'
+            ]
         }
     })
 
@@ -97,6 +107,14 @@
         if (props.toolbarOptions.includes('image')) allExtensions.push(Image)
         if (props.toolbarOptions.includes('video')) allExtensions.push(Video)
         if (props.toolbarOptions.includes('table')) allExtensions.push(Table)
+        if (props.toolbarOptions.includes('bulletList')) allExtensions.push(BulletList)
+        if (props.toolbarOptions.includes('orderedList')) allExtensions.push(OrderedList)
+        if (props.toolbarOptions.includes('align')) {
+            allExtensions.push(TextAlign.configure({
+                types: ['paragraph'],
+                alignments: ['left', 'center', 'right', 'justify'],
+            }))
+        }
 
         // Always include these core extensions
         allExtensions.push(Fullscreen)
