@@ -58,12 +58,28 @@
         image_url: null,
     });
 
-    // Create new product
+    // Create new category
     const createCategory = (data) => {
         processing.value = true;
 
         // Create FormData for file uploads
         const form = new FormData();
+
+        // Append all form data
+        Object.keys(data).forEach(key => {
+            // Handle file upload differently
+            if (key === 'image' && data[key]) {
+                form.append(key, data[key]);
+            }
+            // Handle boolean status field properly
+            else if (key === 'status') {
+                form.append(key, data[key] ? '1' : '0');  // Convert boolean to '1'/'0'
+            }
+            // Skip image_url as it's just for preview display
+            else if (key !== 'image_url' && data[key] !== null && data[key] !== undefined) {
+                form.append(key, data[key]);
+            }
+        });
 
         router.post(route('dashboard.categories.store'), form, {
             onFinish: () => {
