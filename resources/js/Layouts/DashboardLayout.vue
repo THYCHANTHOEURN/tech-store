@@ -117,6 +117,17 @@
                 </v-list-item>
                 </Link>
 
+                <!-- Orders Menu Item -->
+                <Link :href="route('dashboard.orders.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.orders.*')">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-cart</v-icon>
+                    </template>
+                    <v-list-item-title>Orders</v-list-item-title>
+                </v-list-item>
+                </Link>
+
+
             </v-list>
         </v-navigation-drawer>
 
