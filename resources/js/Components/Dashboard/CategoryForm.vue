@@ -11,18 +11,19 @@
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Category Name -->
-                        <v-text-field v-model="form.name" label="Category Name*" :error-messages="errors?.name"
-                            required></v-text-field>
+                        <v-text-field v-model="form.name" label="Category Name*" :error-messages="errors?.name" required
+                            variant="outlined" density="comfortable"></v-text-field>
 
                         <!-- Description -->
                         <RichTextEditor v-model="form.description" label="Category Description"
                             :error="errors?.description" required placeholder="Enter category description here..."
-                            :min-height="300" />
+                            :min-height="300" variant="outlined" density="comfortable" />
 
                         <!-- Parent Category -->
                         <v-select v-model="form.parent_id" :items="parentCategories || []" item-title="name"
                             item-value="id" label="Parent Category" :error-messages="errors?.parent_id" clearable
-                            hint="Leave empty for top-level category" persistent-hint></v-select>
+                            variant="outlined" density="comfortable" hint="Leave empty for top-level category"
+                            persistent-hint></v-select>
                     </v-card-text>
                 </v-card>
 
@@ -43,8 +44,9 @@
 
                         <!-- Image Upload Field -->
                         <v-file-input v-model="form.image" accept="image/*" label="Upload Category Image*"
-                            :error-messages="errors?.image" prepend-icon="mdi-camera" show-size :required="!category"
-                            @change="previewImage"></v-file-input>
+                            :error-messages="errors?.image" prepend-icon="" prepend-inner-icon="mdi-camera" show-size
+                            :required="!category" @change="previewImage" variant="outlined"
+                            density="comfortable"></v-file-input>
 
                         <!-- Image Preview -->
                         <div v-if="imagePreview" class="mt-4">

@@ -12,12 +12,12 @@
                     <v-card-text>
                         <!-- Product Name -->
                         <v-text-field v-model="form.name" label="Product Name*" :error-messages="errors?.name"
-                            required></v-text-field>
+                            variant="outlined" density="comfortable" required></v-text-field>
 
                         <!-- Description -->
                         <RichTextEditor v-model="form.description" label="Product Description"
                             :error="errors?.description" required placeholder="Enter product description here..."
-                            :min-height="300" />
+                            :min-height="300" variant="outlined" density="comfortable" />
 
 
                         <!-- Category & Brand -->
@@ -25,16 +25,18 @@
                             <v-col cols="12" md="6">
                                 <v-select v-model="form.category_id" :items="categories" item-title="name"
                                     item-value="id" label="Category*" :error-messages="errors?.category_id"
-                                    required></v-select>
+                                    variant="outlined" density="comfortable" required></v-select>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-select v-model="form.brand_id" :items="brands" item-title="name" item-value="id"
-                                    label="Brand*" :error-messages="errors?.brand_id" required></v-select>
+                                    label="Brand*" :error-messages="errors?.brand_id" variant="outlined"
+                                    density="comfortable" required></v-select>
                             </v-col>
                         </v-row>
 
                         <!-- SKU (read only for edit) -->
-                        <v-text-field v-if="product" v-model="product.sku" label="SKU" disabled
+                        <v-text-field v-if="product" v-model="product.sku" label="SKU" disabled variant="outlined"
+                            density="comfortable"
                             hint="SKU is generated automatically and cannot be changed"></v-text-field>
                     </v-card-text>
                 </v-card>
@@ -50,19 +52,21 @@
                         <v-row>
                             <v-col cols="12" md="6">
                                 <v-text-field v-model.number="form.price" label="Regular Price*" prefix="$"
-                                    type="number" step="0.01" min="0" :error-messages="errors?.price"
-                                    required></v-text-field>
+                                    type="number" step="0.01" min="0" :error-messages="errors?.price" required
+                                    variant="outlined" density="comfortable"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-text-field v-model.number="form.sale_price" label="Sale Price" prefix="$"
                                     type="number" step="0.01" min="0" :error-messages="errors?.sale_price"
-                                    hint="Leave empty for no sale price"></v-text-field>
+                                    hint="Leave empty for no sale price" variant="outlined"
+                                    density="comfortable"></v-text-field>
                             </v-col>
                         </v-row>
 
                         <!-- Stock -->
                         <v-text-field v-model.number="form.stock" label="Stock Quantity*" type="number" min="0"
-                            :error-messages="errors?.stock" required></v-text-field>
+                            :error-messages="errors?.stock" variant="outlined" density="comfortable"
+                            required></v-text-field>
                     </v-card-text>
                 </v-card>
 
@@ -77,7 +81,8 @@
                         <!-- Image Upload -->
                         <v-file-input v-model="form.images" label="Upload Images"
                             accept="image/png, image/jpeg, image/jpg" :error-messages="errors?.images" multiple
-                            show-size prepend-icon="mdi-camera">
+                            show-size prepend-icon="" prepend-inner-icon="mdi-camera" variant="outlined"
+                            density="comfortable">
                             <template v-slot:selection="{ fileNames }">
                                 <v-chip v-for="fileName in fileNames" :key="fileName" size="small" label color="primary"
                                     class="mr-1">
