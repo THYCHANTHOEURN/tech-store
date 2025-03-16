@@ -31,8 +31,8 @@
                         </v-col>
 
                         <v-col cols="12" md="4">
-                            <v-select v-model="selectedStatus" :items="statusOptions" label="Status"
-                                hide-details clearable @update:model-value="applyFilters"></v-select>
+                            <v-select v-model="selectedStatus" :items="statusOptions" label="Status" hide-details
+                                clearable @update:model-value="applyFilters"></v-select>
                         </v-col>
 
                         <v-col cols="12" md="2">
@@ -105,9 +105,12 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">Cancel</v-btn>
-                        <v-btn color="error" :loading="deleting" @click="deleteBrand">Delete</v-btn>
-                        <v-spacer></v-spacer>
+                        <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">
+                            Cancel
+                        </v-btn>
+                        <v-btn color="error" variant="flat" @click="deleteBrand" :loading="deleting">
+                            Delete
+                        </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -145,7 +148,7 @@
         { title: 'Name', key: 'name' },
         { title: 'Status', key: 'status' },
         { title: 'Created Date', key: 'created_at' },
-        { title: 'Actions', key: 'actions', sortable: false, align: 'end' },
+        { title: 'Actions', key: 'actions', sortable: false, align: 'center' },
     ];
 
     const statusOptions = [

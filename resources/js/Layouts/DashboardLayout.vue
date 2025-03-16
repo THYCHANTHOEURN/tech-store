@@ -127,6 +127,16 @@
                 </v-list-item>
                 </Link>
 
+                <!-- Customers Menu Item -->
+                <Link :href="route('dashboard.customers.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.customers.*')">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-account-group</v-icon>
+                    </template>
+                    <v-list-item-title>Customers</v-list-item-title>
+                </v-list-item>
+                </Link>
+
 
             </v-list>
         </v-navigation-drawer>

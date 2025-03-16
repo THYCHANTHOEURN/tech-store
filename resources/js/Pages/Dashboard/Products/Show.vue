@@ -84,13 +84,13 @@
                                         <v-list-item>
                                             <v-list-item-title>Category</v-list-item-title>
                                             <v-list-item-subtitle>{{ product.category?.name || 'N/A'
-                                            }}</v-list-item-subtitle>
+                                                }}</v-list-item-subtitle>
                                         </v-list-item>
 
                                         <v-list-item>
                                             <v-list-item-title>Brand</v-list-item-title>
                                             <v-list-item-subtitle>{{ product.brand?.name || 'N/A'
-                                            }}</v-list-item-subtitle>
+                                                }}</v-list-item-subtitle>
                                         </v-list-item>
                                     </v-list>
                                 </v-col>
@@ -104,7 +104,7 @@
                                         <v-list-item v-if="product.sale_price">
                                             <v-list-item-title>Sale Price</v-list-item-title>
                                             <v-list-item-subtitle class="text-error">${{ product.sale_price
-                                            }}</v-list-item-subtitle>
+                                                }}</v-list-item-subtitle>
                                         </v-list-item>
 
                                         <v-list-item>

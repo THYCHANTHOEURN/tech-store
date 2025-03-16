@@ -116,8 +116,7 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">Cancel</v-btn>
-                        <v-btn color="error" :loading="deleting" @click="deleteBanner">Delete</v-btn>
-                        <v-spacer></v-spacer>
+                        <v-btn color="error" variant="flat" :loading="deleting" @click="deleteBanner">Delete</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -158,7 +157,7 @@
         { title: 'Position', key: 'position' },
         { title: 'Status', key: 'status' },
         { title: 'Created Date', key: 'created_at' },
-        { title: 'Actions', key: 'actions', sortable: false, align: 'end' },
+        { title: 'Actions', key: 'actions', sortable: false, align: 'center' },
     ];
 
     const positionOptions = [

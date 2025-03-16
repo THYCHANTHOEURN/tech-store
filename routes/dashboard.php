@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\BrandController;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 /**
  * Dashboard routes
- * 
+ *
  * These routes are only accessible to authenticated users with the admin, super-admin, manager, or staff role.
  */
 Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
@@ -29,4 +30,6 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
     Route::resource('users', UserController::class);
     // Order management
     Route::resource('orders', OrderController::class);
+    // Customer management
+    Route::resource('customers', CustomerController::class);
 });
