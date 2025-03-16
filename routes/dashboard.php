@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\OrderController;
+use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,10 +27,12 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
     Route::resource('categories', CategoryController::class);
     // Banner management
     Route::resource('banners', BannerController::class);
-    // User management
-    Route::resource('users', UserController::class);
     // Order management
     Route::resource('orders', OrderController::class);
     // Customer management
     Route::resource('customers', CustomerController::class);
+    // Users management
+    Route::resource('users', UserController::class);
+    // Roles management
+    Route::resource('roles', RoleController::class);
 });

@@ -147,6 +147,15 @@
                 </v-list-item>
                 </Link>
 
+                <!-- Roles Menu Item -->
+                <Link :href="route('dashboard.roles.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.roles.*')">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-shield-account</v-icon>
+                    </template>
+                    <v-list-item-title>Roles and Permissions</v-list-item-title>
+                </v-list-item>
+                </Link>
 
             </v-list>
         </v-navigation-drawer>
