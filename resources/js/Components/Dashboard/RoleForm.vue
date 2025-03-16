@@ -27,16 +27,33 @@
 
                         <!-- Permissions Section -->
                         <div class="mt-8">
-                            <h3 class="text-h6 font-weight-bold mb-4">Permissions</h3>
+                            <div class="d-flex align-center mb-4">
+                                <h3 class="text-h6 font-weight-bold">Permissions</h3>
+                                <v-spacer></v-spacer>
+
+                                <!-- View Mode Toggle -->
+                                <v-btn-toggle v-model="viewMode" color="primary" density="compact" rounded="lg">
+                                    <v-btn value="tabs" variant="text">
+                                        <v-icon>mdi-tab</v-icon>
+                                        <span class="ml-1 d-none d-sm-inline">Tabs</span>
+                                    </v-btn>
+                                    <v-btn value="list" variant="text">
+                                        <v-icon>mdi-format-list-bulleted</v-icon>
+                                        <span class="ml-1 d-none d-sm-inline">List</span>
+                                    </v-btn>
+                                </v-btn-toggle>
+                            </div>
 
                             <div class="permission-container">
-                                <v-card flat border>
+                                <v-card flat border class="rounded-lg mb-4">
+                                    <!-- Tab Navigation (always visible) -->
                                     <v-tabs
                                         v-model="activePermissionTab"
                                         slider-color="primary"
                                         bg-color="grey-lighten-4"
                                         class="rounded-t"
-                                        centered
+                                        show-arrows
+                                        density="comfortable"
                                     >
                                         <v-tab
                                             v-for="(group, groupName) in permissionGroups"
@@ -50,28 +67,32 @@
                                                 :content="group.length"
                                                 color="primary"
                                                 inline
-                                                class="ml-2"
+                                                class="ml-1"
                                             ></v-badge>
                                         </v-tab>
                                     </v-tabs>
 
                                     <v-divider></v-divider>
 
-                                    <v-card-text class="permission-panels-container pt-4">
-                                        <v-window v-model="activePermissionTab">
-                                            <v-window-item
-                                                v-for="(group, groupName) in permissionGroups"
-                                                :key="groupName"
-                                                :value="groupName"
-                                            >
-                                                <div class="permission-group-header mb-4 pb-2 border-bottom">
-                                                    <div>
-                                                        <h3 class="text-subtitle-1 font-weight-bold">
-                                                            {{ formatGroupName(groupName) }}
-                                                        </h3>
-                                                        <p class="text-caption text-grey">
-                                                            Manage {{ formatSimpleGroupName(groupName).toLowerCase() }} permissions
-                                                        </p>
+                                    <!-- Tab View (shown when viewMode is "tabs") -->
+                                    <v-window v-model="activePermissionTab" v-if="viewMode === 'tabs'" class="permission-panels-container">
+                                        <v-window-item
+                                            v-for="(group, groupName) in permissionGroups"
+                                            :key="`tab-${groupName}`"
+                                            :value="groupName"
+                                        >
+                                            <div class="permission-group pa-4">
+                                                <div class="permission-group-header d-flex align-center mb-4 pb-2 border-bottom">
+                                                    <div class="d-flex align-center">
+                                                        <v-icon :icon="getGroupIcon(groupName)" class="mr-2" color="primary" size="large"></v-icon>
+                                                        <div>
+                                                            <h3 class="text-h6 font-weight-bold mb-1">
+                                                                {{ formatGroupName(groupName) }}
+                                                            </h3>
+                                                            <p class="text-caption text-grey">
+                                                                Manage {{ formatSimpleGroupName(groupName).toLowerCase() }} permissions
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                     <v-btn
                                                         color="primary"
@@ -88,7 +109,7 @@
                                                 <div class="permission-cards">
                                                     <v-card
                                                         v-for="permission in group"
-                                                        :key="permission.id"
+                                                        :key="`tab-perm-${permission.id}`"
                                                         :color="isPermissionSelected(permission.id) ? 'primary' : undefined"
                                                         :class="{
                                                             'selected': isPermissionSelected(permission.id),
@@ -119,14 +140,82 @@
                                                         </v-card-text>
                                                     </v-card>
                                                 </div>
-                                            </v-window-item>
-                                        </v-window>
+                                            </div>
+                                        </v-window-item>
+                                    </v-window>
+
+                                    <!-- List View (shown when viewMode is "list") -->
+                                    <v-card-text v-else class="permission-panels-container pt-4">
+                                        <div v-for="(group, groupName) in permissionGroups" :key="`list-${groupName}`" class="permission-group mb-8 pa-4">
+                                            <div class="permission-group-header d-flex align-center mb-3 pb-2 border-bottom">
+                                                <div class="d-flex align-center">
+                                                    <v-icon :icon="getGroupIcon(groupName)" class="mr-2" color="primary" size="large"></v-icon>
+                                                    <div>
+                                                        <h3 class="text-h6 font-weight-bold mb-1">
+                                                            {{ formatGroupName(groupName) }}
+                                                        </h3>
+                                                        <p class="text-caption text-grey">
+                                                            Manage {{ formatSimpleGroupName(groupName).toLowerCase() }} permissions
+                                                            <v-chip color="primary" size="x-small" class="ml-2">
+                                                                {{ group.length }} permissions
+                                                            </v-chip>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <v-btn
+                                                    color="primary"
+                                                    size="small"
+                                                    variant="flat"
+                                                    :prepend-icon="isAllGroupSelected(groupName) ? 'mdi-close' : 'mdi-check-all'"
+                                                    @click="toggleGroupPermissions(groupName)"
+                                                    class="ml-auto"
+                                                >
+                                                    {{ isAllGroupSelected(groupName) ? 'Deselect All' : 'Select All' }}
+                                                </v-btn>
+                                            </div>
+
+                                            <div class="permission-cards">
+                                                <v-card
+                                                    v-for="permission in group"
+                                                    :key="`list-perm-${permission.id}`"
+                                                    :color="isPermissionSelected(permission.id) ? 'primary' : undefined"
+                                                    :class="{
+                                                        'selected': isPermissionSelected(permission.id),
+                                                        'elevation-1': !isPermissionSelected(permission.id),
+                                                        'elevation-3': isPermissionSelected(permission.id)
+                                                    }"
+                                                    class="permission-card"
+                                                    @click="togglePermission(permission.id)"
+                                                    rounded="lg"
+                                                    variant="elevated"
+                                                >
+                                                    <v-card-text class="pa-3 d-flex align-center">
+                                                        <div>
+                                                            <div :class="{ 'text-white': isPermissionSelected(permission.id) }">
+                                                                <strong>{{ formatActionName(permission.name) }}</strong>
+                                                            </div>
+                                                            <div class="text-caption" :class="{ 'text-white': isPermissionSelected(permission.id) }">
+                                                                {{ getPermissionDescription(permission.name) }}
+                                                            </div>
+                                                        </div>
+                                                        <v-icon
+                                                            size="small"
+                                                            :color="isPermissionSelected(permission.id) ? 'white' : 'grey'"
+                                                            class="ml-auto"
+                                                        >
+                                                            {{ isPermissionSelected(permission.id) ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline' }}
+                                                        </v-icon>
+                                                    </v-card-text>
+                                                </v-card>
+                                            </div>
+                                        </div>
                                     </v-card-text>
                                 </v-card>
                             </div>
 
                             <p class="text-caption mt-3 text-grey-darken-1">
-                                Click on cards to select permissions for this role
+                                Click on cards to select permissions for this role.
+                                Use the toggle above to switch between tab and list view.
                             </p>
                         </div>
                     </v-card-text>
@@ -143,35 +232,23 @@
                     <v-divider></v-divider>
                     <v-card-text class="pt-4">
                         <!-- Save Button -->
-                        <v-btn
-                            color="primary"
-                            type="submit"
-                            block
-                            size="large"
-                            :loading="processing"
-                            variant="elevated"
-                            class="mb-3"
-                        >
+                        <v-btn color="primary" type="submit" block size="large" :loading="processing" variant="elevated"
+                            class="mb-3">
                             {{ role ? 'Update Role' : 'Create Role' }}
                         </v-btn>
 
                         <!-- Cancel Button -->
                         <Link :href="route('dashboard.roles.index')">
-                            <v-btn
-                                block
-                                variant="outlined"
-                                color="grey"
-                                class="mt-3"
-                                prepend-icon="mdi-arrow-left"
-                            >
-                                Back to Roles List
-                            </v-btn>
+                        <v-btn block variant="outlined" color="grey" class="mt-3" prepend-icon="mdi-arrow-left">
+                            Back to Roles List
+                        </v-btn>
                         </Link>
 
                         <div class="mt-6 pa-3 bg-grey-lighten-4 rounded">
                             <h4 class="text-subtitle-2 font-weight-bold mb-2">Role Permissions</h4>
                             <p class="text-caption">
-                                Roles control what users can do in the system. Select permissions to define what actions users with this role can perform.
+                                Roles control what users can do in the system. Select permissions to define what actions
+                                users with this role can perform.
                             </p>
                         </div>
                     </v-card-text>
@@ -218,6 +295,8 @@
         permissions: [],
     });
 
+    // View mode toggle (tabs or list)
+    const viewMode = ref('tabs');
     const activePermissionTab = ref(null);
 
     // Watch for changes in the form and emit them
@@ -250,6 +329,17 @@
         if (Object.keys(permissionGroups.value).length > 0) {
             activePermissionTab.value = Object.keys(permissionGroups.value)[0];
         }
+
+        // Try to load user preference for view mode from localStorage
+        const savedViewMode = localStorage.getItem('roleForm.viewMode');
+        if (savedViewMode && ['tabs', 'list'].includes(savedViewMode)) {
+            viewMode.value = savedViewMode;
+        }
+    });
+
+    // Save view mode preference when it changes
+    watch(viewMode, (newMode) => {
+        localStorage.setItem('roleForm.viewMode', newMode);
     });
 
     // Group permissions by resource type
@@ -438,7 +528,7 @@
     }
 
     .permission-panels-container {
-        height: 450px;
+        max-height: 600px;
         overflow-y: auto;
         background-color: #fafafa;
     }
@@ -471,6 +561,12 @@
         justify-content: space-between;
     }
 
+    .permission-group {
+        background-color: white;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+
     .border-bottom {
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
@@ -478,5 +574,10 @@
     .sticky-card {
         position: sticky;
         top: 24px;
+    }
+
+    /* Animation for transitioning between views */
+    .v-window-item, .v-card-text {
+        transition: opacity 0.3s ease;
     }
 </style>

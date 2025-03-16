@@ -1,4 +1,5 @@
 <template>
+
     <Head :title="banner.title" />
 
     <DashboardLayout>
@@ -27,7 +28,8 @@
                     <v-card class="mb-4">
                         <v-card-title>Banner Image</v-card-title>
                         <v-card-text>
-                            <v-img :src="banner.image_url" max-height="400" contain class="bg-grey-lighten-2 rounded"></v-img>
+                            <v-img :src="banner.image_url" max-height="400" contain
+                                class="bg-grey-lighten-2 rounded"></v-img>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -88,26 +90,40 @@
                             <div>
                                 <h3 class="text-subtitle-1 mb-2">Preview:</h3>
                                 <v-card variant="outlined">
-                                    <v-card-title class="text-subtitle-1">How it will appear on the website:</v-card-title>
+                                    <v-card-title class="text-subtitle-1">How it will appear on the
+                                        website:</v-card-title>
                                     <v-card-text>
-                                        <div v-if="banner.position === 'slider'" class="preview-container slider-preview">
+                                        <div v-if="banner.position === 'slider'"
+                                            class="preview-container slider-preview">
                                             <v-img :src="banner.image_url" height="200" class="rounded-lg">
                                                 <div class="slider-content pa-4">
-                                                    <h3 class="text-h6 white--text font-weight-bold">{{ banner.title }}</h3>
+                                                    <h3 class="text-h6 white--text font-weight-bold">{{ banner.title }}
+                                                    </h3>
                                                     <v-btn color="white" size="small" class="mt-2">Shop Now</v-btn>
                                                 </div>
                                             </v-img>
                                         </div>
                                         <div v-else-if="banner.position === 'side'" class="preview-container">
-                                            <v-img :src="banner.image_url" height="400" width="300" cover class="rounded-lg"></v-img>
+                                            <v-img :src="banner.image_url" height="400" width="300" cover
+                                                class="rounded-lg"></v-img>
                                         </div>
-                                        <div v-else-if="banner.position === 'promo'" class="preview-container">
-                                            <v-img :src="banner.image_url" height="120" class="rounded-lg">
-                                                <div class="banner-content">
-                                                    <h3 class="text-subtitle-2 white--text font-weight-bold">{{ banner.title }}</h3>
-                                                    <v-btn color="white" size="x-small" class="mt-1">Shop Now</v-btn>
-                                                </div>
-                                            </v-img>
+                                        <div v-else-if="banner.position === 'promo'"
+                                            class="preview-container promo-preview">
+                                            <v-hover v-slot="{ isHovering, props }">
+                                                <v-card v-bind="props" :elevation="isHovering ? 4 : 1"
+                                                    class="banner-card">
+                                                    <v-img :src="banner.image_url" height="180" cover>
+                                                        <div class="banner-content">
+                                                            <h3 class="text-h6 white--text font-weight-bold">{{
+                                                                banner.title }}
+                                                            </h3>
+                                                            <v-btn color="white" class="mt-4" :href="banner.link">
+                                                                Shop Now
+                                                            </v-btn>
+                                                        </div>
+                                                    </v-img>
+                                                </v-card>
+                                            </v-hover>
                                         </div>
                                     </v-card-text>
                                 </v-card>
@@ -117,10 +133,11 @@
 
                     <!-- Delete Section -->
                     <v-card color="error" variant="outlined">
-                        <v-card-title class="text-white">Danger Zone</v-card-title>
+                        <v-card-title class="text-warning">Danger Zone</v-card-title>
                         <v-card-text>
-                            <p class="text-white">Once you delete this banner, there is no going back.</p>
-                            <v-btn color="white" variant="outlined" class="mt-2" @click="confirmDelete">Delete Banner</v-btn>
+                            <p class="text-warning">Once you delete this banner, there is no going back.</p>
+                            <v-btn color="white" variant="outlined" class="mt-2" @click="confirmDelete">Delete
+                                Banner</v-btn>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -205,9 +222,24 @@
     .preview-container {
         max-width: 100%;
         overflow: hidden;
+        border-radius: 4px;
+        color: white;
     }
-    
-    .slider-content, .banner-content {
+
+    .slider-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        /* background: rgba(0, 0, 0, 0.4); */
+        padding: 10px;
+        border-radius: 4px;
+        width: 80%;
+        color: white;
+    }
+
+    .banner-content {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -217,5 +249,58 @@
         padding: 10px;
         border-radius: 4px;
         width: 80%;
+        color: white;
+    }
+
+    /* New promo banner styles */
+    .promo-preview {
+        margin: 10px auto;
+        max-width: 800px;
+    }
+
+    .promo-wrapper {
+        position: relative;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .banner-card {
+        transition: transform 0.2s;
+    }
+
+    .promo-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .promo-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    .promo-details {
+        position: relative;
+        z-index: 2;
+        padding: 20px;
+        max-width: 60%;
+    }
+
+    .promo-badge {
+        display: inline-block;
+        background-color: #FF5252;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 4px;
+        margin-bottom: 10px;
     }
 </style>

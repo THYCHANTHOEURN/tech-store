@@ -142,9 +142,9 @@
             <v-row class="mt-4">
                 <v-col cols="12">
                     <v-card color="error" variant="outlined">
-                        <v-card-title class="text-white">Danger Zone</v-card-title>
+                        <v-card-title class="text-warning">Danger Zone</v-card-title>
                         <v-card-text>
-                            <p class="text-white">Once you delete this role, there is no going back. Please be sure.</p>
+                            <p class="text-warning">Once you delete this role, there is no going back. Please be sure.</p>
                             <v-btn color="white" variant="outlined" class="mt-2" @click="confirmDelete">Delete
                                 Role</v-btn>
                         </v-card-text>

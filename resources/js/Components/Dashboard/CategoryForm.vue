@@ -15,9 +15,9 @@
                             variant="outlined" density="comfortable"></v-text-field>
 
                         <!-- Description -->
-                        <RichTextEditor v-model="form.description" label="Category Description"
+                        <v-textarea v-model="form.description" label="Category Description"
                             :error="errors?.description" required placeholder="Enter category description here..."
-                            :min-height="300" variant="outlined" density="comfortable" />
+                            :min-height="300" variant="outlined" density="comfortable"></v-textarea>
 
                         <!-- Parent Category -->
                         <v-select v-model="form.parent_id" :items="parentCategories || []" item-title="name"
