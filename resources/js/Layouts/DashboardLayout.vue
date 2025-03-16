@@ -137,6 +137,16 @@
                 </v-list-item>
                 </Link>
 
+                <!-- Users Menu Item -->
+                <Link :href="route('dashboard.users.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.users.*')">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-account-multiple</v-icon>
+                    </template>
+                    <v-list-item-title>Users</v-list-item-title>
+                </v-list-item>
+                </Link>
+
 
             </v-list>
         </v-navigation-drawer>
