@@ -46,7 +46,7 @@
 
                         <v-col cols="12" md="3">
                             <v-select v-model="selectedStatus" label="Status" :items="statusOptions" hide-details
-                                @update:model-value="applyFilters"></v-select>
+                                clearable @update:model-value="applyFilters"></v-select>
                         </v-col>
 
                         <v-col cols="12" md="2">
@@ -55,6 +55,11 @@
                             </v-btn>
                         </v-col>
                     </v-row>
+
+                    <!-- Total count indicator -->
+                    <div class="d-flex justify-end mt-2">
+                        <p class="text-caption mb-0">Total {{ categories.total }} categories</p>
+                    </div>
                 </v-card-text>
             </v-card>
 

@@ -15,36 +15,39 @@
         </template>
 
         <v-container>
-            <!-- Filters and Search -->
-            <v-row>
-                <v-col cols="12" md="9">
-                    <v-card variant="flat" class="pa-2">
-                        <div class="d-flex flex-wrap align-center">
-                            <v-text-field v-model="search" placeholder="Search orders..." variant="underlined"
-                                density="compact" hide-details prepend-inner-icon="mdi-magnify" class="mr-4"
-                                style="max-width: 300px;" @update:model-value="debouncedSearch"></v-text-field>
-
+            <!-- Filters -->
+            <v-card class="mb-6">
+                <v-card-title>
+                    <v-icon class="mr-2">mdi-filter-variant</v-icon>
+                    Filters
+                </v-card-title>
+                <v-card-text>
+                    <v-row>
+                        <v-col cols="12" md="4">
+                            <v-text-field v-model="search" label="Search Orders" prepend-inner-icon="mdi-magnify"
+                                single-line hide-details clearable @update:model-value="debouncedSearch"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="3">
                             <v-select v-model="selectedOrderStatus" :items="orderStatusOptions" label="Order Status"
-                                variant="underlined" density="compact" hide-details class="mr-4"
-                                style="max-width: 200px;" @update:model-value="applyFilters"></v-select>
-
+                                hide-details clearable @update:model-value="applyFilters"></v-select>
+                        </v-col>
+                        <v-col cols="12" md="3">
                             <v-select v-model="selectedPaymentStatus" :items="paymentStatusOptions" label="Payment Status"
-                                variant="underlined" density="compact" hide-details class="mr-4"
-                                style="max-width: 200px;" @update:model-value="applyFilters"></v-select>
-
-                            <v-btn color="error" variant="text" :disabled="!hasFilters" @click="resetFilters"
-                                class="ml-auto" density="comfortable">
-                                Clear Filters
+                                hide-details clearable @update:model-value="applyFilters"></v-select>
+                        </v-col>
+                        <v-col cols="12" md="2">
+                            <v-btn color="error" variant="outlined" block @click="resetFilters">
+                                Reset
                             </v-btn>
-                        </div>
-                    </v-card>
-                </v-col>
-                <v-col cols="12" md="3" class="d-flex align-center justify-end">
-                    <div class="text-right">
+                        </v-col>
+                    </v-row>
+
+                    <!-- Total count indicator -->
+                    <div class="d-flex justify-end mt-2">
                         <p class="text-caption mb-0">Total {{ orders.total }} orders</p>
                     </div>
-                </v-col>
-            </v-row>
+                </v-card-text>
+            </v-card>
 
             <!-- Orders List -->
             <v-row>

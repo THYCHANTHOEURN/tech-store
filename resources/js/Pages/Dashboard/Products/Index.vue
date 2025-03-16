@@ -27,8 +27,8 @@
                 <v-card-text>
                     <v-row>
                         <v-col cols="12" md="3">
-                            <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" single-line
-                                hide-details clearable @keyup.enter="applyFilters"
+                            <v-text-field v-model="search" label="Search Products" prepend-inner-icon="mdi-magnify" single-line
+                                hide-details clearable @update:model-value="applyFilters"
                                 @click:clear="clearSearch"></v-text-field>
                         </v-col>
 
@@ -44,12 +44,12 @@
 
                         <v-col cols="12" md="2">
                             <v-select v-model="selectedStatus" label="Status" :items="statusOptions" hide-details
-                                @update:model-value="applyFilters"></v-select>
+                                clearable @update:model-value="applyFilters"></v-select>
                         </v-col>
 
                         <v-col cols="12" md="2">
                             <v-select v-model="selectedFeatured" label="Featured" :items="featuredOptions" hide-details
-                                @update:model-value="applyFilters"></v-select>
+                                clearable @update:model-value="applyFilters"></v-select>
                         </v-col>
 
                         <v-col cols="12" md="1">
@@ -58,6 +58,11 @@
                             </v-btn>
                         </v-col>
                     </v-row>
+
+                    <!-- Total count indicator -->
+                    <div class="d-flex justify-end mt-2">
+                        <p class="text-caption mb-0">Total {{ products.total }} products</p>
+                    </div>
                 </v-card-text>
             </v-card>
 
