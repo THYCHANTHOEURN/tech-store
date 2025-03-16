@@ -4,33 +4,129 @@
             <!-- Main Content Column -->
             <v-col cols="12" md="8">
                 <v-card>
-                    <v-card-title>
-                        <v-icon class="mr-2">mdi-shield-account</v-icon>
+                    <v-card-title class="d-flex align-center bg-primary text-white">
+                        <v-icon class="mr-2" color="white">mdi-shield-account</v-icon>
                         Role Information
                     </v-card-title>
                     <v-divider></v-divider>
-                    <v-card-text>
+                    <v-card-text class="pt-4">
                         <!-- Role Name -->
-                        <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Role Name*</label>
-                            <v-text-field v-model="form.name" :error-messages="errors?.name" hide-details="auto"
-                                placeholder="Enter role name" variant="outlined" density="comfortable"></v-text-field>
+                        <div class="mb-6">
+                            <label class="text-subtitle-1 font-weight-bold d-block mb-2">Role Name*</label>
+                            <v-text-field
+                                v-model="form.name"
+                                :error-messages="errors?.name"
+                                hide-details="auto"
+                                placeholder="Enter role name"
+                                variant="outlined"
+                                density="comfortable"
+                                class="rounded-lg"
+                                bg-color="grey-lighten-4"
+                            ></v-text-field>
                         </div>
 
                         <!-- Permissions Section -->
-                        <div class="mb-4 mt-6">
-                            <label class="text-subtitle-1 d-block mb-3">Permissions</label>
+                        <div class="mt-8">
+                            <h3 class="text-h6 font-weight-bold mb-4">Permissions</h3>
 
-                            <div class="permissions-grid">
-                                <v-checkbox v-for="permission in permissions" :key="permission.id"
-                                    v-model="form.permissions" :label="formatPermissionName(permission.name)"
-                                    :value="permission.id" density="comfortable" color="primary" hide-details
-                                    class="mb-1">
-                                </v-checkbox>
+                            <div class="permission-container">
+                                <v-card flat border>
+                                    <v-tabs
+                                        v-model="activePermissionTab"
+                                        slider-color="primary"
+                                        bg-color="grey-lighten-4"
+                                        class="rounded-t"
+                                        centered
+                                    >
+                                        <v-tab
+                                            v-for="(group, groupName) in permissionGroups"
+                                            :key="groupName"
+                                            :value="groupName"
+                                            class="text-capitalize"
+                                        >
+                                            <v-icon start class="mr-1">{{ getGroupIcon(groupName) }}</v-icon>
+                                            {{ formatSimpleGroupName(groupName) }}
+                                            <v-badge
+                                                :content="group.length"
+                                                color="primary"
+                                                inline
+                                                class="ml-2"
+                                            ></v-badge>
+                                        </v-tab>
+                                    </v-tabs>
+
+                                    <v-divider></v-divider>
+
+                                    <v-card-text class="permission-panels-container pt-4">
+                                        <v-window v-model="activePermissionTab">
+                                            <v-window-item
+                                                v-for="(group, groupName) in permissionGroups"
+                                                :key="groupName"
+                                                :value="groupName"
+                                            >
+                                                <div class="permission-group-header mb-4 pb-2 border-bottom">
+                                                    <div>
+                                                        <h3 class="text-subtitle-1 font-weight-bold">
+                                                            {{ formatGroupName(groupName) }}
+                                                        </h3>
+                                                        <p class="text-caption text-grey">
+                                                            Manage {{ formatSimpleGroupName(groupName).toLowerCase() }} permissions
+                                                        </p>
+                                                    </div>
+                                                    <v-btn
+                                                        color="primary"
+                                                        size="small"
+                                                        variant="flat"
+                                                        :prepend-icon="isAllGroupSelected(groupName) ? 'mdi-close' : 'mdi-check-all'"
+                                                        @click="toggleGroupPermissions(groupName)"
+                                                        class="ml-auto"
+                                                    >
+                                                        {{ isAllGroupSelected(groupName) ? 'Deselect All' : 'Select All' }}
+                                                    </v-btn>
+                                                </div>
+
+                                                <div class="permission-cards">
+                                                    <v-card
+                                                        v-for="permission in group"
+                                                        :key="permission.id"
+                                                        :color="isPermissionSelected(permission.id) ? 'primary' : undefined"
+                                                        :class="{
+                                                            'selected': isPermissionSelected(permission.id),
+                                                            'elevation-1': !isPermissionSelected(permission.id),
+                                                            'elevation-3': isPermissionSelected(permission.id)
+                                                        }"
+                                                        class="permission-card"
+                                                        @click="togglePermission(permission.id)"
+                                                        rounded="lg"
+                                                        variant="elevated"
+                                                    >
+                                                        <v-card-text class="pa-3 d-flex align-center">
+                                                            <div>
+                                                                <div :class="{ 'text-white': isPermissionSelected(permission.id) }">
+                                                                    <strong>{{ formatActionName(permission.name) }}</strong>
+                                                                </div>
+                                                                <div class="text-caption" :class="{ 'text-white': isPermissionSelected(permission.id) }">
+                                                                    {{ getPermissionDescription(permission.name) }}
+                                                                </div>
+                                                            </div>
+                                                            <v-icon
+                                                                size="small"
+                                                                :color="isPermissionSelected(permission.id) ? 'white' : 'grey'"
+                                                                class="ml-auto"
+                                                            >
+                                                                {{ isPermissionSelected(permission.id) ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline' }}
+                                                            </v-icon>
+                                                        </v-card-text>
+                                                    </v-card>
+                                                </div>
+                                            </v-window-item>
+                                        </v-window>
+                                    </v-card-text>
+                                </v-card>
                             </div>
 
-                            <p class="text-caption mt-2 text-grey">
-                                Select the permissions to assign to this role.
+                            <p class="text-caption mt-3 text-grey-darken-1">
+                                Click on cards to select permissions for this role
                             </p>
                         </div>
                     </v-card-text>
@@ -40,21 +136,44 @@
             <!-- Settings Column -->
             <v-col cols="12" md="4">
                 <v-card class="sticky-card">
-                    <v-card-title>
+                    <v-card-title class="bg-grey-lighten-3">
                         <v-icon class="mr-2">mdi-cog-outline</v-icon>
                         Actions
                     </v-card-title>
                     <v-divider></v-divider>
-                    <v-card-text>
+                    <v-card-text class="pt-4">
                         <!-- Save Button -->
-                        <v-btn color="primary" type="submit" block size="large" :loading="processing">
+                        <v-btn
+                            color="primary"
+                            type="submit"
+                            block
+                            size="large"
+                            :loading="processing"
+                            variant="elevated"
+                            class="mb-3"
+                        >
                             {{ role ? 'Update Role' : 'Create Role' }}
                         </v-btn>
+
                         <!-- Cancel Button -->
-                        <Link :href="route('dashboard.roles.index')"
-                            class="v-btn v-btn--block v-btn--text v-btn--secondary mt-3">
-                        Cancel
+                        <Link :href="route('dashboard.roles.index')">
+                            <v-btn
+                                block
+                                variant="outlined"
+                                color="grey"
+                                class="mt-3"
+                                prepend-icon="mdi-arrow-left"
+                            >
+                                Back to Roles List
+                            </v-btn>
                         </Link>
+
+                        <div class="mt-6 pa-3 bg-grey-lighten-4 rounded">
+                            <h4 class="text-subtitle-2 font-weight-bold mb-2">Role Permissions</h4>
+                            <p class="text-caption">
+                                Roles control what users can do in the system. Select permissions to define what actions users with this role can perform.
+                            </p>
+                        </div>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -63,7 +182,7 @@
 </template>
 
 <script setup>
-    import { ref, watch, onMounted } from 'vue';
+    import { ref, watch, onMounted, computed } from 'vue';
 
     const props = defineProps({
         modelValue: {
@@ -99,6 +218,8 @@
         permissions: [],
     });
 
+    const activePermissionTab = ref(null);
+
     // Watch for changes in the form and emit them
     watch(form, (newVal) => {
         emit('update:modelValue', newVal);
@@ -124,16 +245,179 @@
         if (props.rolePermissions && props.rolePermissions.length) {
             form.value.permissions = [...props.rolePermissions];
         }
+
+        // Set initial active tab to the first group
+        if (Object.keys(permissionGroups.value).length > 0) {
+            activePermissionTab.value = Object.keys(permissionGroups.value)[0];
+        }
+    });
+
+    // Group permissions by resource type
+    const permissionGroups = computed(() => {
+        const groups = {};
+
+        props.permissions.forEach(permission => {
+            const nameSegments = permission.name.split(' ');
+
+            // Skip if no proper format
+            if (nameSegments.length < 2) return;
+
+            // Get the last word which is typically the resource name (user, role, product, etc.)
+            let resourceType = nameSegments[nameSegments.length - 1];
+
+            // Some special cases need handling
+            if (resourceType === 'item') {
+                if (nameSegments[nameSegments.length - 2] === 'cart') {
+                    resourceType = 'cart item';
+                } else if (nameSegments[nameSegments.length - 2] === 'order') {
+                    resourceType = 'order item';
+                }
+            } else if (resourceType === 'image' && nameSegments[nameSegments.length - 2] === 'product') {
+                resourceType = 'product image';
+            }
+
+            if (!groups[resourceType]) {
+                groups[resourceType] = [];
+            }
+
+            groups[resourceType].push(permission);
+        });
+
+        // Sort groups alphabetically
+        return Object.fromEntries(
+            Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0]))
+        );
     });
 
     const formatPermissionName = (name) => {
-        // Convert camelCase or snake_case to readable format
         return name
-            .replace(/([A-Z])/g, ' $1') // Insert a space before all caps
-            .replace(/_/g, ' ') // Replace underscores with spaces
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/_/g, ' ')
             .replace(/\w\S*/g, (txt) => {
                 return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            }); // Capitalize first letter of each word
+            });
+    };
+
+    const formatSimpleGroupName = (name) => {
+        return name.split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    };
+
+    const formatGroupName = (name) => {
+        return formatSimpleGroupName(name) + ' Management';
+    };
+
+    const formatActionName = (name) => {
+        const parts = name.split(' ');
+        if (parts.length >= 2) {
+            let action = parts[0];
+            if (parts[0] === 'view' && parts[1] === 'any') {
+                action = 'View All';
+            } else if (parts[0] === 'force' && parts[1] === 'delete') {
+                action = 'Force Delete';
+            } else {
+                action = action.charAt(0).toUpperCase() + action.slice(1);
+            }
+            return action;
+        }
+        return formatPermissionName(name);
+    };
+
+    const getPermissionDescription = (name) => {
+        const parts = name.split(' ');
+        if (parts.length < 2) return '';
+
+        const action = parts[0];
+        let resourceType = parts[parts.length - 1];
+
+        // Handle special cases
+        if (resourceType === 'item') {
+            if (parts[parts.length - 2] === 'cart') {
+                resourceType = 'cart items';
+            } else if (parts[parts.length - 2] === 'order') {
+                resourceType = 'order items';
+            }
+        } else if (resourceType === 'image' && parts[parts.length - 2] === 'product') {
+            resourceType = 'product images';
+        } else {
+            // Pluralize resource type
+            resourceType = resourceType + 's';
+        }
+
+        const actionDescriptions = {
+            'view': 'Can view',
+            'create': 'Can create new',
+            'update': 'Can edit existing',
+            'delete': 'Can remove',
+            'restore': 'Can restore deleted',
+            'force': 'Can permanently delete'
+        };
+
+        const baseAction = action === 'force' ? 'force delete' : action;
+        let desc = actionDescriptions[baseAction] || `Can ${baseAction}`;
+
+        if (action === 'view' && parts.includes('any')) {
+            desc = 'Can view all';
+        }
+
+        return `${desc} ${resourceType}`;
+    };
+
+    const getGroupIcon = (groupName) => {
+        const icons = {
+            'user': 'mdi-account',
+            'role': 'mdi-shield-account',
+            'category': 'mdi-shape',
+            'brand': 'mdi-tag',
+            'product': 'mdi-package-variant-closed',
+            'product image': 'mdi-image',
+            'order': 'mdi-cart',
+            'order item': 'mdi-cart-variant',
+            'review': 'mdi-star',
+            'banner': 'mdi-image-multiple',
+            'cart item': 'mdi-cart-plus',
+        };
+
+        return icons[groupName] || 'mdi-shield';
+    };
+
+    const isPermissionSelected = (permissionId) => {
+        return form.value.permissions.includes(permissionId);
+    };
+
+    const togglePermission = (permissionId) => {
+        const index = form.value.permissions.indexOf(permissionId);
+        if (index === -1) {
+            form.value.permissions.push(permissionId);
+        } else {
+            form.value.permissions.splice(index, 1);
+        }
+    };
+
+    const isAllGroupSelected = (groupName) => {
+        const groupPermissionIds = permissionGroups.value[groupName].map(p => p.id);
+        return groupPermissionIds.every(id => form.value.permissions.includes(id));
+    };
+
+    const toggleGroupPermissions = (groupName) => {
+        const groupPermissionIds = permissionGroups.value[groupName].map(p => p.id);
+
+        if (isAllGroupSelected(groupName)) {
+            // Deselect all permissions in this group
+            form.value.permissions = form.value.permissions.filter(id => !groupPermissionIds.includes(id));
+        } else {
+            // Select all permissions in this group
+            const newPermissions = [...form.value.permissions];
+
+            groupPermissionIds.forEach(id => {
+                if (!newPermissions.includes(id)) {
+                    newPermissions.push(id);
+                }
+            });
+
+            form.value.permissions = newPermissions;
+        }
     };
 
     // Submit form
@@ -148,10 +432,47 @@
 </script>
 
 <style scoped>
-    .permissions-grid {
+    .permission-container {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .permission-panels-container {
+        height: 450px;
+        overflow-y: auto;
+        background-color: #fafafa;
+    }
+
+    .permission-cards {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 8px;
+        gap: 12px;
+    }
+
+    .permission-card {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .permission-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .permission-card.selected {
+        transform: translateY(-3px);
+        border: none;
+    }
+
+    .permission-group-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .border-bottom {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .sticky-card {
