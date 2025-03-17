@@ -4,8 +4,18 @@
     import { Link, usePage, router } from '@inertiajs/vue3';
     import FlashMessage from '@/Components/FlashMessage.vue';
 
+    const rail = ref(false);
     const drawer = ref(true);
     const user = usePage().props.auth.user;
+
+    const toggleDrawer = () => {
+        if (drawer.value) {
+            rail.value = !rail.value;
+        } else {
+            drawer.value = true;
+            rail.value = false;
+        }
+    };
 
     const logout = () => {
         router.post(route('logout'));
@@ -18,27 +28,30 @@
         <!-- Flash messages component -->
         <FlashMessage />
 
-        <!-- Main Toolbar -->
-        <v-app-bar elevation="1">
-            <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+        <!-- Enhanced Main Toolbar -->
+        <v-app-bar elevation="2" color="white" class="border-b">
+            <v-app-bar-nav-icon @click="toggleDrawer" :aria-label="rail ? 'Expand menu' : 'Collapse menu'"></v-app-bar-nav-icon>
 
-            <v-toolbar-title>
-                <Link :href="route('dashboard.index')">
-                <ApplicationLogo class="h-9 w-auto" />
+            <v-toolbar-title class="d-flex align-center">
+                <Link :href="route('dashboard.index')" class="text-decoration-none">
+                    <ApplicationLogo :width="125" class="ml-2" />
                 </Link>
             </v-toolbar-title>
 
             <v-spacer></v-spacer>
 
-            <!-- User Menu -->
-            <v-menu>
+            <!-- User Menu - Enhanced -->
+            <v-menu transition="slide-y-transition" location="bottom end">
                 <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" variant="text">
-                        {{ user.name }}
-                        <v-icon right>mdi-chevron-down</v-icon>
+                    <v-btn v-bind="props" variant="text" rounded="pill" class="text-none px-3">
+                        <v-avatar size="32" color="primary" class="mr-2">
+                            <span class="text-white text-subtitle-2">{{ user.name.charAt(0).toUpperCase() }}</span>
+                        </v-avatar>
+                        <span class="hidden-sm-and-down">{{ user.name }}</span>
+                        <v-icon size="small" class="ml-2">mdi-chevron-down</v-icon>
                     </v-btn>
                 </template>
-                <v-list>
+                <v-list density="compact" width="200">
                     <Link :href="route('profile.edit')" class="text-decoration-none">
                     <v-list-item link>
                         <template v-slot:prepend>
@@ -55,6 +68,7 @@
                         <v-list-item-title>Visit Site</v-list-item-title>
                     </v-list-item>
                     </Link>
+                    <v-divider class="my-1"></v-divider>
                     <v-list-item @click="logout" link>
                         <template v-slot:prepend>
                             <v-icon>mdi-logout</v-icon>
@@ -65,109 +79,137 @@
             </v-menu>
         </v-app-bar>
 
-        <!-- Sidebar Navigation -->
-        <v-navigation-drawer v-model="drawer" permanent>
+        <!-- Responsive Sidebar Navigation with Rail Mode -->
+        <v-navigation-drawer v-model="drawer" :rail="rail" permanent :width="240" @click="rail = false">
             <v-list>
+                <v-list-item v-if="rail" class="justify-center mb-2">
+                    <v-btn size="small" icon variant="text" @click.stop="rail = false">
+                        <v-icon>mdi-chevron-right</v-icon>
+                    </v-btn>
+                </v-list-item>
+                <v-list-item v-else>
+                    <v-list-item-title class="text-center text-subtitle-2 font-weight-bold">
+                        Dashboard Menu
+                    </v-list-item-title>
+                    <template v-slot:append>
+                        <v-btn size="small" icon variant="text" @click.stop="rail = true">
+                            <v-icon>mdi-chevron-left</v-icon>
+                        </v-btn>
+                    </template>
+                </v-list-item>
+
+                <v-divider class="mb-2"></v-divider>
+
                 <Link :href="route('dashboard.index')" class="text-decoration-none">
-                <v-list-item :active="route().current('dashboard.index')">
+                <v-list-item :active="route().current('dashboard.index')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-view-dashboard</v-icon>
                     </template>
                     <v-list-item-title>Dashboard</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Dashboard</v-tooltip>
                 </v-list-item>
                 </Link>
 
                 <!-- Products Menu Item -->
                 <Link :href="route('dashboard.products.index')" class="text-decoration-none">
-                <v-list-item :active="route().current('dashboard.products.*')">
+                <v-list-item :active="route().current('dashboard.products.*')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-package-variant-closed</v-icon>
                     </template>
                     <v-list-item-title>Products</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Products</v-tooltip>
                 </v-list-item>
                 </Link>
 
                 <!-- Categories Menu Item -->
                 <Link :href="route('dashboard.categories.index')" class="text-decoration-none">
-                <v-list-item :active="route().current('dashboard.categories.*')">
+                <v-list-item :active="route().current('dashboard.categories.*')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-format-list-bulleted</v-icon>
                     </template>
                     <v-list-item-title>Categories</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Categories</v-tooltip>
                 </v-list-item>
                 </Link>
 
                 <!-- Brands Menu Item -->
                 <Link :href="route('dashboard.brands.index')" class="text-decoration-none">
-                <v-list-item :active="route().current('dashboard.brands.*')">
+                <v-list-item :active="route().current('dashboard.brands.*')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-label</v-icon>
                     </template>
                     <v-list-item-title>Brands</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Brands</v-tooltip>
                 </v-list-item>
                 </Link>
 
                 <!-- Banners Menu Item -->
                 <Link :href="route('dashboard.banners.index')" class="text-decoration-none">
-                <v-list-item :active="route().current('dashboard.banners.*')">
+                <v-list-item :active="route().current('dashboard.banners.*')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-image-multiple</v-icon>
                     </template>
                     <v-list-item-title>Banners</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Banners</v-tooltip>
                 </v-list-item>
                 </Link>
 
                 <!-- Orders Menu Item -->
                 <Link :href="route('dashboard.orders.index')" class="text-decoration-none">
-                <v-list-item :active="route().current('dashboard.orders.*')">
+                <v-list-item :active="route().current('dashboard.orders.*')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-cart</v-icon>
                     </template>
                     <v-list-item-title>Orders</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Orders</v-tooltip>
                 </v-list-item>
                 </Link>
 
                 <!-- Customers Menu Item -->
                 <Link :href="route('dashboard.customers.index')" class="text-decoration-none">
-                <v-list-item :active="route().current('dashboard.customers.*')">
+                <v-list-item :active="route().current('dashboard.customers.*')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-account-group</v-icon>
                     </template>
                     <v-list-item-title>Customers</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Customers</v-tooltip>
                 </v-list-item>
                 </Link>
 
                 <!-- Users Menu Item -->
                 <Link :href="route('dashboard.users.index')" class="text-decoration-none">
-                <v-list-item :active="route().current('dashboard.users.*')">
+                <v-list-item :active="route().current('dashboard.users.*')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-account-multiple</v-icon>
                     </template>
                     <v-list-item-title>Users</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Users</v-tooltip>
                 </v-list-item>
                 </Link>
 
                 <!-- Roles Menu Item -->
                 <Link :href="route('dashboard.roles.index')" class="text-decoration-none">
-                <v-list-item :active="route().current('dashboard.roles.*')">
+                <v-list-item :active="route().current('dashboard.roles.*')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-shield-account</v-icon>
                     </template>
-                    <v-list-item-title>Roles and Permissions</v-list-item-title>
+                    <v-list-item-title>Roles & Permissions</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Roles & Permissions</v-tooltip>
                 </v-list-item>
                 </Link>
 
+                <v-divider class="my-2"></v-divider>
 
                 <!-- Profile Menu Item -->
                 <Link :href="route('profile.edit')" class="text-decoration-none">
-                <v-list-item :active="route().current('profile.edit')">
+                <v-list-item :active="route().current('profile.edit')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-account-circle</v-icon>
                     </template>
                     <v-list-item-title>My Profile</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">My Profile</v-tooltip>
                 </v-list-item>
                 </Link>
-
             </v-list>
         </v-navigation-drawer>
 
@@ -188,5 +230,23 @@
     :deep(.v-btn) {
         text-transform: none;
         letter-spacing: 0;
+    }
+
+    .v-list-item--active {
+        background-color: rgba(var(--v-theme-primary), 0.1);
+        color: rgb(var(--v-theme-primary));
+    }
+
+    .border-b {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    .v-navigation-drawer {
+        transition: width 0.3s ease;
+    }
+
+    /* Hover effect on list items */
+    .v-list-item:not(.v-list-item--active):hover {
+        background-color: rgba(var(--v-theme-primary), 0.05);
     }
 </style>
