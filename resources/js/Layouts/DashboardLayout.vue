@@ -157,6 +157,17 @@
                 </v-list-item>
                 </Link>
 
+
+                <!-- Profile Menu Item -->
+                <Link :href="route('profile.edit')" class="text-decoration-none">
+                <v-list-item :active="route().current('profile.edit')">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-account-circle</v-icon>
+                    </template>
+                    <v-list-item-title>My Profile</v-list-item-title>
+                </v-list-item>
+                </Link>
+
             </v-list>
         </v-navigation-drawer>
 
