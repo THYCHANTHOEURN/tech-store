@@ -17,7 +17,7 @@
             </div>
         </template>
 
-        <v-container fluid>
+        <v-container fluid class="py-8">
             <!-- Filters -->
             <v-card class="mb-6">
                 <v-card-title>
