@@ -12,7 +12,9 @@
                             Before deleting your account, please download any data or information that you wish to
                             retain.
                         </p>
-                        <v-btn class="my-5" color="error" @click="confirmUserDeletion">Delete Account</v-btn>
+                        <v-btn class="my-5" color="error" @click="confirmUserDeletion" prepend-icon="mdi-delete">
+                            Delete Account
+                        </v-btn>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -28,13 +30,20 @@
                         Once your account is deleted, all of its resources and data will be permanently deleted. Please
                         enter your password to confirm you would like to permanently delete your account.
                     </p>
-                    <v-text-field label="Password" ref="passwordInput" v-model="form.password" type="password"
-                        :error-messages="form.errors.password" variant="solo" @keyup.enter="deleteUser" />
+                    <v-text-field label="Password" ref="passwordInput" v-model="form.password"
+                        :type="passwordVisible ? 'text' : 'password'" :error-messages="form.errors.password"
+                        prepend-inner-icon="mdi-key-outline"
+                        :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                        @click:append-inner="passwordVisible = !passwordVisible" variant="solo"
+                        @keyup.enter="deleteUser" />
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn text @click="closeModal">Cancel</v-btn>
-                    <v-btn color="error" :loading="form.processing" @click="deleteUser">Delete Account</v-btn>
+                    <v-btn text @click="closeModal" prepend-icon="mdi-close">Cancel</v-btn>
+                    <v-btn color="error" :loading="form.processing" @click="deleteUser"
+                        prepend-icon="mdi-delete-forever">
+                        Delete Account
+                    </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -47,6 +56,7 @@
 
     const confirmingUserDeletion = ref(false);
     const passwordInput = ref(null);
+    const passwordVisible = ref(false);
 
     const form = useForm({
         password: '',
@@ -69,6 +79,7 @@
 
     const closeModal = () => {
         confirmingUserDeletion.value = false;
+        passwordVisible.value = false;
 
         form.clearErrors();
         form.reset();

@@ -13,20 +13,31 @@
                         <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
                             <div>
                                 <v-text-field label="Current Password" ref="currentPasswordInput"
-                                    v-model="form.current_password" type="password"
-                                    :error-messages="form.errors.current_password" variant="solo" />
+                                    v-model="form.current_password" :type="currentPasswordVisible ? 'text' : 'password'"
+                                    :error-messages="form.errors.current_password" prepend-inner-icon="mdi-lock-outline"
+                                    :append-inner-icon="currentPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click:append-inner="currentPasswordVisible = !currentPasswordVisible"
+                                    variant="solo" />
                             </div>
                             <div>
                                 <v-text-field label="New Password" ref="passwordInput" v-model="form.password"
-                                    type="password" :error-messages="form.errors.password" variant="solo" />
+                                    :type="passwordVisible ? 'text' : 'password'" :error-messages="form.errors.password"
+                                    prepend-inner-icon="mdi-lock-plus-outline"
+                                    :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click:append-inner="passwordVisible = !passwordVisible" variant="solo" />
                             </div>
                             <div>
                                 <v-text-field label="Confirm Password" v-model="form.password_confirmation"
-                                    type="password" :error-messages="form.errors.password_confirmation"
+                                    :type="confirmPasswordVisible ? 'text' : 'password'"
+                                    :error-messages="form.errors.password_confirmation"
+                                    prepend-inner-icon="mdi-lock-check-outline"
+                                    :append-inner-icon="confirmPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click:append-inner="confirmPasswordVisible = !confirmPasswordVisible"
                                     variant="solo" />
                             </div>
                             <div class="flex items-center gap-4">
-                                <v-btn :loading="form.processing" type="submit" color="primary">Save</v-btn>
+                                <v-btn :loading="form.processing" type="submit" color="primary"
+                                    prepend-icon="mdi-content-save">Save</v-btn>
                                 <transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0"
                                     leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
                                     <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">
@@ -48,6 +59,11 @@
 
     const passwordInput = ref(null);
     const currentPasswordInput = ref(null);
+
+    // Password visibility states
+    const currentPasswordVisible = ref(false);
+    const passwordVisible = ref(false);
+    const confirmPasswordVisible = ref(false);
 
     const form = useForm({
         current_password: '',

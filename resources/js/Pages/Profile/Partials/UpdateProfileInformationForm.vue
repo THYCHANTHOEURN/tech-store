@@ -13,11 +13,13 @@
                         <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
                             <div>
                                 <v-text-field label="Name" v-model="form.name" required autofocus
-                                    :error-messages="form.errors.name" variant="solo" />
+                                    prepend-inner-icon="mdi-account-outline" :error-messages="form.errors.name"
+                                    variant="solo" />
                             </div>
                             <div>
                                 <v-text-field label="Email" type="email" v-model="form.email" required
-                                    :error-messages="form.errors.email" variant="solo" />
+                                    prepend-inner-icon="mdi-email-outline" :error-messages="form.errors.email"
+                                    variant="solo" />
                             </div>
                             <div v-if="mustVerifyEmail && user.email_verified_at === null">
                                 <p class="mt-2 text-sm text-gray-800">
@@ -32,7 +34,8 @@
                                 </v-alert>
                             </div>
                             <div class="flex items-center gap-4">
-                                <v-btn :loading="form.processing" type="submit" color="primary">Save</v-btn>
+                                <v-btn :loading="form.processing" type="submit" color="primary"
+                                    prepend-icon="mdi-content-save">Save</v-btn>
                                 <transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0"
                                     leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
                                     <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">
