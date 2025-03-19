@@ -28,7 +28,7 @@
                     </v-col>
 
                     <v-col cols="12" md="4">
-                        <v-select v-model="selectedLocation" :items="locationOptions" label="Location" hide-details
+                        <v-select v-model="selectedPosition" :items="positionOptions" label="Position" hide-details
                             clearable @update:model-value="applyFilters" variant="outlined" density="comfortable">
                             <template v-slot:prepend-inner>
                                 <v-icon color="primary" size="small">mdi-map-marker</v-icon>
@@ -65,7 +65,14 @@
 
                     <template v-slot:item.actions="{ item }">
                         <div class="d-flex flex-nowrap justify-center justify-sm-end">
-                            <Link :href="route('dashboard.banners.edit', item.id)" class="text-decoration-none">
+
+                            <Link :href="route('dashboard.banners.show', item.uuid)" class="text-decoration-none">
+                            <v-btn icon size="x-small" color="info" class="mr-1" title="View" rounded="lg">
+                                <v-icon>mdi-eye</v-icon>
+                            </v-btn>
+                            </Link>
+
+                            <Link :href="route('dashboard.banners.edit', item.uuid)" class="text-decoration-none">
                             <v-btn icon size="x-small" color="warning" class="mr-1" title="Edit" rounded="lg">
                                 <v-icon>mdi-pencil</v-icon>
                             </v-btn>
@@ -115,19 +122,18 @@
     import { ref, computed } from 'vue';
     import FilterBar from '@/Components/Dashboard/FilterBar.vue';
     import SearchField from '@/Components/Dashboard/SearchField.vue';
-    import { debounce } from 'lodash';
 
     const props = defineProps({
         banners: Object,
         filters: Object,
-        locations: Array
+        positions: Array
     });
 
     // Table headers
     const headers = [
         { title: 'Image', key: 'image', sortable: false },
         { title: 'Title', key: 'title' },
-        { title: 'Location', key: 'location' },
+        { title: 'Position', key: 'position' },
         { title: 'Status', key: 'status' },
         { title: 'Created At', key: 'created_at' },
         { title: 'Actions', key: 'actions', sortable: false, align: 'center' },
@@ -136,20 +142,15 @@
     // State
     const loading = ref(false);
     const search = ref(props.filters?.search || '');
-    const selectedLocation = ref(props.filters?.location || null);
+    const selectedPosition = ref(props.filters?.position || null);
     const selectedStatus = ref(props.filters?.status || 'all');
     const page = ref(props.banners.current_page || 1);
     const deleteDialog = ref(false);
     const bannerToDelete = ref(null);
     const deleting = ref(false);
 
-    // Location options - assuming locations are provided by the backend
-    const locationOptions = props.locations || [
-        { title: 'Home Hero', value: 'home_hero' },
-        { title: 'Home Featured', value: 'home_featured' },
-        { title: 'Sidebar', value: 'sidebar' },
-        { title: 'Category Page', value: 'category_page' }
-    ];
+    // Position options from props
+    const positionOptions = props.positions || [];
 
     // Status options
     const statusOptions = [
@@ -166,11 +167,11 @@
             displayValue: search.value,
             active: !!search.value
         },
-        location: {
-            label: 'Location',
-            value: selectedLocation.value,
-            displayValue: locationOptions.find(l => l.value === selectedLocation.value)?.title,
-            active: !!selectedLocation.value
+        position: {
+            label: 'Position',
+            value: selectedPosition.value,
+            displayValue: positionOptions.find(p => p.value === selectedPosition.value)?.label,
+            active: !!selectedPosition.value
         },
         status: {
             label: 'Status',
@@ -185,7 +186,7 @@
         loading.value = true;
         router.get(route('dashboard.banners.index'), {
             search: search.value,
-            location: selectedLocation.value,
+            position: selectedPosition.value,
             status: selectedStatus.value,
             page: 1, // Reset to first page when filtering
         }, {
@@ -203,8 +204,8 @@
             case 'search':
                 search.value = '';
                 break;
-            case 'location':
-                selectedLocation.value = null;
+            case 'position':
+                selectedPosition.value = null;
                 break;
             case 'status':
                 selectedStatus.value = 'all';
@@ -216,7 +217,7 @@
     // Reset all filters
     const resetFilters = () => {
         search.value = '';
-        selectedLocation.value = null;
+        selectedPosition.value = null;
         selectedStatus.value = 'all';
         loading.value = true;
         router.get(route('dashboard.banners.index'), {}, {
@@ -231,7 +232,7 @@
         loading.value = true;
         router.get(route('dashboard.banners.index'), {
             search: search.value,
-            location: selectedLocation.value,
+            position: selectedPosition.value,
             status: selectedStatus.value,
             page: newPage,
         }, {
@@ -258,7 +259,7 @@
         if (!bannerToDelete.value) return;
 
         deleting.value = true;
-        router.delete(route('dashboard.banners.destroy', bannerToDelete.value.id), {
+        router.delete(route('dashboard.banners.destroy', bannerToDelete.value.uuid), {
             preserveScroll: true,
             onSuccess: () => {
                 closeDeleteDialog();
