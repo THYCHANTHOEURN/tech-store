@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Banners" />
 
     <DashboardLayout>
@@ -30,13 +31,13 @@
                         </v-col>
 
                         <v-col cols="12" md="3">
-                            <v-select v-model="selectedPosition" :items="positionOptions" label="Position"
-                                hide-details clearable @update:model-value="applyFilters"></v-select>
+                            <v-select v-model="selectedPosition" :items="positionOptions" label="Position" hide-details
+                                clearable @update:model-value="applyFilters"></v-select>
                         </v-col>
 
                         <v-col cols="12" md="3">
-                            <v-select v-model="selectedStatus" :items="statusOptions" label="Status"
-                                hide-details clearable @update:model-value="applyFilters"></v-select>
+                            <v-select v-model="selectedStatus" :items="statusOptions" label="Status" hide-details
+                                clearable @update:model-value="applyFilters"></v-select>
                         </v-col>
 
                         <v-col cols="12" md="2">
@@ -56,7 +57,8 @@
             <!-- Banners List -->
             <v-row>
                 <v-col cols="12">
-                    <v-data-table :headers="headers" :items="banners.data" class="elevation-1" :loading="loading">
+                    <v-data-table :headers="headers" :items="banners.data" class="elevation-1" :loading="loading"
+                        hide-default-footer>
                         <template v-slot:item.image="{ item }">
                             <div class="d-flex align-center py-2">
                                 <v-img :src="item.image_url" width="100" height="60" cover class="rounded"></v-img>
@@ -99,8 +101,8 @@
 
                     <!-- Pagination -->
                     <div class="d-flex justify-center py-4">
-                        <v-pagination v-if="banners.last_page > 1" v-model="currentPage" :length="banners.last_page"
-                            @update:model-value="changePage" rounded></v-pagination>
+                        <v-pagination v-if="banners.last_page" v-model="currentPage" :length="banners.last_page"
+                            total-visible="7" @update:model-value="changePage" rounded></v-pagination>
                     </div>
                 </v-col>
             </v-row>

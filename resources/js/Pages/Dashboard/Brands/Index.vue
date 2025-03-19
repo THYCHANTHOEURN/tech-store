@@ -52,7 +52,7 @@
             <!-- Brands List -->
             <v-row>
                 <v-col cols="12">
-                    <v-data-table :headers="headers" :items="brands.data" class="elevation-1" :loading="loading">
+                    <v-data-table :headers="headers" :items="brands.data" class="elevation-1" :loading="loading" hide-default-footer>
                         <template v-slot:item.logo="{ item }">
                             <div class="d-flex align-center py-2">
                                 <v-img :src="item.logo_url" width="50" height="50" cover class="rounded"></v-img>
@@ -89,9 +89,10 @@
 
                     <!-- Pagination -->
                     <div class="d-flex justify-center py-4">
-                        <v-pagination v-if="brands.last_page > 1" v-model="currentPage" :length="brands.last_page"
-                            @update:model-value="changePage" rounded></v-pagination>
-                    </div>
+                    <v-pagination v-if="brands.last_page > 1" v-model="page" :length="brands.last_page"
+                        total-visible="7" @update:model-value="changePage" rounded></v-pagination>
+
+                </div>
                 </v-col>
             </v-row>
 

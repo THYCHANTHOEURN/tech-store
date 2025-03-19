@@ -64,7 +64,7 @@
 
             <!-- Users Table -->
             <v-card>
-                <v-data-table :headers="headers" :items="users.data" :loading="loading" class="elevation-1">
+                <v-data-table :headers="headers" :items="users.data" :loading="loading" class="elevation-1" hide-default-footer>
                     <template v-slot:item.roles="{ item }">
                         <v-chip v-for="role in item.roles" :key="role.id" :color="getRoleColor(role.name)" size="small"
                             class="mr-1">
@@ -100,7 +100,8 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
-                    <Pagination :links="users.links" />
+                    <v-pagination v-if="users.last_page" v-model="page" :length="users.last_page" total-visible="7"
+                        @update:model-value="changePage" rounded></v-pagination>
                 </div>
             </v-card>
         </v-container>

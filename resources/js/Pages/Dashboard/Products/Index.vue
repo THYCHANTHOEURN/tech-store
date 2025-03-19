@@ -27,8 +27,8 @@
                 <v-card-text>
                     <v-row>
                         <v-col cols="12" md="3">
-                            <v-text-field v-model="search" label="Search Products" prepend-inner-icon="mdi-magnify" single-line
-                                hide-details clearable @update:model-value="applyFilters"
+                            <v-text-field v-model="search" label="Search Products" prepend-inner-icon="mdi-magnify"
+                                single-line hide-details clearable @update:model-value="applyFilters"
                                 @click:clear="clearSearch"></v-text-field>
                         </v-col>
 
@@ -68,7 +68,8 @@
 
             <!-- Products Table -->
             <v-card>
-                <v-data-table :headers="headers" :items="products.data" :loading="loading" class="elevation-1">
+                <v-data-table :headers="headers" :items="products.data" :loading="loading" class="elevation-1"
+                    hide-default-footer>
                     <template v-slot:item.primary_image_url="{ item }">
                         <div class="d-flex align-center py-2">
                             <v-img :src="item.primary_image_url" :alt="item.name" width="50" height="50" class="rounded"
@@ -130,8 +131,8 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
-                    <v-pagination v-if="products.last_page > 1" v-model="page" :length="products.last_page"
-                        total-visible="7" @update:model-value="changePage"></v-pagination>
+                    <v-pagination v-if="products.last_page" v-model="page" :length="products.last_page"
+                        total-visible="7" @update:model-value="changePage" rounded></v-pagination>
                 </div>
             </v-card>
         </v-container>

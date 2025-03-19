@@ -53,7 +53,7 @@
             <!-- Customers Table -->
             <v-card>
                 <v-data-table :headers="headers" :items="customers.data" :loading="loading" item-value="id"
-                    :sort-by="[{ key: sortBy, order: sortOrder }]" @update:sort-by="updateSort">
+                    :sort-by="[{ key: sortBy, order: sortOrder }]" @update:sort-by="updateSort" hide-default-footer>
                     <template v-slot:item.email_verified_at="{ item }">
                         <v-chip :color="item.email_verified_at ? 'success' : 'error'" size="small"
                             class="text-uppercase">
@@ -87,8 +87,8 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
-                    <v-pagination v-if="customers.last_page > 1" v-model="page" :length="customers.last_page"
-                        total-visible="7" @update:model-value="changePage"></v-pagination>
+                    <v-pagination v-if="customers.last_page" v-model="page" :length="customers.last_page"
+                        total-visible="7" @update:model-value="changePage" rounded></v-pagination>
                 </div>
             </v-card>
         </v-container>

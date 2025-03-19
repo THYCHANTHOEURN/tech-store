@@ -92,7 +92,7 @@
 
                     <!-- Pagination -->
                     <div class="d-flex justify-center py-4">
-                        <v-pagination v-if="roles.last_page > 1" v-model="currentPage" :length="roles.last_page"
+                        <v-pagination v-if="roles.last_page" v-model="currentPage" :length="roles.last_page" total-visible="7"
                             @update:model-value="changePage" rounded></v-pagination>
                     </div>
                 </v-col>

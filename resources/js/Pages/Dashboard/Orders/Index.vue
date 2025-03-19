@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Orders" />
 
     <DashboardLayout>
@@ -32,8 +33,9 @@
                                 hide-details clearable @update:model-value="applyFilters"></v-select>
                         </v-col>
                         <v-col cols="12" md="3">
-                            <v-select v-model="selectedPaymentStatus" :items="paymentStatusOptions" label="Payment Status"
-                                hide-details clearable @update:model-value="applyFilters"></v-select>
+                            <v-select v-model="selectedPaymentStatus" :items="paymentStatusOptions"
+                                label="Payment Status" hide-details clearable
+                                @update:model-value="applyFilters"></v-select>
                         </v-col>
                         <v-col cols="12" md="2">
                             <v-btn color="error" variant="outlined" block @click="resetFilters">
@@ -52,9 +54,11 @@
             <!-- Orders List -->
             <v-row>
                 <v-col cols="12">
-                    <v-data-table :headers="headers" :items="orders.data" class="elevation-1" :loading="loading">
+                    <v-data-table :headers="headers" :items="orders.data" class="elevation-1" :loading="loading"
+                        hide-default-footer>
                         <template v-slot:item.order_id="{ item }">
-                            <span class="font-weight-medium text-primary">#{{ item.uuid.slice(-8).toUpperCase() }}</span>
+                            <span class="font-weight-medium text-primary">#{{ item.uuid.slice(-8).toUpperCase()
+                                }}</span>
                         </template>
 
                         <template v-slot:item.customer="{ item }">
@@ -105,8 +109,8 @@
 
                     <!-- Pagination -->
                     <div class="d-flex justify-center py-4">
-                        <v-pagination v-if="orders.last_page > 1" v-model="currentPage" :length="orders.last_page"
-                            @update:model-value="changePage" rounded></v-pagination>
+                        <v-pagination v-if="orders.last_page" v-model="currentPage" :length="orders.last_page"
+                            total-visible="7" @update:model-value="changePage" rounded></v-pagination>
                     </div>
                 </v-col>
             </v-row>
@@ -118,7 +122,8 @@
                     <v-card-text>
                         Are you sure you want to delete this order? This action cannot be undone.
                         <p class="mt-4 font-weight-bold" v-if="orderToDelete">
-                            Order #{{ orderToDelete.uuid.slice(-8).toUpperCase() }} - ${{ formatCurrency(orderToDelete.total_amount) }}
+                            Order #{{ orderToDelete.uuid.slice(-8).toUpperCase() }} - ${{
+                                formatCurrency(orderToDelete.total_amount) }}
                         </p>
                     </v-card-text>
                     <v-card-actions>
@@ -212,8 +217,8 @@
 
     /// Format currency
     function formatCurrency(amount) {
-    return amount ? Number(amount).toFixed(2) : '0.00';
-}
+        return amount ? Number(amount).toFixed(2) : '0.00';
+    }
 
     function formatDate(dateString) {
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
