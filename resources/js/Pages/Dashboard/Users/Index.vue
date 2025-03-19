@@ -18,53 +18,41 @@
         </template>
 
         <v-container fluid class="py-8">
-            <!-- Filters -->
-            <v-card class="mb-6">
-                <v-card-title>
-                    <v-icon class="mr-2">mdi-filter-variant</v-icon>
-                    Filters
-                </v-card-title>
-                <v-card-text>
-                    <v-row>
-                        <v-col cols="12" md="4">
-                            <v-text-field v-model="search" label="Search Users" prepend-inner-icon="mdi-magnify"
-                                single-line hide-details clearable @update:model-value="debouncedSearch"
-                                @click:clear="clearSearch">
-                            </v-text-field>
-                        </v-col>
+            <!-- Enhanced Filters -->
+            <FilterBar :loading="loading" :total-items="users.total" items-label="users" :active-filters="activeFilters"
+                @reset-filters="resetFilters" @clear-filter="clearFilter">
+                <template #filters>
+                    <v-col cols="12" md="4">
+                        <SearchField v-model="search" label="Search Users" :loading="loading" @search="applyFilters"
+                            @clear="applyFilters" />
+                    </v-col>
 
-                        <v-col cols="12" md="3">
-                            <v-select v-model="filters.role" label="Role" :items="[{ title: 'All Roles', value: 'all' },
-                            ...roles.map(role => ({ title: role.name, value: role.name }))]" item-title="title"
-                                item-value="value" hide-details clearable @update:model-value="filterUsers"></v-select>
-                        </v-col>
+                    <v-col cols="12" md="4">
+                        <v-select v-model="filters.role" label="Role" :items="roleOptions" item-title="title"
+                            item-value="value" hide-details clearable @update:model-value="applyFilters"
+                            variant="outlined" density="comfortable">
+                            <template v-slot:prepend-inner>
+                                <v-icon color="primary" size="small">mdi-shield-account</v-icon>
+                            </template>
+                        </v-select>
+                    </v-col>
 
-                        <v-col cols="12" md="3">
-                            <v-select v-model="filters.status" label="Status" :items="[
-                                { title: 'All Status', value: 'all' },
-                                { title: 'Verified', value: 'verified' },
-                                { title: 'Unverified', value: 'unverified' }
-                            ]" item-title="title" item-value="value" hide-details clearable
-                                @update:model-value="filterUsers"></v-select>
-                        </v-col>
-
-                        <v-col cols="12" md="2">
-                            <v-btn color="error" variant="outlined" block @click="resetFilters">
-                                Reset
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-
-                    <!-- Total count indicator -->
-                    <div class="d-flex justify-end mt-2">
-                        <p class="text-caption mb-0">Total {{ users.total }} users</p>
-                    </div>
-                </v-card-text>
-            </v-card>
+                    <v-col cols="12" md="4">
+                        <v-select v-model="filters.status" label="Status" :items="statusOptions" item-title="title"
+                            item-value="value" hide-details clearable @update:model-value="applyFilters"
+                            variant="outlined" density="comfortable">
+                            <template v-slot:prepend-inner>
+                                <v-icon color="primary" size="small">mdi-email-check</v-icon>
+                            </template>
+                        </v-select>
+                    </v-col>
+                </template>
+            </FilterBar>
 
             <!-- Users Table -->
-            <v-card>
-                <v-data-table :headers="headers" :items="users.data" :loading="loading" class="elevation-1" hide-default-footer>
+            <v-card elevation="2">
+                <v-data-table :headers="headers" :items="users.data" :loading="loading" class="elevation-0"
+                    hide-default-footer>
                     <template v-slot:item.roles="{ item }">
                         <v-chip v-for="role in item.roles" :key="role.id" :color="getRoleColor(role.name)" size="small"
                             class="mr-1">
@@ -106,7 +94,7 @@
             </v-card>
         </v-container>
 
-        <!-- Delete Dialog -->
+        <!-- Delete Confirmation Dialog -->
         <v-dialog v-model="deleteDialog" max-width="500px">
             <v-card>
                 <v-card-title class="text-h6">
@@ -133,14 +121,15 @@
 <script setup>
     import DashboardLayout from '@/Layouts/DashboardLayout.vue';
     import { Head, router, Link } from '@inertiajs/vue3';
-    import { ref, watch } from 'vue';
+    import { ref, computed } from 'vue';
+    import FilterBar from '@/Components/Dashboard/FilterBar.vue';
+    import SearchField from '@/Components/Dashboard/SearchField.vue';
     import { debounce } from 'lodash';
-    import Pagination from '@/Components/Pagination.vue';
 
     const props = defineProps({
         users: Object,
-        roles: Array,
-        filters: Object
+        filters: Object,
+        roles: Array
     });
 
     // Table headers
@@ -160,21 +149,47 @@
         role: props.filters.role || 'all',
         status: props.filters.status || 'all',
     });
+    const page = ref(props.users.current_page || 1);
     const userToDelete = ref(null);
     const deleteDialog = ref(false);
     const deleting = ref(false);
 
-    // Watch for search input and apply debounce
-    const debouncedSearch = debounce(() => {
-        applyFilters();
-    }, 300);
+    // Role options
+    const roleOptions = [
+        { title: 'All Roles', value: 'all' },
+        ...props.roles.map(role => ({ title: role.name, value: role.name }))
+    ];
+
+    // Status options
+    const statusOptions = [
+        { title: 'All Status', value: 'all' },
+        { title: 'Verified', value: 'verified' },
+        { title: 'Unverified', value: 'unverified' }
+    ];
+
+    // Computed property for active filters
+    const activeFilters = computed(() => ({
+        search: {
+            label: 'Search',
+            value: search.value,
+            displayValue: search.value,
+            active: !!search.value
+        },
+        role: {
+            label: 'Role',
+            value: filters.value.role,
+            displayValue: roleOptions.find(r => r.value === filters.value.role)?.title,
+            active: filters.value.role !== 'all'
+        },
+        status: {
+            label: 'Status',
+            value: filters.value.status,
+            displayValue: statusOptions.find(s => s.value === filters.value.status)?.title,
+            active: filters.value.status !== 'all'
+        }
+    }));
 
     // Apply filters
-    const filterUsers = () => {
-        applyFilters();
-    };
-
-    // Apply all filters and reload users
     const applyFilters = () => {
         loading.value = true;
         router.get(route('dashboard.users.index'), {
@@ -185,15 +200,25 @@
         }, {
             preserveState: true,
             replace: true,
-            onSuccess: () => {
+            onFinish: () => {
                 loading.value = false;
             },
         });
     };
 
-    // Clear search
-    const clearSearch = () => {
-        search.value = '';
+    // Clear specific filter
+    const clearFilter = (filterKey) => {
+        switch (filterKey) {
+            case 'search':
+                search.value = '';
+                break;
+            case 'role':
+                filters.value.role = 'all';
+                break;
+            case 'status':
+                filters.value.status = 'all';
+                break;
+        }
         applyFilters();
     };
 
@@ -204,6 +229,23 @@
         filters.value.status = 'all';
         loading.value = true;
         router.get(route('dashboard.users.index'), {}, {
+            onFinish: () => {
+                loading.value = false;
+            }
+        });
+    };
+
+    // Pagination
+    const changePage = (newPage) => {
+        loading.value = true;
+        router.get(route('dashboard.users.index'), {
+            search: search.value,
+            role: filters.value.role,
+            status: filters.value.status,
+            page: newPage,
+        }, {
+            preserveState: true,
+            replace: true,
             onFinish: () => {
                 loading.value = false;
             }

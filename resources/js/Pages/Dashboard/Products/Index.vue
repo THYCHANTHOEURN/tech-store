@@ -18,57 +18,58 @@
         </template>
 
         <v-container fluid class="py-8">
-            <!-- Filters -->
-            <v-card class="mb-6">
-                <v-card-title>
-                    <v-icon class="mr-2">mdi-filter-variant</v-icon>
-                    Filters
-                </v-card-title>
-                <v-card-text>
-                    <v-row>
-                        <v-col cols="12" md="3">
-                            <v-text-field v-model="search" label="Search Products" prepend-inner-icon="mdi-magnify"
-                                single-line hide-details clearable @update:model-value="applyFilters"
-                                @click:clear="clearSearch"></v-text-field>
-                        </v-col>
+            <!-- Enhanced Filters -->
+            <FilterBar :loading="loading" :total-items="products.total" items-label="products"
+                :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
+                <template #filters>
+                    <v-col cols="12" md="6" lg="4">
+                        <SearchField v-model="search" label="Search Products" :loading="loading" @search="applyFilters"
+                            @clear="applyFilters" />
+                    </v-col>
 
-                        <v-col cols="12" md="2">
-                            <v-select v-model="selectedCategory" label="Category" :items="categories" item-title="name"
-                                item-value="id" hide-details clearable @update:model-value="applyFilters"></v-select>
-                        </v-col>
+                    <v-col cols="12" sm="6" md="3" lg="2">
+                        <v-select v-model="selectedCategory" label="Category" :items="categories" item-title="name"
+                            item-value="id" hide-details clearable @update:model-value="applyFilters" variant="outlined"
+                            density="comfortable">
+                            <template v-slot:prepend-inner>
+                                <v-icon color="primary" size="small">mdi-shape</v-icon>
+                            </template>
+                        </v-select>
+                    </v-col>
 
-                        <v-col cols="12" md="2">
-                            <v-select v-model="selectedBrand" label="Brand" :items="brands" item-title="name"
-                                item-value="id" hide-details clearable @update:model-value="applyFilters"></v-select>
-                        </v-col>
+                    <v-col cols="12" sm="6" md="3" lg="2">
+                        <v-select v-model="selectedBrand" label="Brand" :items="brands" item-title="name"
+                            item-value="id" hide-details clearable @update:model-value="applyFilters" variant="outlined"
+                            density="comfortable">
+                            <template v-slot:prepend-inner>
+                                <v-icon color="primary" size="small">mdi-tag</v-icon>
+                            </template>
+                        </v-select>
+                    </v-col>
 
-                        <v-col cols="12" md="2">
-                            <v-select v-model="selectedStatus" label="Status" :items="statusOptions" hide-details
-                                clearable @update:model-value="applyFilters"></v-select>
-                        </v-col>
+                    <v-col cols="12" sm="6" md="3" lg="2">
+                        <v-select v-model="selectedStatus" label="Status" :items="statusOptions" hide-details clearable
+                            @update:model-value="applyFilters" variant="outlined" density="comfortable">
+                            <template v-slot:prepend-inner>
+                                <v-icon color="primary" size="small">mdi-eye</v-icon>
+                            </template>
+                        </v-select>
+                    </v-col>
 
-                        <v-col cols="12" md="2">
-                            <v-select v-model="selectedFeatured" label="Featured" :items="featuredOptions" hide-details
-                                clearable @update:model-value="applyFilters"></v-select>
-                        </v-col>
-
-                        <v-col cols="12" md="1">
-                            <v-btn color="error" variant="outlined" block @click="resetFilters">
-                                Reset
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-
-                    <!-- Total count indicator -->
-                    <div class="d-flex justify-end mt-2">
-                        <p class="text-caption mb-0">Total {{ products.total }} products</p>
-                    </div>
-                </v-card-text>
-            </v-card>
+                    <v-col cols="12" sm="6" md="3" lg="2">
+                        <v-select v-model="selectedFeatured" label="Featured" :items="featuredOptions" hide-details
+                            clearable @update:model-value="applyFilters" variant="outlined" density="comfortable">
+                            <template v-slot:prepend-inner>
+                                <v-icon color="primary" size="small">mdi-star</v-icon>
+                            </template>
+                        </v-select>
+                    </v-col>
+                </template>
+            </FilterBar>
 
             <!-- Products Table -->
-            <v-card>
-                <v-data-table :headers="headers" :items="products.data" :loading="loading" class="elevation-1"
+            <v-card elevation="2">
+                <v-data-table :headers="headers" :items="products.data" :loading="loading" class="elevation-0"
                     hide-default-footer>
                     <template v-slot:item.primary_image_url="{ item }">
                         <div class="d-flex align-center py-2">
@@ -164,14 +165,16 @@
 <script setup>
     import DashboardLayout from '@/Layouts/DashboardLayout.vue';
     import { Head, router } from '@inertiajs/vue3';
-    import { ref } from 'vue';
+    import { ref, computed } from 'vue';
+    import FilterBar from '@/Components/Dashboard/FilterBar.vue';
+    import SearchField from '@/Components/Dashboard/SearchField.vue';
+    import { Link } from '@inertiajs/vue3';
 
     const props = defineProps({
         products: Object,
         filters: Object,
         categories: Array,
         brands: Array
-
     });
 
     // Table headers
@@ -214,8 +217,39 @@
     const productToDelete = ref(null);
     const deleting = ref(false);
 
-    // Removed custom flash message handling variables and logic
-    // The FlashMessage component in DashboardLayout will handle this automatically
+    // Computed property for active filters
+    const activeFilters = computed(() => ({
+        search: {
+            label: 'Search',
+            value: search.value,
+            displayValue: search.value,
+            active: !!search.value
+        },
+        category: {
+            label: 'Category',
+            value: selectedCategory.value,
+            displayValue: props.categories.find(c => c.id === selectedCategory.value)?.name,
+            active: !!selectedCategory.value
+        },
+        brand: {
+            label: 'Brand',
+            value: selectedBrand.value,
+            displayValue: props.brands.find(b => b.id === selectedBrand.value)?.name,
+            active: !!selectedBrand.value
+        },
+        status: {
+            label: 'Status',
+            value: selectedStatus.value,
+            displayValue: statusOptions.find(s => s.value === selectedStatus.value)?.title,
+            active: selectedStatus.value !== 'all'
+        },
+        featured: {
+            label: 'Featured',
+            value: selectedFeatured.value,
+            displayValue: featuredOptions.find(f => f.value === selectedFeatured.value)?.title,
+            active: selectedFeatured.value !== 'all'
+        }
+    }));
 
     // Filter methods
     const applyFilters = () => {
@@ -236,8 +270,24 @@
         });
     };
 
-    const clearSearch = () => {
-        search.value = '';
+    const clearFilter = (filterKey) => {
+        switch (filterKey) {
+            case 'search':
+                search.value = '';
+                break;
+            case 'category':
+                selectedCategory.value = null;
+                break;
+            case 'brand':
+                selectedBrand.value = null;
+                break;
+            case 'status':
+                selectedStatus.value = 'all';
+                break;
+            case 'featured':
+                selectedFeatured.value = 'all';
+                break;
+        }
         applyFilters();
     };
 

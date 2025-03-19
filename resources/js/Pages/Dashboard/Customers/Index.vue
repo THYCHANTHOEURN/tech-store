@@ -18,42 +18,31 @@
         </template>
 
         <v-container fluid class="py-8">
-            <!-- Filters -->
-            <v-card class="mb-6">
-                <v-card-title>
-                    <v-icon class="mr-2">mdi-filter-variant</v-icon>
-                    Filters
-                </v-card-title>
-                <v-card-text>
-                    <v-row>
-                        <v-col cols="12" md="4">
-                            <v-text-field v-model="search" label="Search Customers" prepend-inner-icon="mdi-magnify"
-                                single-line hide-details clearable @update:model-value="debouncedSearch"
-                                @click:clear="resetSearch"></v-text-field>
-                        </v-col>
-                        <v-col cols="12" md="5">
-                            <v-select v-model="selectedStatus" :items="statusOptions" label="Email Status" hide-details
-                                clearable @update:model-value="filterCustomers"></v-select>
-                        </v-col>
+            <!-- Enhanced Filters -->
+            <FilterBar :loading="loading" :total-items="customers.total" items-label="customers"
+                :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
+                <template #filters>
+                    <v-col cols="12" md="6">
+                        <SearchField v-model="search" label="Search Customers" :loading="loading"
+                            @search="filterCustomers" @clear="filterCustomers" />
+                    </v-col>
 
-                        <v-col cols="12" md="3">
-                            <v-btn color="error" variant="outlined" block @click="resetFilters">
-                                Reset
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-
-                    <!-- Total count indicator -->
-                    <div class="d-flex justify-end mt-2">
-                        <p class="text-caption mb-0">Total {{ customers.total }} customers</p>
-                    </div>
-                </v-card-text>
-            </v-card>
+                    <v-col cols="12" sm="6" md="6">
+                        <v-select v-model="selectedStatus" :items="statusOptions" label="Email Status" hide-details
+                            clearable @update:model-value="filterCustomers" variant="outlined" density="comfortable">
+                            <template v-slot:prepend-inner>
+                                <v-icon color="primary" size="small">mdi-email-check</v-icon>
+                            </template>
+                        </v-select>
+                    </v-col>
+                </template>
+            </FilterBar>
 
             <!-- Customers Table -->
-            <v-card>
+            <v-card elevation="2">
                 <v-data-table :headers="headers" :items="customers.data" :loading="loading" item-value="id"
-                    :sort-by="[{ key: sortBy, order: sortOrder }]" @update:sort-by="updateSort" hide-default-footer>
+                    :sort-by="[{ key: sortBy, order: sortOrder }]" @update:sort-by="updateSort" class="elevation-0"
+                    hide-default-footer>
                     <template v-slot:item.email_verified_at="{ item }">
                         <v-chip :color="item.email_verified_at ? 'success' : 'error'" size="small"
                             class="text-uppercase">
@@ -120,7 +109,9 @@
 <script setup>
     import DashboardLayout from '@/Layouts/DashboardLayout.vue';
     import { Head, router, Link } from '@inertiajs/vue3';
-    import { ref, watch } from 'vue';
+    import { ref, computed } from 'vue';
+    import FilterBar from '@/Components/Dashboard/FilterBar.vue';
+    import SearchField from '@/Components/Dashboard/SearchField.vue';
     import { debounce } from 'lodash';
 
     const props = defineProps({
@@ -143,8 +134,8 @@
     const search = ref(props.filters.search || '');
     const selectedStatus = ref(props.filters.status || 'all');
     const page = ref(props.customers?.current_page || 1);
-    const sortBy = ref('created_at');
-    const sortOrder = ref('desc');
+    const sortBy = ref(props.filters.sort_field || 'created_at');
+    const sortOrder = ref(props.filters.sort_order || 'desc');
 
     // Delete dialog
     const deleteDialog = ref(false);
@@ -158,10 +149,27 @@
         { title: 'Unverified Email', value: 'unverified' },
     ];
 
-    // Debounced search function
-    const debouncedSearch = debounce(() => {
-        filterCustomers();
-    }, 300);
+    // Computed property for active filters
+    const activeFilters = computed(() => ({
+        search: {
+            label: 'Search',
+            value: search.value,
+            displayValue: search.value,
+            active: !!search.value
+        },
+        status: {
+            label: 'Email Status',
+            value: selectedStatus.value,
+            displayValue: statusOptions.find(s => s.value === selectedStatus.value)?.title,
+            active: selectedStatus.value !== 'all'
+        },
+        sort: {
+            label: 'Sort By',
+            value: `${sortBy.value} ${sortOrder.value}`,
+            displayValue: `${sortBy.value === 'created_at' ? 'Date' : sortBy.value} (${sortOrder.value === 'asc' ? 'Ascending' : 'Descending'})`,
+            active: sortBy.value !== 'created_at' || sortOrder.value !== 'desc'
+        }
+    }));
 
     // Apply filters
     const filterCustomers = () => {
@@ -193,9 +201,20 @@
         filterCustomers();
     };
 
-    // Reset search
-    const resetSearch = () => {
-        search.value = '';
+    // Clear specific filter
+    const clearFilter = (filterKey) => {
+        switch (filterKey) {
+            case 'search':
+                search.value = '';
+                break;
+            case 'status':
+                selectedStatus.value = 'all';
+                break;
+            case 'sort':
+                sortBy.value = 'created_at';
+                sortOrder.value = 'desc';
+                break;
+        }
         filterCustomers();
     };
 
