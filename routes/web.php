@@ -8,6 +8,7 @@ use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\Web\SearchController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\WishlistController;
+use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\ProductController as DashboardProductController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,13 @@ Route::get('/categories', [CategoryController::class, 'index'])->name('categorie
 Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+/**
+ * Static pages
+ */
+Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 
 /**
  * Customer routes

@@ -318,9 +318,15 @@
                     <v-col cols="12" md="3">
                         <h3>Quick Links</h3>
                         <v-list density="compact" nav>
-                            <v-list-item>About Us</v-list-item>
-                            <v-list-item>Contact</v-list-item>
-                            <v-list-item>Terms & Conditions</v-list-item>
+                            <v-list-item>
+                                <Link :href="route('about')" class="text-decoration-none">About Us</Link>
+                            </v-list-item>
+                            <v-list-item>
+                                <Link :href="route('contact')" class="text-decoration-none">Contact</Link>
+                            </v-list-item>
+                            <v-list-item>
+                                <Link :href="route('terms')" class="text-decoration-none">Terms & Conditions</Link>
+                            </v-list-item>
                         </v-list>
                     </v-col>
 
