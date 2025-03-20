@@ -65,7 +65,7 @@
                             </v-col>
                             <v-col cols="8" class="d-flex gap-2">
                                 <v-btn color="primary" :disabled="product.stock === 0" @click="addToCart"
-                                    prepend-icon="mdi-cart-plus">
+                                    prepend-icon="mdi-cart-plus" class="mr-2">
                                     Add to Cart
                                 </v-btn>
                                 <v-btn :color="isInWishlist ? 'error' : 'primary'" variant="outlined"
@@ -227,18 +227,18 @@
     // Check if product is in user's wishlist
     const isInWishlist = computed(() => {
         if (!usePage().props.auth.user) return false;
-        
+
         const items = usePage().props.auth.wishlistItems || [];
         return items.some(item => item.product_id === props.product.id);
     });
-    
+
     // Add toggle wishlist function
     const toggleWishlist = () => {
         if (!usePage().props.auth.user) {
             router.visit(route('login'));
             return;
         }
-        
+
         router.post(route('wishlist.toggle'), {
             product_id: props.product.id
         }, {

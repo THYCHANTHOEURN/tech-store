@@ -42,15 +42,15 @@
 
                             <!-- Quantity and Add to Cart -->
                             <div class="d-flex flex-column gap-4">
-                                <div class="d-flex align-center gap-4">
+                                <div class="d-flex align-center gap-4 py-4 mb-4">
 
                                     <v-text-field v-model="quantity" type="number" label="Quantity" min="1"
-                                        :max="product.stock" hide-details density="compact" style="max-width: 100px" />
+                                        :max="product.stock" hide-details density="compact" style="max-width: 100px" class="mr-2"/>
                                     <v-btn color="primary" :disabled="product.stock === 0" @click="handleAddToCart"
-                                        prepend-icon="mdi-cart-plus">
+                                        prepend-icon="mdi-cart-plus" class="mr-2">
                                         Add to Cart
                                     </v-btn>
-                                    
+
                                     <v-btn :color="isInWishlist ? 'error' : 'primary'" variant="outlined"
                                         @click="toggleWishlist">
                                         <v-tooltip activator="parent">
@@ -58,12 +58,12 @@
                                         </v-tooltip>
                                         <v-icon>{{ isInWishlist ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
                                     </v-btn>
-                                    
+
                                 </div>
 
                                 <Link :href="route('products.show', { slug: product.slug })"
                                     class="text-decoration-none">
-                                <v-btn color="primary" variant="outlined" block>
+                                <v-btn color="primary" variant="outlined" block prepend-icon="mdi-eye">
                                     View Full Details
                                 </v-btn>
                                 </Link>
