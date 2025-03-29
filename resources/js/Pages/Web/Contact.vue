@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Contact Us - Tech Store" />
 
     <WebLayout>
@@ -21,51 +22,25 @@
                         <v-form @submit.prevent="submitForm" v-model="isFormValid">
                             <v-row>
                                 <v-col cols="12" sm="6">
-                                    <v-text-field
-                                        v-model="form.name"
-                                        label="Your Name*"
-                                        :rules="[rules.required]"
-                                        variant="outlined"
-                                        density="comfortable"
-                                    ></v-text-field>
+                                    <v-text-field v-model="form.name" label="Your Name*" :rules="[rules.required]"
+                                        variant="outlined" density="comfortable"></v-text-field>
                                 </v-col>
 
                                 <v-col cols="12" sm="6">
-                                    <v-text-field
-                                        v-model="form.email"
-                                        label="Your Email*"
-                                        :rules="[rules.required, rules.email]"
-                                        variant="outlined"
-                                        density="comfortable"
-                                    ></v-text-field>
+                                    <v-text-field v-model="form.email" label="Your Email*"
+                                        :rules="[rules.required, rules.email]" variant="outlined"
+                                        density="comfortable"></v-text-field>
                                 </v-col>
                             </v-row>
 
-                            <v-text-field
-                                v-model="form.subject"
-                                label="Subject*"
-                                :rules="[rules.required]"
-                                variant="outlined"
-                                density="comfortable"
-                                class="mb-4"
-                            ></v-text-field>
+                            <v-text-field v-model="form.subject" label="Subject*" :rules="[rules.required]"
+                                variant="outlined" density="comfortable" class="mb-4"></v-text-field>
 
-                            <v-textarea
-                                v-model="form.message"
-                                label="Message*"
-                                :rules="[rules.required]"
-                                variant="outlined"
-                                rows="5"
-                                class="mb-4"
-                            ></v-textarea>
+                            <v-textarea v-model="form.message" label="Message*" :rules="[rules.required]"
+                                variant="outlined" rows="5" class="mb-4"></v-textarea>
 
-                            <v-btn
-                                type="submit"
-                                color="primary"
-                                :loading="isSubmitting"
-                                :disabled="!isFormValid || isSubmitting"
-                                block
-                            >
+                            <v-btn type="submit" color="primary" :loading="isSubmitting"
+                                :disabled="!isFormValid || isSubmitting" block>
                                 Send Message
                             </v-btn>
                         </v-form>
@@ -127,10 +102,14 @@
                     <v-card class="pa-4">
                         <h2 class="text-h5 mb-4">Connect With Us</h2>
                         <div class="d-flex gap-2">
-                            <v-btn icon="mdi-facebook" color="primary" variant="text" href="https://www.facebook.com/" target="_blank"></v-btn>
-                            <v-btn icon="mdi-twitter" color="primary" variant="text" href="https://twitter.com/" target="_blank"></v-btn>
-                            <v-btn icon="mdi-instagram" color="primary" variant="text" href="https://www.instagram.com/" target="_blank"></v-btn>
-                            <v-btn icon="mdi-linkedin" color="primary" variant="text" href="https://www.linkedin.com/" target="_blank"></v-btn>
+                            <v-btn icon="mdi-facebook" color="primary" variant="text" href="https://www.facebook.com/"
+                                target="_blank"></v-btn>
+                            <v-btn icon="mdi-twitter" color="primary" variant="text" href="https://twitter.com/"
+                                target="_blank"></v-btn>
+                            <v-btn icon="mdi-instagram" color="primary" variant="text" href="https://www.instagram.com/"
+                                target="_blank"></v-btn>
+                            <v-btn icon="mdi-linkedin" color="primary" variant="text" href="https://www.linkedin.com/"
+                                target="_blank"></v-btn>
                         </div>
                     </v-card>
                 </v-col>
@@ -141,19 +120,10 @@
                     <h2 class="text-h5 mb-4">Our Location</h2>
                     <v-card>
                         <!-- Placeholder for Google Map. In a real implementation, you would use Google Maps API -->
-                        <v-img
-                            src="/images/map-placeholder.jpg"
-                            height="400"
-                            cover
-                            class="grey lighten-2"
-                        >
+                        <v-img src="/images/map-placeholder.jpg" height="400" cover class="grey lighten-2">
                             <div class="d-flex justify-center align-center fill-height">
-                                <v-btn
-                                    color="primary"
-                                    variant="elevated"
-                                    href="https://maps.google.com"
-                                    target="_blank"
-                                >
+                                <v-btn color="primary" variant="elevated" href="https://maps.google.com"
+                                    target="_blank">
                                     Open in Google Maps
                                 </v-btn>
                             </div>
@@ -166,52 +136,52 @@
 </template>
 
 <script setup>
-import { Head } from '@inertiajs/vue3';
-import WebLayout from '@/Layouts/WebLayout.vue';
-import { ref } from 'vue';
+    import { Head } from '@inertiajs/vue3';
+    import WebLayout from '@/Layouts/WebLayout.vue';
+    import { ref } from 'vue';
 
-const isFormValid = ref(false);
-const isSubmitting = ref(false);
+    const isFormValid = ref(false);
+    const isSubmitting = ref(false);
 
-const form = ref({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-});
+    const form = ref({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+    });
 
-const rules = {
-    required: value => !!value || 'This field is required',
-    email: value => {
-        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return pattern.test(value) || 'Invalid email address';
-    }
-};
+    const rules = {
+        required: value => !!value || 'This field is required',
+        email: value => {
+            const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return pattern.test(value) || 'Invalid email address';
+        }
+    };
 
-const submitForm = async () => {
-    if (!isFormValid.value) return;
+    const submitForm = async () => {
+        if (!isFormValid.value) return;
 
-    isSubmitting.value = true;
+        isSubmitting.value = true;
 
-    try {
-        // In a real implementation, you would send this data to your backend
-        // await axios.post('/api/contact', form.value);
+        try {
+            // In a real implementation, you would send this data to your backend
+            // await axios.post('/api/contact', form.value);
 
-        // For now, we'll just simulate a successful submission
-        setTimeout(() => {
-            alert('Thank you for your message! We will get back to you soon.');
-            form.value = {
-                name: '',
-                email: '',
-                subject: '',
-                message: ''
-            };
+            // For now, we'll just simulate a successful submission
+            setTimeout(() => {
+                alert('Thank you for your message! We will get back to you soon.');
+                form.value = {
+                    name: '',
+                    email: '',
+                    subject: '',
+                    message: ''
+                };
+                isSubmitting.value = false;
+            }, 1000);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('There was an error sending your message. Please try again later.');
             isSubmitting.value = false;
-        }, 1000);
-    } catch (error) {
-        console.error('Error submitting form:', error);
-        alert('There was an error sending your message. Please try again later.');
-        isSubmitting.value = false;
-    }
-};
+        }
+    };
 </script>

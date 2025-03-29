@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Settings" />
 
     <DashboardLayout>
@@ -42,17 +43,13 @@
                                             <v-card-title class="text-subtitle-1">{{ setting.label }}</v-card-title>
                                             <v-card-text>
                                                 <div v-if="setting.image_url" class="mb-3">
-                                                    <v-img :src="setting.image_url" max-height="200" contain class="bg-grey-lighten-3 rounded"></v-img>
+                                                    <v-img :src="setting.image_url" max-height="200" contain
+                                                        class="bg-grey-lighten-3 rounded"></v-img>
                                                 </div>
-                                                <v-file-input
-                                                    :label="`Change ${setting.label}`"
-                                                    v-model="files[setting.key]"
-                                                    accept="image/*"
-                                                    show-size
-                                                    prepend-icon=""
-                                                    prepend-inner-icon="mdi-camera"
-                                                    variant="outlined"
-                                                ></v-file-input>
+                                                <v-file-input :label="`Change ${setting.label}`"
+                                                    v-model="files[setting.key]" accept="image/*" show-size
+                                                    prepend-icon="" prepend-inner-icon="mdi-camera"
+                                                    variant="outlined"></v-file-input>
                                                 <p class="text-caption text-grey">{{ setting.description }}</p>
                                             </v-card-text>
                                         </v-card>
@@ -76,94 +73,94 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-import { Head, router } from '@inertiajs/vue3';
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+    import { ref, computed, watch } from 'vue';
+    import { Head, router } from '@inertiajs/vue3';
+    import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
-const props = defineProps({
-    settings: Array,
-    groups: Array,
-    currentGroup: String,
-    errors: Object,
-    flash: Object
-});
+    const props = defineProps({
+        settings: Array,
+        groups: Array,
+        currentGroup: String,
+        errors: Object,
+        flash: Object
+    });
 
-const settingsForm = ref(null);
-const activeTab = ref(props.currentGroup);
-const formData = ref([...props.settings]);
-const files = ref({});
-const processing = ref(false);
+    const settingsForm = ref(null);
+    const activeTab = ref(props.currentGroup);
+    const formData = ref([...props.settings]);
+    const files = ref({});
+    const processing = ref(false);
 
-// Format group names for display
-const formattedGroups = computed(() => {
-    return props.groups.map(group => ({
-        value: group,
-        label: formatGroupName(group)
-    }));
-});
+    // Format group names for display
+    const formattedGroups = computed(() => {
+        return props.groups.map(group => ({
+            value: group,
+            label: formatGroupName(group)
+        }));
+    });
 
-const imageSettings = computed(() => {
-    return formData.value.filter(setting => setting.type === 'image');
-});
+    const imageSettings = computed(() => {
+        return formData.value.filter(setting => setting.type === 'image');
+    });
 
-const hasImageSettings = computed(() => {
-    return imageSettings.value.length > 0;
-});
+    const hasImageSettings = computed(() => {
+        return imageSettings.value.length > 0;
+    });
 
-// Handle tab change
-watch(activeTab, (newValue) => {
-    if (newValue !== props.currentGroup) {
-        router.get(route('dashboard.settings.index', { group: newValue }), {}, {
-            preserveScroll: true,
-            replace: true
-        });
-    }
-});
-
-// Format group name for display
-function formatGroupName(name) {
-    return name.split('_')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-}
-
-// Get icon for group
-function getGroupIcon(group) {
-    const icons = {
-        'general': 'mdi-cog',
-        'about_page': 'mdi-information',
-        'contact': 'mdi-phone',
-        'social': 'mdi-share-variant',
-        'seo': 'mdi-google',
-        'legal': 'mdi-gavel'
-    };
-
-    return icons[group] || 'mdi-cog';
-}
-
-// Submit the form
-function updateSettings() {
-    processing.value = true;
-
-    // Create FormData for file uploads
-    const form = new FormData();
-
-    // Add settings data
-    form.append('settings', JSON.stringify(formData.value));
-
-    // Add files
-    Object.entries(files.value).forEach(([key, file]) => {
-        if (file) {
-            form.append(`files.${key}`, file);
+    // Handle tab change
+    watch(activeTab, (newValue) => {
+        if (newValue !== props.currentGroup) {
+            router.get(route('dashboard.settings.index', { group: newValue }), {}, {
+                preserveScroll: true,
+                replace: true
+            });
         }
     });
 
-    router.post(route('dashboard.settings.update'), form, {
-        onFinish: () => {
-            processing.value = false;
-        },
-        preserveScroll: true,
-        forceFormData: true
-    });
-}
+    // Format group name for display
+    function formatGroupName(name) {
+        return name.split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+
+    // Get icon for group
+    function getGroupIcon(group) {
+        const icons = {
+            'general': 'mdi-cog',
+            'about_page': 'mdi-information',
+            'contact': 'mdi-phone',
+            'social': 'mdi-share-variant',
+            'seo': 'mdi-google',
+            'legal': 'mdi-gavel'
+        };
+
+        return icons[group] || 'mdi-cog';
+    }
+
+    // Submit the form
+    function updateSettings() {
+        processing.value = true;
+
+        // Create FormData for file uploads
+        const form = new FormData();
+
+        // Add settings data
+        form.append('settings', JSON.stringify(formData.value));
+
+        // Add files
+        Object.entries(files.value).forEach(([key, file]) => {
+            if (file) {
+                form.append(`files.${key}`, file);
+            }
+        });
+
+        router.post(route('dashboard.settings.update'), form, {
+            onFinish: () => {
+                processing.value = false;
+            },
+            preserveScroll: true,
+            forceFormData: true
+        });
+    }
 </script>

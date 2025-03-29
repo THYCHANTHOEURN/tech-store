@@ -1,4 +1,5 @@
 <template>
+
     <Head title="About Us - Tech Store" />
 
     <WebLayout>
@@ -133,22 +134,22 @@
 </template>
 
 <script setup>
-import { Head } from '@inertiajs/vue3';
-import WebLayout from '@/Layouts/WebLayout.vue';
+    import { Head } from '@inertiajs/vue3';
+    import WebLayout from '@/Layouts/WebLayout.vue';
 
-const props = defineProps({
-    aboutUsImage: {
-        type: String,
-        default: '/images/about-us.jpg'
-    },
-    teamImages: {
-        type: Object,
-        default: () => ({
-            ceo: '/images/team/ceo.jpg',
-            cto: '/images/team/cto.jpg',
-            marketing: '/images/team/marketing.jpg',
-            support: '/images/team/support.jpg'
-        })
-    }
-});
+    const props = defineProps({
+        aboutUsImage: {
+            type: String,
+            default: '/storage/settings/about-us.jpg'
+        },
+        teamImages: {
+            type: Object,
+            default: () => ({
+                ceo: '/storage/settings/team-ceo.jpg',
+                cto: '/storage/settings/team-cto.jpg',
+                marketing: '/storage/settings/team-marketing.jpg',
+                support: '/storage/settings/team-support.jpg'
+            })
+        }
+    });
 </script>

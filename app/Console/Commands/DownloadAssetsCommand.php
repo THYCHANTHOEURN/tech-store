@@ -88,6 +88,14 @@ class DownloadAssetsCommand extends Command
             'summer-sale-promo' => 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&h=300',
             'new-arrivals-promo' => 'https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?w=800&h=300',
             'special-bundles-promo' => 'https://images.unsplash.com/photo-1593642634524-b40b5baae6bb?w=800&h=300'
+        ],
+        // Add settings-related images
+        'settings' => [
+            'about-us' => 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1200&h=800', // Modern tech store interior
+            'team-ceo' => 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400', // Professional male CEO
+            'team-cto' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400', // Professional female CTO
+            'team-marketing' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400', // Marketing director
+            'team-support' => 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400', // Customer support lead
         ]
     ];
 
