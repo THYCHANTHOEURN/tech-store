@@ -103,4 +103,13 @@ enum PermissionsEnum: string
     case RESTORE_CART_ITEM = 'restore cart item';
     case FORCE_DELETE_CART_ITEM = 'force delete cart item';
 
+    // Setting Management
+    case VIEW_ANY_SETTING = 'view any setting';
+    case VIEW_SETTING = 'view setting';
+    case CREATE_SETTING = 'create setting';
+    case UPDATE_SETTING = 'update setting';
+    case DELETE_SETTING = 'delete setting';
+    case RESTORE_SETTING = 'restore setting';
+    case FORCE_DELETE_SETTING = 'force delete setting';
+
 }

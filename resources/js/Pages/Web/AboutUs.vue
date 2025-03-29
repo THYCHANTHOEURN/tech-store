@@ -11,7 +11,7 @@
 
             <v-row>
                 <v-col cols="12" md="6">
-                    <v-img src="/images/about-us.jpg" height="400" cover class="rounded-lg"></v-img>
+                    <v-img :src="aboutUsImage" height="400" cover class="rounded-lg"></v-img>
                 </v-col>
                 <v-col cols="12" md="6">
                     <h2 class="text-h5 mb-4">Our Story</h2>
@@ -91,7 +91,7 @@
                 <v-col cols="12" sm="6" md="3">
                     <v-card class="text-center pa-4">
                         <v-avatar size="100" class="mb-4">
-                            <v-img src="/images/team/ceo.jpg" cover></v-img>
+                            <v-img :src="teamImages.ceo" cover></v-img>
                         </v-avatar>
                         <h3 class="text-h6">John Doe</h3>
                         <p class="text-subtitle-1 text-grey">CEO & Founder</p>
@@ -101,7 +101,7 @@
                 <v-col cols="12" sm="6" md="3">
                     <v-card class="text-center pa-4">
                         <v-avatar size="100" class="mb-4">
-                            <v-img src="/images/team/cto.jpg" cover></v-img>
+                            <v-img :src="teamImages.cto" cover></v-img>
                         </v-avatar>
                         <h3 class="text-h6">Jane Smith</h3>
                         <p class="text-subtitle-1 text-grey">CTO</p>
@@ -111,7 +111,7 @@
                 <v-col cols="12" sm="6" md="3">
                     <v-card class="text-center pa-4">
                         <v-avatar size="100" class="mb-4">
-                            <v-img src="/images/team/marketing.jpg" cover></v-img>
+                            <v-img :src="teamImages.marketing" cover></v-img>
                         </v-avatar>
                         <h3 class="text-h6">Michael Johnson</h3>
                         <p class="text-subtitle-1 text-grey">Marketing Director</p>
@@ -121,7 +121,7 @@
                 <v-col cols="12" sm="6" md="3">
                     <v-card class="text-center pa-4">
                         <v-avatar size="100" class="mb-4">
-                            <v-img src="/images/team/support.jpg" cover></v-img>
+                            <v-img :src="teamImages.support" cover></v-img>
                         </v-avatar>
                         <h3 class="text-h6">Sarah Williams</h3>
                         <p class="text-subtitle-1 text-grey">Customer Support Lead</p>
@@ -135,4 +135,20 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
 import WebLayout from '@/Layouts/WebLayout.vue';
+
+const props = defineProps({
+    aboutUsImage: {
+        type: String,
+        default: '/images/about-us.jpg'
+    },
+    teamImages: {
+        type: Object,
+        default: () => ({
+            ceo: '/images/team/ceo.jpg',
+            cto: '/images/team/cto.jpg',
+            marketing: '/images/team/marketing.jpg',
+            support: '/images/team/support.jpg'
+        })
+    }
+});
 </script>

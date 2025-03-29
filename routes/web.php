@@ -63,6 +63,7 @@ Route::group(['prefix' => 'data', 'as' => 'data.'], function () {
     Route::get('categories', [DataController::class, 'categories'])->name('categories');
 });
 
+
 // Include dashboard routes
 require __DIR__.'/dashboard.php';
 require __DIR__.'/auth.php';

@@ -198,6 +198,17 @@
                 </v-list-item>
                 </Link>
 
+                <!-- Settings Menu Item -->
+                <Link :href="route('dashboard.settings.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.settings.*')" rounded="lg" class="mb-1">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-cog</v-icon>
+                    </template>
+                    <v-list-item-title>Settings</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Settings</v-tooltip>
+                </v-list-item>
+                </Link>
+
                 <v-divider class="my-2"></v-divider>
 
                 <!-- Profile Menu Item -->
