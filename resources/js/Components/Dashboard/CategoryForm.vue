@@ -15,9 +15,9 @@
                             variant="outlined" density="comfortable"></v-text-field>
 
                         <!-- Description -->
-                        <v-textarea v-model="form.description" label="Category Description"
-                            :error="errors?.description" required placeholder="Enter category description here..."
-                            :min-height="300" variant="outlined" density="comfortable"></v-textarea>
+                        <v-textarea v-model="form.description" label="Category Description" :error="errors?.description"
+                            required placeholder="Enter category description here..." :min-height="300"
+                            variant="outlined" density="comfortable"></v-textarea>
 
                         <!-- Parent Category -->
                         <v-select v-model="form.parent_id" :items="parentCategories || []" item-title="name"
@@ -45,13 +45,13 @@
                         <!-- Image Upload Field -->
                         <v-file-input v-model="form.image" accept="image/*" label="Upload Category Image*"
                             :error-messages="errors?.image" prepend-icon="" prepend-inner-icon="mdi-camera" show-size
-                            :required="!category" @change="previewImage" variant="outlined"
+                            :required="!category" @update:model-value="previewImage" variant="outlined"
                             density="comfortable"></v-file-input>
 
                         <!-- Image Preview -->
-                        <div v-if="imagePreview" class="mt-4">
+                        <div v-if="imagePreview || form.image_url" class="mt-4">
                             <p class="text-subtitle-1 mb-2">Preview:</p>
-                            <v-img :src="imagePreview" max-width="300" max-height="200" contain
+                            <v-img :src="imagePreview || form.image_url" max-width="300" max-height="200" contain
                                 class="bg-grey-lighten-2 rounded"></v-img>
                         </div>
                     </v-card-text>

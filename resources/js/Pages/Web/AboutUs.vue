@@ -137,6 +137,7 @@
     import { Head } from '@inertiajs/vue3';
     import WebLayout from '@/Layouts/WebLayout.vue';
 
+    // Define props with defaults in case the controller doesn't provide them
     const props = defineProps({
         aboutUsImage: {
             type: String,

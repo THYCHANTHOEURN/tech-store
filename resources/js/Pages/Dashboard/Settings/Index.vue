@@ -145,19 +145,25 @@
         // Create FormData for file uploads
         const form = new FormData();
 
-        // Add settings data
+        // Add settings data - make sure to use the current state of formData
         form.append('settings', JSON.stringify(formData.value));
 
-        // Add files
+        // Add files with proper naming
         Object.entries(files.value).forEach(([key, file]) => {
             if (file) {
-                form.append(`files.${key}`, file);
+                // Make sure we have the right property name for files
+                form.append(`files[${key}]`, file);
             }
         });
+
+        // Output form data for debugging (fixed)
+        console.log('Submitting settings with files:', files.value);
 
         router.post(route('dashboard.settings.update'), form, {
             onFinish: () => {
                 processing.value = false;
+                // Clear file inputs after successful submission
+                files.value = {};
             },
             preserveScroll: true,
             forceFormData: true

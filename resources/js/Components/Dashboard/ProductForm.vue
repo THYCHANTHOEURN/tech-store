@@ -82,7 +82,7 @@
                         <v-file-input v-model="form.images" label="Upload Images"
                             accept="image/png, image/jpeg, image/jpg" :error-messages="errors?.images" multiple
                             show-size prepend-icon="" prepend-inner-icon="mdi-camera" variant="outlined"
-                            density="comfortable">
+                            density="comfortable" @update:model-value="previewImages">
                             <template v-slot:selection="{ fileNames }">
                                 <v-chip v-for="fileName in fileNames" :key="fileName" size="small" label color="primary"
                                     class="mr-1">
@@ -90,6 +90,17 @@
                                 </v-chip>
                             </template>
                         </v-file-input>
+
+                        <!-- New Images Preview -->
+                        <div v-if="imagePreview.length > 0" class="mt-4">
+                            <h3 class="text-subtitle-1 mb-2">New Images Preview:</h3>
+                            <div class="d-flex flex-wrap gap-3">
+                                <div v-for="(preview, index) in imagePreview" :key="index"
+                                    class="image-container position-relative">
+                                    <v-img :src="preview" width="100" height="100" cover class="rounded"></v-img>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Existing Images (Edit Mode) -->
                         <div v-if="product && filteredProductImages.length > 0" class="mt-4">
@@ -219,6 +230,22 @@
         remove_images: [],
         primary_image: null
     });
+
+    const imagePreview = ref([]);
+
+    // Preview uploaded images
+    const previewImages = (files) => {
+        imagePreview.value = [];
+        if (!files || files.length === 0) return;
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.value.push(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        });
+    };
 
     // Set initial form values on component mount
     onMounted(() => {

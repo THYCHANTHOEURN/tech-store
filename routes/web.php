@@ -9,8 +9,6 @@ use App\Http\Controllers\Web\SearchController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\WishlistController;
 use App\Http\Controllers\Web\PageController;
-use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\Dashboard\ProductController as DashboardProductController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
