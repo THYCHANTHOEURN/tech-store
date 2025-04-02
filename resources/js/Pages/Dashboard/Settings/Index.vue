@@ -42,14 +42,17 @@
                                         <v-card outlined class="mb-4">
                                             <v-card-title class="text-subtitle-1">{{ setting.label }}</v-card-title>
                                             <v-card-text>
-                                                <div v-if="setting.image_url" class="mb-3">
-                                                    <v-img :src="setting.image_url" max-height="200" contain
+                                                <!-- Show either the preview or the existing image -->
+                                                <div v-if="imagePreviews[setting.key] || setting.image_url" class="mb-3">
+                                                    <v-img :src="imagePreviews[setting.key] || setting.image_url"
+                                                        max-height="200" contain
                                                         class="bg-grey-lighten-3 rounded"></v-img>
                                                 </div>
                                                 <v-file-input :label="`Change ${setting.label}`"
                                                     v-model="files[setting.key]" accept="image/*" show-size
                                                     prepend-icon="" prepend-inner-icon="mdi-camera"
-                                                    variant="outlined"></v-file-input>
+                                                    variant="outlined"
+                                                    @update:model-value="(file) => previewImage(file, setting.key)"></v-file-input>
                                                 <p class="text-caption text-grey">{{ setting.description }}</p>
                                             </v-card-text>
                                         </v-card>
@@ -89,6 +92,7 @@
     const activeTab = ref(props.currentGroup);
     const formData = ref([...props.settings]);
     const files = ref({});
+    const imagePreviews = ref({});
     const processing = ref(false);
 
     // Format group names for display
@@ -106,6 +110,20 @@
     const hasImageSettings = computed(() => {
         return imageSettings.value.length > 0;
     });
+
+    // Preview uploaded image
+    const previewImage = (file, key) => {
+        if (!file) {
+            imagePreviews.value[key] = null;
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagePreviews.value[key] = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    };
 
     // Handle tab change
     watch(activeTab, (newValue) => {
@@ -164,6 +182,8 @@
                 processing.value = false;
                 // Clear file inputs after successful submission
                 files.value = {};
+                // Clear image previews
+                imagePreviews.value = {};
             },
             preserveScroll: true,
             forceFormData: true

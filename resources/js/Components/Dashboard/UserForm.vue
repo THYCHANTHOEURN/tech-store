@@ -135,7 +135,8 @@
     }, { deep: true });
 
     onMounted(() => {
-        // Initialize form data from props
+        // Initialize form data once from modelValue props
+        // This contains all data including the role from userRole
         if (props.modelValue && Object.keys(props.modelValue).length) {
             Object.keys(form.value).forEach(key => {
                 if (props.modelValue[key] !== undefined) {
@@ -144,14 +145,16 @@
             });
         }
 
-        // For edit mode, use existing user data
+        // Only update user specific fields from user prop
+        // But don't overwrite the role which comes from modelValue
         if (props.user) {
             form.value.name = props.user.name;
             form.value.email = props.user.email;
             form.value.password = ''; // Don't populate password for security
             form.value.phone = props.user.phone || '';
             form.value.address = props.user.address || '';
-            form.value.role = props.user.role || '';
+            // Don't set role here as it's already set from modelValue
+            // which contains the correct userRole value
         }
 
         // Emit initial form data
