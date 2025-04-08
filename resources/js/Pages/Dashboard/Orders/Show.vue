@@ -57,7 +57,7 @@
                         </v-card-text>
                     </v-card>
                 </v-col>
-                
+
                 <!-- Customer Info -->
                 <v-col cols="12" md="4">
                     <v-card class="mb-4 h-100">
@@ -71,9 +71,17 @@
                             <p class="mb-2">{{ order.user.email }}</p>
 
                             <v-divider class="my-4"></v-divider>
-                            
+
                             <h3 class="text-subtitle-1 font-weight-bold mb-2">Shipping Address</h3>
                             <p class="mb-2" style="white-space: pre-line">{{ order.shipping_address }}</p>
+
+                            <v-divider class="my-4"></v-divider>
+
+                            <h3 class="text-subtitle-1 font-weight-bold mb-2">Phone Number</h3>
+                            <p class="mb-2 d-flex align-center">
+                                <v-icon size="small" color="primary" class="mr-2">mdi-phone</v-icon>
+                                {{ order.phone }}
+                            </p>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -92,17 +100,17 @@
                                     <v-list-item-title>Order ID</v-list-item-title>
                                     <v-list-item-subtitle>{{ order.uuid }}</v-list-item-subtitle>
                                 </v-list-item>
-                                
+
                                 <v-list-item>
                                     <v-list-item-title>Payment Method</v-list-item-title>
                                     <v-list-item-subtitle>{{ formatPaymentMethod(order.payment_method) }}</v-list-item-subtitle>
                                 </v-list-item>
-                                
+
                                 <v-list-item>
                                     <v-list-item-title>Created Date</v-list-item-title>
                                     <v-list-item-subtitle>{{ formatDate(order.created_at) }}</v-list-item-subtitle>
                                 </v-list-item>
-                                
+
                                 <v-list-item>
                                     <v-list-item-title>Last Updated</v-list-item-title>
                                     <v-list-item-subtitle>{{ formatDate(order.updated_at) }}</v-list-item-subtitle>
@@ -126,13 +134,13 @@
                                     <v-btn color="info" block prepend-icon="mdi-printer" class="mb-3">
                                         Print Invoice
                                     </v-btn>
-                                    
+
                                     <Link :href="route('dashboard.orders.edit', order.uuid)" class="text-decoration-none">
                                         <v-btn color="warning" block prepend-icon="mdi-pencil" class="mb-3">
                                             Edit Order
                                         </v-btn>
                                     </Link>
-                                    
+
                                     <v-btn color="error" block prepend-icon="mdi-delete" @click="confirmDelete">
                                         Delete Order
                                     </v-btn>
@@ -165,7 +173,7 @@
                                     <tr v-for="item in order.order_items" :key="item.id">
                                         <td>
                                             <div class="d-flex align-center">
-                                                <v-img :src="item.product?.primary_image_url" width="50" height="50" 
+                                                <v-img :src="item.product?.primary_image_url" width="50" height="50"
                                                     class="rounded mr-3"></v-img>
                                                 <div>
                                                     {{ item.product?.name }}
@@ -230,15 +238,32 @@
     const deleteDialog = ref(false);
     const deleting = ref(false);
 
-    // Helper methods
+    /**
+     * Format order status
+     *
+     * @param status
+     * @return {string}
+     */
     function formatOrderStatus(status) {
         return status.charAt(0).toUpperCase() + status.slice(1);
     }
 
+    /**
+     * Format payment status
+     *
+     * @param status
+     * @return {string}
+     */
     function formatPaymentStatus(status) {
         return status.charAt(0).toUpperCase() + status.slice(1);
     }
 
+    /**
+     * Format payment method
+     *
+     * @param method
+     * @return {string}
+     */
     function formatPaymentMethod(method) {
         switch (method) {
             case 'cash': return 'Cash on Delivery';
@@ -248,6 +273,12 @@
         }
     }
 
+    /**
+     * Get color for order status
+     *
+     * @param status
+     * @return {string}
+     */
     function getOrderStatusColor(status) {
         switch (status) {
             case 'pending': return 'warning';
@@ -258,6 +289,12 @@
         }
     }
 
+    /**
+     * Get color for payment status
+     *
+     * @param status
+     * @return {string}
+     */
     function getPaymentStatusColor(status) {
         switch (status) {
             case 'paid': return 'success';
@@ -268,23 +305,46 @@
         }
     }
 
+    /**
+     * Format currency
+     *
+     * @param amount
+     * @return {string}
+     */
     function formatCurrency(amount) {
         return amount ? Number(amount).toFixed(2) : '0.00';
     }
 
+    /**
+     * Format date
+     *
+     * @param dateString
+     * @return {string}
+     */
     function formatDate(dateString) {
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return new Date(dateString).toLocaleDateString(undefined, options);
     }
 
+    /**
+     * Confirm delete order
+     */
     const confirmDelete = () => {
         deleteDialog.value = true;
     };
 
+    /**
+     * Close delete confirmation dialog
+     */
     const closeDeleteDialog = () => {
         deleteDialog.value = false;
     };
 
+    /**
+     * Delete order
+     *
+     * @returns {void}
+     */
     const deleteOrder = () => {
         deleting.value = true;
         router.delete(route('dashboard.orders.destroy', props.order.uuid), {

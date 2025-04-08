@@ -28,6 +28,7 @@ class OrderSeeder extends Seeder
                     'total_amount'      => 0, // Will be updated by OrderItemSeeder
                     'status'            => fake()->randomElement(['pending', 'processing', 'completed', 'cancelled']),
                     'shipping_address'  => $user->address,
+                    'phone'             => $user->phone,
                     'payment_method'    => fake()->randomElement(['cash', 'card', 'bank_transfer']),
                     'payment_status'    => fake()->randomElement(['pending', 'paid', 'unpaid', 'failed']),
                 ]);

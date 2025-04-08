@@ -89,6 +89,11 @@
                         {{ item.user?.name }}
                     </template>
 
+                    <template v-slot:item.phone="{ item }">
+                        <span v-if="item.phone">{{ item.phone }}</span>
+                        <span v-else class="text-grey-lighten-1">Not provided</span>
+                    </template>
+
                     <template v-slot:item.total_amount="{ item }">
                         <span class="font-weight-bold">${{ formatCurrency(item.total_amount) }}</span>
                     </template>
@@ -190,6 +195,7 @@
     const headers = [
         { title: 'Order ID', key: 'order_id' },
         { title: 'Customer', key: 'customer' },
+        { title: 'Phone', key: 'phone' },
         { title: 'Total', key: 'total_amount' },
         { title: 'Status', key: 'status' },
         { title: 'Payment Status', key: 'payment_status' },
@@ -206,6 +212,7 @@
         }))
     ];
 
+    // Payment status options
     const paymentStatusOptions = [
         { title: 'All Payment Statuses', value: 'all' },
         ...props.paymentStatuses.map(status => ({
@@ -304,10 +311,12 @@
         return status.charAt(0).toUpperCase() + status.slice(1);
     }
 
+    // Format payment status
     function formatPaymentStatus(status) {
         return status.charAt(0).toUpperCase() + status.slice(1);
     }
 
+    // Get color for order status
     function getOrderStatusColor(status) {
         switch (status) {
             case 'pending': return 'warning';
@@ -318,6 +327,7 @@
         }
     }
 
+    // Get color for payment status
     function getPaymentStatusColor(status) {
         switch (status) {
             case 'paid': return 'success';
@@ -349,6 +359,12 @@
         orderToDelete.value = null;
     };
 
+
+    /**
+     * Delete an order
+     *
+     * @returns {void}
+     */
     const deleteOrder = () => {
         if (!orderToDelete.value) return;
 

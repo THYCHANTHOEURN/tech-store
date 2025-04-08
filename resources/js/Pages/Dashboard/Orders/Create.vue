@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Create Order" />
 
     <DashboardLayout>
@@ -21,10 +22,9 @@
                 <v-col cols="12">
                     <v-card>
                         <v-card-text>
-                            <OrderForm :modelValue="formData" @update:modelValue="formData = $event"
-                                :users="users" :products="products" :orderStatuses="orderStatuses" 
-                                :paymentStatuses="paymentStatuses" :processing="processing" 
-                                :errors="errors" @submit="createOrder" />
+                            <OrderForm :modelValue="formData" @update:modelValue="formData = $event" :users="users"
+                                :products="products" :orderStatuses="orderStatuses" :paymentStatuses="paymentStatuses"
+                                :processing="processing" :errors="errors" @submit="createOrder" />
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -54,13 +54,19 @@
     const formData = ref({
         user_id: null,
         shipping_address: '',
+        phone: '',
         payment_method: 'cash',
         status: 'pending',
         payment_status: 'unpaid',
         items: []
     });
 
-    // Create new order
+    /**
+     * Create a new order
+     *
+     * @param {Object} data - The order data
+     * @returns {void}
+     */
     const createOrder = (data) => {
         processing.value = true;
         router.post(route('dashboard.orders.store'), data, {

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('total_amount', 10, 2);
             $table->enum('status', ['pending', 'processing', 'completed', 'cancelled']);
             $table->text('shipping_address');
+            $table->string('phone')->nullable();
             $table->string('payment_method');
             $table->enum('payment_status', [
                 'pending', //When payment is initiated but not yet confirmed (e.g., awaiting bank transfer)

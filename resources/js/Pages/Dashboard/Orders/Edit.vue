@@ -1,4 +1,5 @@
 <template>
+
     <Head :title="`Edit Order #${order.uuid.slice(-8).toUpperCase()}`" />
 
     <DashboardLayout>
@@ -23,8 +24,8 @@
                         <v-card-text>
                             <OrderForm :modelValue="formData" @update:modelValue="formData = $event" :order="order"
                                 :users="users" :products="products" :orderStatuses="orderStatuses"
-                                :paymentStatuses="paymentStatuses" :processing="processing" 
-                                :errors="errors" @submit="updateOrder" />
+                                :paymentStatuses="paymentStatuses" :processing="processing" :errors="errors"
+                                @submit="updateOrder" />
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -54,15 +55,23 @@
     // Form data initialized from order
     const formData = ref({
         shipping_address: props.order.shipping_address,
+        phone: props.order.phone,
         payment_method: props.order.payment_method,
         status: props.order.status,
         payment_status: props.order.payment_status,
     });
 
+    /**
+     * Update an existing order
+     *
+     * @param {Object} data - The form data
+     * @return {void}
+     */
     const updateOrder = (data) => {
         processing.value = true;
         router.put(route('dashboard.orders.update', props.order.uuid), {
             shipping_address: data.shipping_address,
+            phone: data.phone,
             payment_method: data.payment_method,
             status: data.status,
             payment_status: data.payment_status,

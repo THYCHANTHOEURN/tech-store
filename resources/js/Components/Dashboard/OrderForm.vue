@@ -31,6 +31,14 @@
                                 hide-details="auto" placeholder="Enter shipping address" variant="outlined"
                                 density="comfortable" rows="3"></v-textarea>
                         </div>
+
+                        <!-- Phone Number -->
+                        <div class="mb-4">
+                            <label class="text-subtitle-1 d-block mb-1">Phone Number*</label>
+                            <v-text-field v-model="form.phone" :error-messages="errors?.phone" hide-details="auto"
+                                placeholder="Enter phone number" variant="outlined" density="comfortable"
+                                prepend-inner-icon="mdi-phone"></v-text-field>
+                        </div>
                     </v-card-text>
                 </v-card>
 
@@ -54,9 +62,9 @@
                             <template v-for="(item, index) in form.items" :key="index">
                                 <div class="d-flex align-center item-row mb-4">
                                     <div class="flex-grow-1">
-                                        <v-select v-model="item.product_id" :items="availableProducts"
-                                            item-title="name" item-value="id" label="Product" variant="outlined"
-                                            density="comfortable" @update:model-value="updateItemPrice(index)">
+                                        <v-select v-model="item.product_id" :items="availableProducts" item-title="name"
+                                            item-value="id" label="Product" variant="outlined" density="comfortable"
+                                            @update:model-value="updateItemPrice(index)">
                                             <template v-slot:item="{ props, item }">
                                                 <v-list-item v-bind="props" :title="item.raw.name">
                                                     <template v-slot:prepend>
@@ -65,8 +73,10 @@
                                                     </template>
                                                     <template v-slot:subtitle>
                                                         <div class="d-flex">
-                                                            <span class="text-primary">${{ item.raw.sale_price || item.raw.price }}</span>
-                                                            <span class="ml-2 text-grey">Stock: {{ item.raw.stock }}</span>
+                                                            <span class="text-primary">${{ item.raw.sale_price ||
+                                                                item.raw.price }}</span>
+                                                            <span class="ml-2 text-grey">Stock: {{ item.raw.stock
+                                                                }}</span>
                                                         </div>
                                                     </template>
                                                 </v-list-item>
@@ -91,7 +101,8 @@
                                     </div>
 
                                     <div class="ml-2">
-                                        <v-btn icon color="error" size="x-small" @click="removeItem(index)" variant="text">
+                                        <v-btn icon color="error" size="x-small" @click="removeItem(index)"
+                                            variant="text">
                                             <v-icon>mdi-delete</v-icon>
                                         </v-btn>
                                     </div>
@@ -196,7 +207,7 @@
                         <!-- Cancel Button -->
                         <Link :href="route('dashboard.orders.index')"
                             class="v-btn v-btn--block v-btn--text v-btn--secondary mt-3">
-                            Cancel
+                        Cancel
                         </Link>
                     </v-card-text>
                 </v-card>
@@ -206,185 +217,187 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
-import { Link } from '@inertiajs/vue3';
+    import { ref, computed, onMounted, watch } from 'vue';
+    import { Link } from '@inertiajs/vue3';
 
-const props = defineProps({
-    order: {
-        type: Object,
-        default: null
-    },
-    users: {
-        type: Array,
-        required: true
-    },
-    products: {
-        type: Array,
-        required: true
-    },
-    orderStatuses: {
-        type: Array,
-        required: true
-    },
-    paymentStatuses: {
-        type: Array,
-        required: true
-    },
-    errors: {
-        type: Object,
-        default: () => ({})
-    },
-    processing: {
-        type: Boolean,
-        default: false
-    },
-    modelValue: {
-        type: Object,
-        default: () => ({})
-    }
-});
-
-const emit = defineEmits(['submit', 'update:modelValue']);
-
-// Payment method options
-const paymentMethods = [
-    { title: 'Cash on Delivery', value: 'cash' },
-    { title: 'Credit Card', value: 'card' },
-    { title: 'Bank Transfer', value: 'bank_transfer' },
-];
-
-// Initialize form with default values
-const form = ref({
-    user_id: null,
-    shipping_address: '',
-    payment_method: 'cash',
-    status: 'pending',
-    payment_status: 'unpaid',
-    items: []
-});
-
-// Order items management
-const addItem = () => {
-    form.value.items.push({
-        product_id: null,
-        quantity: 1,
-        price: 0
+    const props = defineProps({
+        order: {
+            type: Object,
+            default: null
+        },
+        users: {
+            type: Array,
+            required: true
+        },
+        products: {
+            type: Array,
+            required: true
+        },
+        orderStatuses: {
+            type: Array,
+            required: true
+        },
+        paymentStatuses: {
+            type: Array,
+            required: true
+        },
+        errors: {
+            type: Object,
+            default: () => ({})
+        },
+        processing: {
+            type: Boolean,
+            default: false
+        },
+        modelValue: {
+            type: Object,
+            default: () => ({})
+        }
     });
-};
 
-const removeItem = (index) => {
-    form.value.items.splice(index, 1);
-    updateSubtotal();
-};
+    const emit = defineEmits(['submit', 'update:modelValue']);
 
-const updateItemPrice = (index) => {
-    const item = form.value.items[index];
-    const product = props.products.find(p => p.id === item.product_id);
-    
-    if (product) {
-        // Set price to sale price if available, otherwise to regular price
-        item.price = product.sale_price || product.price;
-        updateSubtotal();
-    }
-};
+    // Payment method options
+    const paymentMethods = [
+        { title: 'Cash on Delivery', value: 'cash' },
+        { title: 'Credit Card', value: 'card' },
+        { title: 'Bank Transfer', value: 'bank_transfer' },
+    ];
 
-const updateSubtotal = () => {
-    // Recalculate total and emit changes
-    emitFormChanges();
-};
-
-// Filter out products that are already in the order to avoid duplicates
-const availableProducts = computed(() => {
-    return props.products.filter(product => {
-        // If not in stock, don't show
-        if (product.stock <= 0) return false;
-        
-        // Allow selecting a product again if we're editing its quantity
-        return true;
+    // Initialize form with default values
+    const form = ref({
+        user_id: null,
+        shipping_address: '',
+        phone: '',
+        payment_method: 'cash',
+        status: 'pending',
+        payment_status: 'unpaid',
+        items: []
     });
-});
 
-// Calculate order total
-const calculateTotal = computed(() => {
-    return form.value.items.reduce((total, item) => {
-        return total + (item.price || 0) * (item.quantity || 0);
-    }, 0).toFixed(2);
-});
-
-// Format currency
-const formatCurrency = (amount) => {
-  return amount ? Number(amount).toFixed(2) : '0.00';
-};
-
-// Set initial form values on component mount
-onMounted(() => {
-    // Initialize from props.modelValue first
-    if (props.modelValue && Object.keys(props.modelValue).length) {
-        Object.keys(form.value).forEach(key => {
-            if (props.modelValue[key] !== undefined) {
-                form.value[key] = props.modelValue[key];
-            }
+    // Order items management
+    const addItem = () => {
+        form.value.items.push({
+            product_id: null,
+            quantity: 1,
+            price: 0
         });
-    }
+    };
 
-    // Then initialize from order if available (for edit mode)
-    if (props.order) {
-        form.value.user_id = props.order.user_id;
-        form.value.shipping_address = props.order.shipping_address || '';
-        form.value.payment_method = props.order.payment_method;
-        form.value.status = props.order.status;
-        form.value.payment_status = props.order.payment_status;
-    }
+    const removeItem = (index) => {
+        form.value.items.splice(index, 1);
+        updateSubtotal();
+    };
 
-    // Emit initial form data
-    emitFormChanges();
-});
+    const updateItemPrice = (index) => {
+        const item = form.value.items[index];
+        const product = props.products.find(p => p.id === item.product_id);
 
-// Emit changes to the parent component
-const emitFormChanges = () => {
-    emit('update:modelValue', { ...form.value });
-};
+        if (product) {
+            // Set price to sale price if available, otherwise to regular price
+            item.price = product.sale_price || product.price;
+            updateSubtotal();
+        }
+    };
 
-// Validate and submit form
-const submitForm = () => {
-    // Basic validation
-    if (!form.value.user_id && !props.order) {
-        alert('Please select a customer');
-        return;
-    }
+    const updateSubtotal = () => {
+        // Recalculate total and emit changes
+        emitFormChanges();
+    };
 
-    if (!form.value.shipping_address) {
-        alert('Shipping address is required');
-        return;
-    }
+    // Filter out products that are already in the order to avoid duplicates
+    const availableProducts = computed(() => {
+        return props.products.filter(product => {
+            // If not in stock, don't show
+            if (product.stock <= 0) return false;
 
-    if (!form.value.items.length && !props.order) {
-        alert('Please add at least one item to the order');
-        return;
-    }
+            // Allow selecting a product again if we're editing its quantity
+            return true;
+        });
+    });
 
-    for (const item of form.value.items) {
-        if (!item.product_id) {
-            alert('Please select a product for all items');
+    // Calculate order total
+    const calculateTotal = computed(() => {
+        return form.value.items.reduce((total, item) => {
+            return total + (item.price || 0) * (item.quantity || 0);
+        }, 0).toFixed(2);
+    });
+
+    // Format currency
+    const formatCurrency = (amount) => {
+        return amount ? Number(amount).toFixed(2) : '0.00';
+    };
+
+    // Set initial form values on component mount
+    onMounted(() => {
+        // Initialize from props.modelValue first
+        if (props.modelValue && Object.keys(props.modelValue).length) {
+            Object.keys(form.value).forEach(key => {
+                if (props.modelValue[key] !== undefined) {
+                    form.value[key] = props.modelValue[key];
+                }
+            });
+        }
+
+        // Then initialize from order if available (for edit mode)
+        if (props.order) {
+            form.value.user_id = props.order.user_id;
+            form.value.shipping_address = props.order.shipping_address || '';
+            form.value.phone = props.order.phone || '';
+            form.value.payment_method = props.order.payment_method;
+            form.value.status = props.order.status;
+            form.value.payment_status = props.order.payment_status;
+        }
+
+        // Emit initial form data
+        emitFormChanges();
+    });
+
+    // Emit changes to the parent component
+    const emitFormChanges = () => {
+        emit('update:modelValue', { ...form.value });
+    };
+
+    // Validate and submit form
+    const submitForm = () => {
+        // Basic validation
+        if (!form.value.user_id && !props.order) {
+            alert('Please select a customer');
             return;
         }
-    }
 
-    // Emit the submit event with form data
-    emit('submit', { ...form.value });
-};
+        if (!form.value.shipping_address) {
+            alert('Shipping address is required');
+            return;
+        }
+
+        if (!form.value.items.length && !props.order) {
+            alert('Please add at least one item to the order');
+            return;
+        }
+
+        for (const item of form.value.items) {
+            if (!item.product_id) {
+                alert('Please select a product for all items');
+                return;
+            }
+        }
+
+        // Emit the submit event with form data
+        emit('submit', { ...form.value });
+    };
 </script>
 
 <style scoped>
-.sticky-card {
-    position: sticky;
-    top: 24px;
-}
+    .sticky-card {
+        position: sticky;
+        top: 24px;
+    }
 
-.item-row {
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 8px;
-}
+    .item-row {
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 8px;
+    }
 </style>

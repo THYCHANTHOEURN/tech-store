@@ -62,12 +62,11 @@ class OrderController extends Controller
             'value' => $status->value
         ])->toArray();
 
-        // dd($orders);
         return Inertia::render('Dashboard/Orders/Index', [
-            'orders' => $orders,
-            'filters' => $request->only(['search', 'order_status', 'payment_status']),
-            'orderStatuses' => $orderStatuses,
-            'paymentStatuses' => $paymentStatuses,
+            'orders'            => $orders,
+            'filters'           => $request->only(['search', 'order_status', 'payment_status']),
+            'orderStatuses'     => $orderStatuses,
+            'paymentStatuses'   => $paymentStatuses,
         ]);
     }
 
@@ -78,8 +77,8 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $users = User::select('id', 'name', 'email')->get();
-        $products = Product::where('status', true)
+        $users      = User::select('id', 'name', 'email')->get();
+        $products   = Product::where('status', true)
                         ->where('stock', '>', 0)
                         ->with('primaryImage')
                         ->get();
@@ -95,10 +94,10 @@ class OrderController extends Controller
         ])->toArray();
 
         return Inertia::render('Dashboard/Orders/Create', [
-            'users' => $users,
-            'products' => $products,
-            'orderStatuses' => $orderStatuses,
-            'paymentStatuses' => $paymentStatuses,
+            'users'             => $users,
+            'products'          => $products,
+            'orderStatuses'     => $orderStatuses,
+            'paymentStatuses'   => $paymentStatuses,
         ]);
     }
 
@@ -111,15 +110,16 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'shipping_address' => 'required|string',
-            'payment_method' => 'required|string',
-            'status' => 'required|in:' . implode(',', array_column(OrderStatus::cases(), 'value')),
-            'payment_status' => 'required|in:' . implode(',', array_column(PaymentStatus::cases(), 'value')),
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1',
-            'items.*.price' => 'required|numeric|min:0',
+            'user_id'               => 'required|exists:users,id',
+            'shipping_address'      => 'required|string',
+            'phone'                 => 'required|string|max:20',
+            'payment_method'        => 'required|string',
+            'status'                => 'required|in:' . implode(',', array_column(OrderStatus::cases(), 'value')),
+            'payment_status'        => 'required|in:' . implode(',', array_column(PaymentStatus::cases(), 'value')),
+            'items'                 => 'required|array|min:1',
+            'items.*.product_id'    => 'required|exists:products,id',
+            'items.*.quantity'      => 'required|integer|min:1',
+            'items.*.price'         => 'required|numeric|min:0',
         ]);
 
         DB::beginTransaction();
@@ -127,12 +127,13 @@ class OrderController extends Controller
         try {
             // Create order
             $order = Order::create([
-                'user_id' => $validated['user_id'],
-                'total_amount' => 0, // Will calculate after adding items
-                'status' => $validated['status'],
-                'shipping_address' => $validated['shipping_address'],
-                'payment_method' => $validated['payment_method'],
-                'payment_status' => $validated['payment_status'],
+                'user_id'           => $validated['user_id'],
+                'total_amount'      => 0, // Will calculate after adding items
+                'status'            => $validated['status'],
+                'shipping_address'  => $validated['shipping_address'],
+                'phone'             => $validated['phone'],
+                'payment_method'    => $validated['payment_method'],
+                'payment_status'    => $validated['payment_status'],
             ]);
 
             // Add order items
@@ -148,9 +149,9 @@ class OrderController extends Controller
 
                 // Create order item
                 $order->orderItems()->create([
-                    'product_id' => $item['product_id'],
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
+                    'product_id'    => $item['product_id'],
+                    'quantity'      => $item['quantity'],
+                    'price'         => $item['price'],
                 ]);
 
                 // Update product stock
@@ -199,9 +200,9 @@ class OrderController extends Controller
         ])->toArray();
 
         return Inertia::render('Dashboard/Orders/Show', [
-            'order' => $order,
-            'orderStatuses' => $orderStatuses,
-            'paymentStatuses' => $paymentStatuses,
+            'order'             => $order,
+            'orderStatuses'     => $orderStatuses,
+            'paymentStatuses'   => $paymentStatuses,
         ]);
     }
 
@@ -214,9 +215,9 @@ class OrderController extends Controller
     public function edit(Order $order)
     {
         $order->load(['user', 'orderItems.product.primaryImage']);
-        
-        $users = User::select('id', 'name', 'email')->get();
-        $products = Product::where('status', true)
+
+        $users      = User::select('id', 'name', 'email')->get();
+        $products   = Product::where('status', true)
                         ->with('primaryImage')
                         ->get();
 
@@ -231,11 +232,11 @@ class OrderController extends Controller
         ])->toArray();
 
         return Inertia::render('Dashboard/Orders/Edit', [
-            'order' => $order,
-            'users' => $users,
-            'products' => $products,
-            'orderStatuses' => $orderStatuses,
-            'paymentStatuses' => $paymentStatuses,
+            'order'             => $order,
+            'users'             => $users,
+            'products'          => $products,
+            'orderStatuses'     => $orderStatuses,
+            'paymentStatuses'   => $paymentStatuses,
         ]);
     }
 
@@ -249,10 +250,11 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $validated = $request->validate([
-            'shipping_address' => 'required|string',
-            'payment_method' => 'required|string',
-            'status' => 'required|in:' . implode(',', array_column(OrderStatus::cases(), 'value')),
-            'payment_status' => 'required|in:' . implode(',', array_column(PaymentStatus::cases(), 'value')),
+            'shipping_address'      => 'required|string',
+            'phone'                 => 'required|string|max:20',
+            'payment_method'        => 'required|string',
+            'status'                => 'required|in:' . implode(',', array_column(OrderStatus::cases(), 'value')),
+            'payment_status'        => 'required|in:' . implode(',', array_column(PaymentStatus::cases(), 'value')),
         ]);
 
         DB::beginTransaction();
