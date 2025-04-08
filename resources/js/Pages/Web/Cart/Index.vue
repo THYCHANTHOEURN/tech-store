@@ -40,7 +40,11 @@
                                 <span>Subtotal</span>
                                 <span>${{ cartTotal }}</span>
                             </div>
-                            <v-btn color="primary" block>Proceed to Checkout</v-btn>
+                            <Link :href="route('checkout.index')" class="text-decoration-none">
+                            <v-btn color="primary" block prepend-icon="mdi-cash-register">
+                                Proceed to Checkout
+                            </v-btn>
+                            </Link>
                         </v-card-text>
                     </v-card>
                 </v-col>

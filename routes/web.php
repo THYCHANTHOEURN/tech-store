@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\SearchController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\WishlistController;
 use App\Http\Controllers\Web\PageController;
+use App\Http\Controllers\Web\CheckoutController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -38,6 +39,15 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 });
 
+/**
+ * Checkout routes
+ */
+Route::middleware(['auth', 'verified', 'customer'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::get('/checkout/confirmation/{uuid}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
+});
 
 /**
  * Authentication routes
@@ -60,7 +70,6 @@ Route::middleware('auth')->group(function () {
 Route::group(['prefix' => 'data', 'as' => 'data.'], function () {
     Route::get('categories', [DataController::class, 'categories'])->name('categories');
 });
-
 
 // Include dashboard routes
 require __DIR__.'/dashboard.php';
