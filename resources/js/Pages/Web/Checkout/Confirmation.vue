@@ -66,6 +66,10 @@
                         <v-divider></v-divider>
                         <v-card-text>
                             <p class="white-space-pre-line">{{ order.shipping_address }}</p>
+                            <div class="mt-2 d-flex align-center">
+                                <v-icon color="primary" class="mr-2">mdi-phone</v-icon>
+                                <span>{{ order.phone }}</span>
+                            </div>
                         </v-card-text>
                     </v-card>
 

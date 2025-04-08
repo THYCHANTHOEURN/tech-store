@@ -98,8 +98,9 @@ class CheckoutController extends Controller
             'payment_method' => ['required', 'string', 'in:cash,card,bank_transfer'],
         ]);
 
-        // Get shipping details from session
-        $shippingAddress = session('checkout.shipping_address');
+        // Get shipping details and phone from session
+        $shippingAddress    = session('checkout.shipping_address');
+        $phone              = session('checkout.phone');
 
         if (!$shippingAddress) {
             return redirect()->route('checkout.index')
@@ -132,6 +133,7 @@ class CheckoutController extends Controller
                 'total_amount'      => $totalAmount,
                 'status'            => OrderStatus::PENDING->value,
                 'shipping_address'  => $shippingAddress,
+                'phone'             => $phone,
                 'payment_method'    => $validated['payment_method'],
                 'payment_status'    => PaymentStatus::PENDING->value,
             ]);
