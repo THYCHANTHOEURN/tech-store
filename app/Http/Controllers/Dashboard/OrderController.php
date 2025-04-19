@@ -306,4 +306,31 @@ class OrderController extends Controller
                 ->with('error', 'Error deleting order: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Generate and display an invoice for the order.
+     *
+     * @param  \App\Models\Order  $order
+     * @return \Inertia\Response
+     */
+    public function invoice(Order $order)
+    {
+        $order->load(['user', 'orderItems.product.primaryImage']);
+
+        // Get company information from settings
+        $companyName        = \App\Models\Setting::where('key', 'site_name')->first()?->value ?? 'Tech Store';
+        $companyAddress     = \App\Models\Setting::where('key', 'company_address')->first()?->value ?? '';
+        $companyPhone       = \App\Models\Setting::where('key', 'company_phone')->first()?->value ?? '';
+        $companyEmail       = \App\Models\Setting::where('key', 'site_email')->first()?->value ?? '';
+
+        return Inertia::render('Dashboard/Orders/Invoice', [
+            'order'         => $order,
+            'companyInfo'   => [
+                'name'          => $companyName,
+                'address'       => $companyAddress,
+                'phone'         => $companyPhone,
+                'email'         => $companyEmail,
+            ]
+        ]);
+    }
 }

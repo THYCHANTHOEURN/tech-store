@@ -158,3 +158,34 @@ label.required:after {
 .search-results-container {
     position: relative;
 }
+
+/* Print styles */
+@media print {
+    /* Hide all navigation and UI controls when printing */
+    header, nav, .sidebar, .v-navigation-drawer, .v-app-bar, .v-footer, 
+    .no-print, .d-print-none, button:not(.print-button) {
+        display: none !important;
+    }
+    
+    /* Make sure the content takes up the full page */
+    main, .v-main, .v-application__wrap {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    /* Ensure proper page breaks */
+    .page-break {
+        page-break-after: always;
+    }
+    
+    /* Enhance table display for printing */
+    table {
+        page-break-inside: avoid;
+    }
+    
+    /* Ensure text is black for better printing */
+    body {
+        color: #000 !important;
+        background: #fff !important;
+    }
+}

@@ -30,6 +30,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
     Route::resource('banners', BannerController::class);
     // Order management
     Route::resource('orders', OrderController::class);
+    // Order Invoice 
+    Route::get('orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
     // Customer management
     Route::resource('customers', CustomerController::class);
     // Users management

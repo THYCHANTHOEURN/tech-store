@@ -1,4 +1,5 @@
 <template>
+
     <Head :title="`Order #${order.uuid.slice(-8).toUpperCase()}`" />
 
     <DashboardLayout>
@@ -103,7 +104,8 @@
 
                                 <v-list-item>
                                     <v-list-item-title>Payment Method</v-list-item-title>
-                                    <v-list-item-subtitle>{{ formatPaymentMethod(order.payment_method) }}</v-list-item-subtitle>
+                                    <v-list-item-subtitle>{{ formatPaymentMethod(order.payment_method)
+                                        }}</v-list-item-subtitle>
                                 </v-list-item>
 
                                 <v-list-item>
@@ -131,14 +133,18 @@
                         <v-card-text>
                             <v-row>
                                 <v-col>
+                                    <Link :href="route('dashboard.orders.invoice', order.uuid)"
+                                        class="text-decoration-none">
                                     <v-btn color="info" block prepend-icon="mdi-printer" class="mb-3">
                                         Print Invoice
                                     </v-btn>
+                                    </Link>
 
-                                    <Link :href="route('dashboard.orders.edit', order.uuid)" class="text-decoration-none">
-                                        <v-btn color="warning" block prepend-icon="mdi-pencil" class="mb-3">
-                                            Edit Order
-                                        </v-btn>
+                                    <Link :href="route('dashboard.orders.edit', order.uuid)"
+                                        class="text-decoration-none">
+                                    <v-btn color="warning" block prepend-icon="mdi-pencil" class="mb-3">
+                                        Edit Order
+                                    </v-btn>
                                     </Link>
 
                                     <v-btn color="error" block prepend-icon="mdi-delete" @click="confirmDelete">
@@ -184,10 +190,11 @@
                                         <td>{{ item.quantity }}</td>
                                         <td>${{ formatCurrency(item.price * item.quantity) }}</td>
                                         <td class="text-center">
-                                            <Link :href="route('dashboard.products.show', item.product.uuid)" class="text-decoration-none">
-                                                <v-btn icon size="x-small" color="info" title="View Product" rounded="lg">
-                                                    <v-icon>mdi-eye</v-icon>
-                                                </v-btn>
+                                            <Link :href="route('dashboard.products.show', item.product.uuid)"
+                                                class="text-decoration-none">
+                                            <v-btn icon size="x-small" color="info" title="View Product" rounded="lg">
+                                                <v-icon>mdi-eye</v-icon>
+                                            </v-btn>
                                             </Link>
                                         </td>
                                     </tr>
@@ -195,7 +202,8 @@
                                 <tfoot>
                                     <tr>
                                         <td colspan="3" class="text-right font-weight-bold">Total:</td>
-                                        <td colspan="2" class="font-weight-bold">${{ formatCurrency(order.total_amount) }}</td>
+                                        <td colspan="2" class="font-weight-bold">${{ formatCurrency(order.total_amount)
+                                            }}</td>
                                     </tr>
                                 </tfoot>
                             </v-table>
@@ -210,7 +218,8 @@
                     <v-card-title class="text-h5">Delete Order</v-card-title>
                     <v-card-text>
                         Are you sure you want to delete this order? This action cannot be undone.
-                        <p class="mt-4 font-weight-bold">Order #{{ order.uuid.slice(-8).toUpperCase() }} - ${{ formatCurrency(order.total_amount) }}</p>
+                        <p class="mt-4 font-weight-bold">Order #{{ order.uuid.slice(-8).toUpperCase() }} - ${{
+                            formatCurrency(order.total_amount) }}</p>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
