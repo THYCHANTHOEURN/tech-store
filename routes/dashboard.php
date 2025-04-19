@@ -40,9 +40,12 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
 });
 
 
-// Admin Dashboard Routes
+/**
+ * Super Admin and Admin routes
+ *
+ * These routes are only accessible to authenticated users with the super-admin or admin role.
+ */
 Route::middleware(['auth', 'verified', 'role:super_admin|admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
-    // ... existing dashboard routes ...
 
     // Settings Routes
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

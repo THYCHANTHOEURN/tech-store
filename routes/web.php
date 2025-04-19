@@ -10,8 +10,8 @@ use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\WishlistController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\CheckoutController;
+use App\Http\Controllers\Web\OrderController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /**
  * Public routes
@@ -34,9 +34,14 @@ Route::get('/terms', [PageController::class, 'terms'])->name('terms');
  * Customer routes
  */
 Route::middleware(['auth', 'customer'])->group(function () {
+    // Cart routes
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+
+    // Order tracking routes
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{uuid}', [OrderController::class, 'show'])->name('orders.show');
 });
 
 /**
@@ -53,6 +58,7 @@ Route::middleware(['auth', 'verified', 'customer'])->group(function () {
  * Authentication routes
  */
 Route::middleware('auth')->group(function () {
+    // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -71,6 +77,9 @@ Route::group(['prefix' => 'data', 'as' => 'data.'], function () {
     Route::get('categories', [DataController::class, 'categories'])->name('categories');
 });
 
-// Include dashboard routes
+/**
+ * Include other routes
+ * These routes are loaded in the order they are included.
+ */
 require __DIR__.'/dashboard.php';
 require __DIR__.'/auth.php';

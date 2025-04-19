@@ -36,13 +36,15 @@ class HandleInertiaRequests extends Middleware
                     'name'  => $request->user()->name,
                     'email' => $request->user()->email,
                 ] : null,
-                'wishlistItems' => $request->user() ? 
+                'wishlistItems' => $request->user() ?
                     $request->user()->wishlistItems()->get(['id', 'product_id'])->toArray() : [],
             ],
             'cartCount'     => $request->user() ?
                 $request->user()->cartItems()->sum('quantity') : 0,
             'wishlistCount' => $request->user() ?
                 $request->user()->wishlistItems()->count() : 0,
+            'ordersCount'   => $request->user() ?
+                $request->user()->orders()->count() : 0,
             'flash' => [
                 'success'   => session('success'),
                 'error'     => session('error'),
