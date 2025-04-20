@@ -43,16 +43,33 @@
                                             <v-card-title class="text-subtitle-1">{{ setting.label }}</v-card-title>
                                             <v-card-text>
                                                 <!-- Show either the preview or the existing image -->
-                                                <div v-if="imagePreviews[setting.key] || setting.image_url" class="mb-3">
+                                                <div v-if="imagePreviews[setting.key] || setting.image_url"
+                                                    class="mb-3">
                                                     <v-img :src="imagePreviews[setting.key] || setting.image_url"
                                                         max-height="200" contain
                                                         class="bg-grey-lighten-3 rounded"></v-img>
                                                 </div>
                                                 <v-file-input :label="`Change ${setting.label}`"
                                                     v-model="files[setting.key]" accept="image/*" show-size
-                                                    prepend-icon="" prepend-inner-icon="mdi-camera"
-                                                    variant="outlined"
+                                                    prepend-icon="" prepend-inner-icon="mdi-camera" variant="outlined"
                                                     @update:model-value="(file) => previewImage(file, setting.key)"></v-file-input>
+                                                <p class="text-caption text-grey">{{ setting.description }}</p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-col>
+                                </v-row>
+                            </div>
+
+                            <!-- Text Settings -->
+                            <div v-if="hasTextSettings" class="mb-6">
+                                <h3 class="text-h6 mb-4">Text Settings</h3>
+                                <v-row>
+                                    <v-col v-for="setting in textSettings" :key="setting.id" cols="12" md="6">
+                                        <v-card outlined class="mb-4">
+                                            <v-card-title class="text-subtitle-1">{{ setting.label }}</v-card-title>
+                                            <v-card-text>
+                                                <v-text-field v-model="setting.value" :label="setting.label"
+                                                    variant="outlined" density="comfortable"></v-text-field>
                                                 <p class="text-caption text-grey">{{ setting.description }}</p>
                                             </v-card-text>
                                         </v-card>
@@ -94,7 +111,6 @@
     const files = ref({});
     const imagePreviews = ref({});
     const processing = ref(false);
-
     // Format group names for display
     const formattedGroups = computed(() => {
         return props.groups.map(group => ({
@@ -111,6 +127,14 @@
         return imageSettings.value.length > 0;
     });
 
+    // Text settings computed properties
+    const textSettings = computed(() => {
+        return formData.value.filter(setting => setting.type === 'text');
+    });
+
+    const hasTextSettings = computed(() => {
+        return textSettings.value.length > 0;
+    });
     // Preview uploaded image
     const previewImage = (file, key) => {
         if (!file) {

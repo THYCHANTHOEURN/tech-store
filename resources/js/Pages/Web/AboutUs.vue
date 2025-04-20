@@ -94,8 +94,8 @@
                         <v-avatar size="100" class="mb-4">
                             <v-img :src="teamImages.ceo" cover></v-img>
                         </v-avatar>
-                        <h3 class="text-h6">John Doe</h3>
-                        <p class="text-subtitle-1 text-grey">CEO & Founder</p>
+                        <h3 class="text-h6">{{ teamNames.ceo }}</h3>
+                        <p class="text-subtitle-1 text-grey">{{ teamPositions.ceo }}</p>
                     </v-card>
                 </v-col>
 
@@ -104,8 +104,8 @@
                         <v-avatar size="100" class="mb-4">
                             <v-img :src="teamImages.cto" cover></v-img>
                         </v-avatar>
-                        <h3 class="text-h6">Jane Smith</h3>
-                        <p class="text-subtitle-1 text-grey">CTO</p>
+                        <h3 class="text-h6">{{ teamNames.cto }}</h3>
+                        <p class="text-subtitle-1 text-grey">{{ teamPositions.cto }}</p>
                     </v-card>
                 </v-col>
 
@@ -114,8 +114,8 @@
                         <v-avatar size="100" class="mb-4">
                             <v-img :src="teamImages.marketing" cover></v-img>
                         </v-avatar>
-                        <h3 class="text-h6">Michael Johnson</h3>
-                        <p class="text-subtitle-1 text-grey">Marketing Director</p>
+                        <h3 class="text-h6">{{ teamNames.marketing }}</h3>
+                        <p class="text-subtitle-1 text-grey">{{ teamPositions.marketing }}</p>
                     </v-card>
                 </v-col>
 
@@ -124,8 +124,8 @@
                         <v-avatar size="100" class="mb-4">
                             <v-img :src="teamImages.support" cover></v-img>
                         </v-avatar>
-                        <h3 class="text-h6">Sarah Williams</h3>
-                        <p class="text-subtitle-1 text-grey">Customer Support Lead</p>
+                        <h3 class="text-h6">{{ teamNames.support }}</h3>
+                        <p class="text-subtitle-1 text-grey">{{ teamPositions.support }}</p>
                     </v-card>
                 </v-col>
             </v-row>
@@ -150,6 +150,24 @@
                 cto: '/storage/settings/team-cto.jpg',
                 marketing: '/storage/settings/team-marketing.jpg',
                 support: '/storage/settings/team-support.jpg'
+            })
+        },
+        teamNames: {
+            type: Object,
+            default: () => ({
+                ceo: 'John Doe',
+                cto: 'Jane Smith',
+                marketing: 'Michael Johnson',
+                support: 'Sarah Williams'
+            })
+        },
+        teamPositions: {
+            type: Object,
+            default: () => ({
+                ceo: 'CEO & Founder',
+                cto: 'CTO',
+                marketing: 'Marketing Director',
+                support: 'Customer Support Lead'
             })
         }
     });
