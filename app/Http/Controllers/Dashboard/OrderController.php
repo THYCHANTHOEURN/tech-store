@@ -166,6 +166,19 @@ class OrderController extends Controller
                 'total_amount' => $totalAmount,
             ]);
 
+            // Notify other admins about the new order
+            $admins = \App\Models\User::role([
+                \App\Enums\RolesEnum::SUPER_ADMIN->value,
+                \App\Enums\RolesEnum::ADMIN->value,
+                \App\Enums\RolesEnum::MANAGER->value
+            ])
+            ->where('id', '!=', auth()->id()) // Exclude the current admin
+            ->get();
+
+            foreach ($admins as $admin) {
+                $admin->notify(new \App\Notifications\NewOrderNotification($order));
+            }
+
             DB::commit();
 
             return redirect()->route('dashboard.orders.show', $order->uuid)

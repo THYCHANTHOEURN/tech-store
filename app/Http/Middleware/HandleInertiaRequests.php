@@ -49,6 +49,18 @@ class HandleInertiaRequests extends Middleware
                 'success'   => session('success'),
                 'error'     => session('error'),
             ],
+            'notifications' => $request->user() && $request->user()->hasAnyRole([
+                \App\Enums\RolesEnum::SUPER_ADMIN->value,
+                \App\Enums\RolesEnum::ADMIN->value,
+                \App\Enums\RolesEnum::MANAGER->value
+            ]) ?
+                $request->user()->notifications()->latest()->take(5)->get() : [],
+            'unreadNotificationsCount' => $request->user() && $request->user()->hasAnyRole([
+                \App\Enums\RolesEnum::SUPER_ADMIN->value,
+                \App\Enums\RolesEnum::ADMIN->value,
+                \App\Enums\RolesEnum::MANAGER->value
+            ]) ?
+                $request->user()->unreadNotifications()->count() : 0,
         ]);
     }
 }

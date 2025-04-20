@@ -3,6 +3,7 @@
     import ApplicationLogo from '@/Components/ApplicationLogo.vue';
     import { Link, usePage, router } from '@inertiajs/vue3';
     import FlashMessage from '@/Components/FlashMessage.vue';
+    import NotificationDropdown from '@/Components/Dashboard/NotificationDropdown.vue';
 
     const rail = ref(false);
     const drawer = ref(true);
@@ -39,6 +40,12 @@
             </v-toolbar-title>
 
             <v-spacer></v-spacer>
+
+            <!-- Notification Dropdown -->
+            <NotificationDropdown
+              :initial-notifications="$page.props.notifications"
+              :initial-unread-count="$page.props.unreadNotificationsCount"
+            />
 
             <!-- User Menu - Enhanced -->
             <v-menu transition="slide-y-transition" location="bottom end">

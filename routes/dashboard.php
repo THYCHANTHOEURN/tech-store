@@ -10,6 +10,7 @@ use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\Dashboard\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -30,7 +31,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
     Route::resource('banners', BannerController::class);
     // Order management
     Route::resource('orders', OrderController::class);
-    // Order Invoice 
+    // Order Invoice
     Route::get('orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
     // Customer management
     Route::resource('customers', CustomerController::class);
@@ -39,6 +40,13 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
     // Roles management
     Route::resource('roles', RoleController::class);
 
+    // Notifications
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'index'])->name('index');
+        Route::get('/list', [NotificationController::class, 'list'])->name('list');
+        Route::post('/{id}/read', [NotificationController::class, 'markAsRead'])->name('read');
+        Route::post('/read-all', [NotificationController::class, 'markAllAsRead'])->name('readAll');
+    });
 });
 
 

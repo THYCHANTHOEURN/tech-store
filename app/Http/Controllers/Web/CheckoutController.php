@@ -165,6 +165,17 @@ class CheckoutController extends Controller
             // Clear checkout session
             session()->forget('checkout');
 
+            // Notify admins about the new order
+            $admins = \App\Models\User::role([
+                \App\Enums\RolesEnum::SUPER_ADMIN->value,
+                \App\Enums\RolesEnum::ADMIN->value,
+                \App\Enums\RolesEnum::MANAGER->value
+            ])->get();
+
+            foreach ($admins as $admin) {
+                $admin->notify(new \App\Notifications\NewOrderNotification($order));
+            }
+
             // Commit transaction
             DB::commit();
 
