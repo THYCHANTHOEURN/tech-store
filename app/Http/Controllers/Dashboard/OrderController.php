@@ -318,10 +318,12 @@ class OrderController extends Controller
         $order->load(['user', 'orderItems.product.primaryImage']);
 
         // Get company information from settings
-        $companyName        = \App\Models\Setting::where('key', 'site_name')->first()?->value ?? 'Tech Store';
-        $companyAddress     = \App\Models\Setting::where('key', 'company_address')->first()?->value ?? '';
-        $companyPhone       = \App\Models\Setting::where('key', 'company_phone')->first()?->value ?? '';
-        $companyEmail       = \App\Models\Setting::where('key', 'site_email')->first()?->value ?? '';
+        $companyName        = \App\Models\Setting::get('company_name', 'Tech Store');
+        $companyAddress     = \App\Models\Setting::get('company_address') . ', ' .
+                              \App\Models\Setting::get('company_state') . ', ' .
+                              \App\Models\Setting::get('company_country');
+        $companyPhone       = \App\Models\Setting::get('company_phone', '');
+        $companyEmail       = \App\Models\Setting::get('company_email', '');
 
         return Inertia::render('Dashboard/Orders/Invoice', [
             'order'         => $order,

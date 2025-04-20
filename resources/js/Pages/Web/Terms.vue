@@ -7,9 +7,10 @@
             <v-row>
                 <v-col cols="12">
                     <h1 class="text-h3 font-weight-bold mb-6">Terms & Conditions</h1>
-                    <p class="text-body-1 mb-4">Last Updated: {{ formatDate(lastUpdated) }}</p>
+                    <p class="text-body-1 mb-4">Last Updated: {{ formatDate(termsUpdatedDate) }}</p>
                     <p class="text-body-1 mb-8">
-                        Please read these Terms & Conditions carefully before using the Tech Store website and services.
+                        Please read these Terms & Conditions carefully before using the {{ companyInfo.name }} website
+                        and services.
                     </p>
                 </v-col>
             </v-row>
@@ -186,9 +187,9 @@
                             If you have any questions about these Terms, please contact us at:
                         </p>
                         <p class="text-body-1">
-                            <strong>Email:</strong> legal@techstore.com<br>
-                            <strong>Phone:</strong> +855 12 345 678<br>
-                            <strong>Address:</strong> 123 Tech Street, Innovation City, State 12345, Country
+                            <strong>Email:</strong> {{ companyInfo.email }}<br>
+                            <strong>Phone:</strong> {{ companyInfo.phone }}<br>
+                            <strong>Address:</strong> {{ companyInfo.fullAddress }}
                         </p>
                     </v-card>
                 </v-col>
@@ -200,9 +201,23 @@
 <script setup>
     import { Head } from '@inertiajs/vue3';
     import WebLayout from '@/Layouts/WebLayout.vue';
+    import { computed } from 'vue';
 
-    // Last updated date for the terms & conditions
-    const lastUpdated = new Date(2023, 11, 15); // December 15, 2023
+    // Define props from controller
+    const props = defineProps({
+        companyInfo: {
+            type: Object,
+            required: true
+        }
+    });
+
+    // Parse the termsUpdatedAt from props or use fallback date
+    const termsUpdatedDate = computed(() => {
+        if (props.companyInfo.termsUpdatedAt) {
+            return new Date(props.companyInfo.termsUpdatedAt);
+        }
+        return new Date(2023, 11, 15); // Fallback: December 15, 2023
+    });
 
     // Format date helper function
     const formatDate = (date) => {

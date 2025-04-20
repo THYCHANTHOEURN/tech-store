@@ -13,27 +13,32 @@
                 <div class="d-none d-sm-flex align-center">
                     <span class="text-white mr-4 text-caption">
                         <v-icon size="small" class="mr-1">mdi-phone</v-icon>
-                        +855 12 345 678
+                        {{ $page.props.siteSettings.companyInfo.phone }}
                     </span>
                     <span class="text-white text-caption">
                         <v-icon size="small" class="mr-1">mdi-email</v-icon>
-                        info@techstore.com
+                        {{ $page.props.siteSettings.companyInfo.email }}
                     </span>
                 </div>
                 <div class="d-flex align-center">
-                    <v-btn variant="text" class="text-white icon-btn" href="https://www.facebook.com/" target="_blank">
+                    <v-btn variant="text" class="text-white icon-btn"
+                        :href="$page.props.siteSettings.companyInfo.social.facebook" target="_blank">
                         <v-icon size="small">mdi-facebook</v-icon>
                     </v-btn>
-                    <v-btn variant="text" class="text-white icon-btn" href="https://www.tiktok.com/" target="_blank">
+                    <v-btn variant="text" class="text-white icon-btn"
+                        :href="$page.props.siteSettings.companyInfo.social.tiktok" target="_blank">
                         <v-icon size="small">mdi-music-box-outline</v-icon>
                     </v-btn>
-                    <v-btn variant="text" class="text-white icon-btn" href="https://www.instagram.com/" target="_blank">
+                    <v-btn variant="text" class="text-white icon-btn"
+                        :href="$page.props.siteSettings.companyInfo.social.instagram" target="_blank">
                         <v-icon size="small">mdi-instagram</v-icon>
                     </v-btn>
-                    <v-btn variant="text" class="text-white icon-btn" href="https://t.me/" target="_blank">
+                    <v-btn variant="text" class="text-white icon-btn"
+                        :href="$page.props.siteSettings.companyInfo.social.telegram" target="_blank">
                         <v-icon size="small">mdi-send</v-icon>
                     </v-btn>
-                    <v-btn variant="text" class="text-white icon-btn" href="https://www.youtube.com/" target="_blank">
+                    <v-btn variant="text" class="text-white icon-btn"
+                        :href="$page.props.siteSettings.companyInfo.social.youtube" target="_blank">
                         <v-icon size="small">mdi-youtube</v-icon>
                     </v-btn>
                 </div>
@@ -346,10 +351,12 @@
                     <v-col cols="12" md="3">
                         <h3>Contact</h3>
                         <p class="text-body-2">
-                            123 Street Name<br>
-                            City, State 12345<br>
-                            Phone: (123) 456-7890<br>
-                            Email: info@techstore.com
+                            {{ $page.props.siteSettings.companyInfo.address }}<br>
+                            {{ $page.props.siteSettings.companyInfo.state }}, {{
+                            $page.props.siteSettings.companyInfo.country
+                            }}<br>
+                            Phone: {{ $page.props.siteSettings.companyInfo.phone }}<br>
+                            Email: {{ $page.props.siteSettings.companyInfo.email }}
                         </p>
                     </v-col>
 
@@ -380,14 +387,25 @@
                     <v-col cols="12" md="3">
                         <h3>Follow Us</h3>
                         <div class="d-flex gap-2 mt-2">
-                            <v-btn icon="mdi-facebook" variant="text"></v-btn>
-                            <v-btn icon="mdi-twitter" variant="text"></v-btn>
-                            <v-btn icon="mdi-instagram" variant="text"></v-btn>
+                            <v-btn icon="mdi-facebook" variant="text"
+                                :href="$page.props.siteSettings.companyInfo.social.facebook" target="_blank"></v-btn>
+                            <v-btn icon="mdi-twitter" variant="text"
+                                :href="$page.props.siteSettings.companyInfo.social.twitter" target="_blank"></v-btn>
+                            <v-btn icon="mdi-instagram" variant="text"
+                                :href="$page.props.siteSettings.companyInfo.social.instagram" target="_blank"></v-btn>
+                            <v-btn icon="mdi-youtube" variant="text"
+                                :href="$page.props.siteSettings.companyInfo.social.youtube" target="_blank"></v-btn>
+                            <v-btn icon="mdi-music-box-outline" variant="text"
+                                :href="$page.props.siteSettings.companyInfo.social.tiktok" target="_blank"></v-btn>
+                            <v-btn icon="mdi-send" variant="text"
+                                :href="$page.props.siteSettings.companyInfo.social.telegram" target="_blank"></v-btn>
                         </div>
                     </v-col>
 
                     <v-col cols="12" class="text-center mt-4">
-                        <small>&copy; {{ new Date().getFullYear() }} Tech Store. All rights reserved.</small>
+                        <small>&copy; {{ new Date().getFullYear() }} {{ $page.props.siteSettings.companyInfo.name }}.
+                            All rights
+                            reserved.</small>
                     </v-col>
                 </v-row>
             </v-container>

@@ -58,8 +58,8 @@
                                 </template>
                                 <v-list-item-title class="font-weight-bold">Address</v-list-item-title>
                                 <v-list-item-subtitle>
-                                    123 Tech Street, Innovation City<br>
-                                    State 12345, Country
+                                    {{ companyInfo.address }}<br>
+                                    {{ companyInfo.state }}, {{ companyInfo.country }}
                                 </v-list-item-subtitle>
                             </v-list-item>
 
@@ -69,8 +69,8 @@
                                 </template>
                                 <v-list-item-title class="font-weight-bold">Phone</v-list-item-title>
                                 <v-list-item-subtitle>
-                                    +855 12 345 678<br>
-                                    +855 98 765 432
+                                    {{ companyInfo.phone }}<br>
+                                    {{ companyInfo.phoneSecondary }}
                                 </v-list-item-subtitle>
                             </v-list-item>
 
@@ -80,8 +80,8 @@
                                 </template>
                                 <v-list-item-title class="font-weight-bold">Email</v-list-item-title>
                                 <v-list-item-subtitle>
-                                    info@techstore.com<br>
-                                    support@techstore.com
+                                    {{ companyInfo.email }}<br>
+                                    {{ companyInfo.emailSupport }}
                                 </v-list-item-subtitle>
                             </v-list-item>
 
@@ -91,9 +91,9 @@
                                 </template>
                                 <v-list-item-title class="font-weight-bold">Business Hours</v-list-item-title>
                                 <v-list-item-subtitle>
-                                    Monday - Friday: 9:00 AM - 6:00 PM<br>
-                                    Saturday: 10:00 AM - 4:00 PM<br>
-                                    Sunday: Closed
+                                    <span v-for="(hours, index) in formatBusinessHours(companyInfo.hours)" :key="index">
+                                        {{ hours }}<br>
+                                    </span>
                                 </v-list-item-subtitle>
                             </v-list-item>
                         </v-list>
@@ -102,12 +102,12 @@
                     <v-card class="pa-4">
                         <h2 class="text-h5 mb-4">Connect With Us</h2>
                         <div class="d-flex gap-2">
-                            <v-btn icon="mdi-facebook" color="primary" variant="text" href="https://www.facebook.com/"
+                            <v-btn icon="mdi-facebook" color="primary" variant="text"
+                                :href="companyInfo.social.facebook" target="_blank"></v-btn>
+                            <v-btn icon="mdi-twitter" color="primary" variant="text" :href="companyInfo.social.twitter"
                                 target="_blank"></v-btn>
-                            <v-btn icon="mdi-twitter" color="primary" variant="text" href="https://twitter.com/"
-                                target="_blank"></v-btn>
-                            <v-btn icon="mdi-instagram" color="primary" variant="text" href="https://www.instagram.com/"
-                                target="_blank"></v-btn>
+                            <v-btn icon="mdi-instagram" color="primary" variant="text"
+                                :href="companyInfo.social.instagram" target="_blank"></v-btn>
                             <v-btn icon="mdi-linkedin" color="primary" variant="text" href="https://www.linkedin.com/"
                                 target="_blank"></v-btn>
                         </div>
@@ -139,6 +139,14 @@
     import { Head } from '@inertiajs/vue3';
     import WebLayout from '@/Layouts/WebLayout.vue';
     import { ref } from 'vue';
+
+    // Define props from controller
+    const props = defineProps({
+        companyInfo: {
+            type: Object,
+            required: true
+        }
+    });
 
     const isFormValid = ref(false);
     const isSubmitting = ref(false);
@@ -183,5 +191,10 @@
             alert('There was an error sending your message. Please try again later.');
             isSubmitting.value = false;
         }
+    };
+
+    // Format business hours string into an array of lines
+    const formatBusinessHours = (hoursString) => {
+        return hoursString.split(';').map(hour => hour.trim());
     };
 </script>

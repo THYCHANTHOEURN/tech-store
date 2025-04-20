@@ -67,7 +67,42 @@ class PageController extends Controller
      */
     public function contact()
     {
-        return Inertia::render('Web/Contact');
+        // Get company information settings
+        $companyName            = Setting::get('company_name', 'Tech Store');
+        $companyAddress         = Setting::get('company_address', '123 Tech Street, Innovation City');
+        $companyState           = Setting::get('company_state', 'State 12345');
+        $companyCountry         = Setting::get('company_country', 'Country');
+        $companyPhone           = Setting::get('company_phone', '+855 12 345 678');
+        $companyPhoneSecondary  = Setting::get('company_phone_secondary', '+855 98 765 432');
+        $companyEmail           = Setting::get('company_email', 'info@techstore.com');
+        $companyEmailSupport    = Setting::get('company_email_support', 'support@techstore.com');
+        $companyHours           = Setting::get('company_hours', 'Monday - Friday: 9:00 AM - 6:00 PM; Saturday: 10:00 AM - 4:00 PM; Sunday: Closed');
+
+        // Get social media links
+        $socialLinks = [
+            'facebook'  => Setting::get('company_facebook', 'https://www.facebook.com/'),
+            'twitter'   => Setting::get('company_twitter', 'https://twitter.com/'),
+            'instagram' => Setting::get('company_instagram', 'https://www.instagram.com/'),
+            'youtube'   => Setting::get('company_youtube', 'https://www.youtube.com/'),
+            'tiktok'    => Setting::get('company_tiktok', 'https://www.tiktok.com/'),
+            'telegram'  => Setting::get('company_telegram', 'https://t.me/'),
+        ];
+
+        return Inertia::render('Web/Contact', [
+            'companyInfo' => [
+                'name'              => $companyName,
+                'address'           => $companyAddress,
+                'state'             => $companyState,
+                'country'           => $companyCountry,
+                'fullAddress'       => "$companyAddress, $companyState, $companyCountry",
+                'phone'             => $companyPhone,
+                'phoneSecondary'    => $companyPhoneSecondary,
+                'email'             => $companyEmail,
+                'emailSupport'      => $companyEmailSupport,
+                'hours'             => $companyHours,
+                'social'            => $socialLinks,
+            ]
+        ]);
     }
 
     /**
@@ -77,6 +112,26 @@ class PageController extends Controller
      */
     public function terms()
     {
-        return Inertia::render('Web/Terms');
+        // Get company information needed for terms
+        $companyName    = Setting::get('company_name', 'Tech Store');
+        $companyAddress = Setting::get('company_address', '123 Tech Street, Innovation City');
+        $companyState   = Setting::get('company_state', 'State 12345');
+        $companyCountry = Setting::get('company_country', 'Country');
+        $companyPhone   = Setting::get('company_phone', '+855 12 345 678');
+        $companyEmail   = Setting::get('company_email', 'info@techstore.com');
+        $termsUpdatedAt = Setting::get('terms_updated_at', '2023-12-15'); // Default if not set
+
+        return Inertia::render('Web/Terms', [
+            'companyInfo' => [
+                'name'              => $companyName,
+                'address'           => $companyAddress,
+                'state'             => $companyState,
+                'country'           => $companyCountry,
+                'fullAddress'       => "$companyAddress, $companyState, $companyCountry",
+                'phone'             => $companyPhone,
+                'email'             => $companyEmail,
+                'termsUpdatedAt'    => $termsUpdatedAt,
+            ]
+        ]);
     }
 }
