@@ -9,6 +9,36 @@
                     Products Management
                 </h2>
                 <v-spacer></v-spacer>
+
+                <!-- Import/Export Menu -->
+                <v-menu location="bottom">
+                    <template v-slot:activator="{ props }">
+                        <v-btn color="secondary" class="mr-2" v-bind="props" prepend-icon="mdi-database-import-outline">
+                            Import/Export
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-subheader>Export Products</v-list-subheader>
+                        <v-list-item :href="route('dashboard.products.export', { format: 'xlsx' })"
+                            prepend-icon="mdi-microsoft-excel" title="Export to Excel" />
+                        <v-list-item :href="route('dashboard.products.export', { format: 'csv' })"
+                            prepend-icon="mdi-file-delimited" title="Export to CSV" />
+
+                        <v-divider class="my-2"></v-divider>
+
+                        <v-list-subheader>Download Templates</v-list-subheader>
+                        <v-list-item :href="route('dashboard.products.template', { format: 'xlsx' })"
+                            prepend-icon="mdi-file-excel" title="Excel Template" />
+                        <v-list-item :href="route('dashboard.products.template', { format: 'csv' })"
+                            prepend-icon="mdi-file-delimited" title="CSV Template" />
+
+                        <v-divider class="my-2"></v-divider>
+
+                        <v-list-item @click="showImportDialog = true" prepend-icon="mdi-database-import"
+                            title="Import Products" />
+                    </v-list>
+                </v-menu>
+
                 <Link :href="route('dashboard.products.create')" class="text-decoration-none">
                 <v-btn color="primary" prepend-icon="mdi-plus">
                     Add Product
@@ -18,6 +48,15 @@
         </template>
 
         <v-container fluid class="py-8">
+            <!-- Flash Messages -->
+            <v-alert v-if="flash.success" type="success" variant="tonal" class="mb-4" closable>
+                {{ flash.success }}
+            </v-alert>
+
+            <v-alert v-if="flash.error" type="error" variant="tonal" class="mb-4" closable>
+                {{ flash.error }}
+            </v-alert>
+
             <!-- Enhanced Filters -->
             <FilterBar :loading="loading" :total-items="products.total" items-label="products"
                 :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
@@ -136,39 +175,86 @@
                         total-visible="7" @update:model-value="changePage" rounded></v-pagination>
                 </div>
             </v-card>
-        </v-container>
 
-        <!-- Delete Confirmation Dialog -->
-        <v-dialog v-model="deleteDialog" max-width="500">
-            <v-card>
-                <v-card-title class="text-h5">
-                    Confirm Delete
-                </v-card-title>
-                <v-card-text>
-                    Are you sure you want to delete the product "{{ productToDelete?.name }}"? This action cannot be
-                    undone.
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">
-                        Cancel
-                    </v-btn>
-                    <v-btn color="error" variant="flat" @click="deleteProduct" :loading="deleting">
-                        Delete
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+            <!-- Import Dialog -->
+            <v-dialog v-model="showImportDialog" max-width="600px">
+                <v-card>
+                    <v-card-title class="text-h5">
+                        <v-icon class="mr-2">mdi-database-import</v-icon>
+                        Import Products
+                    </v-card-title>
+
+                    <v-card-text>
+                        <p class="mb-4">Upload a CSV or Excel file to import products. Please follow the required
+                            format.</p>
+
+                        <v-alert type="info" variant="tonal" class="mb-4">
+                            <p>Not sure about the format? Download our template:</p>
+                            <div class="d-flex mt-2">
+                                <v-btn size="small" variant="text" color="primary"
+                                    :href="route('dashboard.products.template', { format: 'xlsx' })" class="mr-2">
+                                    <v-icon start>mdi-microsoft-excel</v-icon>
+                                    Excel Template
+                                </v-btn>
+                                <v-btn size="small" variant="text" color="primary"
+                                    :href="route('dashboard.products.template', { format: 'csv' })">
+                                    <v-icon start>mdi-file-delimited</v-icon>
+                                    CSV Template
+                                </v-btn>
+                            </div>
+                        </v-alert>
+
+                        <form @submit.prevent="submitImport" enctype="multipart/form-data">
+                            <v-file-input v-model="importFile" accept=".csv, .xlsx, .xls" label="Select file to import"
+                                prepend-icon="mdi-file-upload" show-size :error-messages="importError"
+                                required></v-file-input>
+                        </form>
+                    </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue-darken-1" variant="text" @click="closeImportDialog">
+                            Cancel
+                        </v-btn>
+                        <v-btn color="primary" @click="submitImport" :loading="importing" :disabled="!importFile">
+                            <v-icon start>mdi-database-import</v-icon>
+                            Import
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <!-- Delete Confirmation Dialog -->
+            <v-dialog v-model="deleteDialog" max-width="500">
+                <v-card>
+                    <v-card-title class="text-h5">
+                        Confirm Delete
+                    </v-card-title>
+                    <v-card-text>
+                        Are you sure you want to delete the product "{{ productToDelete?.name }}"? This action cannot be
+                        undone.
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">
+                            Cancel
+                        </v-btn>
+                        <v-btn color="error" variant="flat" @click="deleteProduct" :loading="deleting">
+                            Delete
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-container>
     </DashboardLayout>
 </template>
 
 <script setup>
     import DashboardLayout from '@/Layouts/DashboardLayout.vue';
-    import { Head, router } from '@inertiajs/vue3';
+    import { Head, router, Link, usePage } from '@inertiajs/vue3';
     import { ref, computed } from 'vue';
     import FilterBar from '@/Components/Dashboard/FilterBar.vue';
     import SearchField from '@/Components/Dashboard/SearchField.vue';
-    import { Link } from '@inertiajs/vue3';
 
     const props = defineProps({
         products: Object,
@@ -176,6 +262,9 @@
         categories: Array,
         brands: Array
     });
+
+    // Get flash messages
+    const flash = computed(() => usePage().props.flash);
 
     // Table headers
     const headers = [
@@ -216,6 +305,42 @@
     const deleteDialog = ref(false);
     const productToDelete = ref(null);
     const deleting = ref(false);
+
+    // Import/Export Functionality
+    const showImportDialog = ref(false);
+    const importFile = ref(null);
+    const importError = ref('');
+    const importing = ref(false);
+
+    const closeImportDialog = () => {
+        showImportDialog.value = false;
+        importFile.value = null;
+        importError.value = '';
+    };
+
+    const submitImport = () => {
+        if (!importFile.value) {
+            importError.value = 'Please select a file to import';
+            return;
+        }
+
+        importError.value = '';
+        importing.value = true;
+
+        const form = new FormData();
+        form.append('file', importFile.value);
+
+        router.post(route('dashboard.products.import'), form, {
+            onFinish: () => {
+                importing.value = false;
+                closeImportDialog();
+            },
+            onError: (errors) => {
+                importError.value = errors.file || 'Error uploading file';
+                importing.value = false;
+            }
+        });
+    };
 
     // Computed property for active filters
     const activeFilters = computed(() => ({

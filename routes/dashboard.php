@@ -23,6 +23,11 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     // Product management
     Route::resource('products', ProductController::class);
+    // Product export, import, and template routes
+    Route::get('products-export', [ProductController::class, 'export'])->name('products.export');
+    Route::post('products-import', [ProductController::class, 'import'])->name('products.import');
+    Route::get('products-template', [ProductController::class, 'template'])->name('products.template');
+
     // Brand management
     Route::resource('brands', BrandController::class);
     // Category management

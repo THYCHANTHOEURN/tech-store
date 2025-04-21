@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use App\Exports\ProductsExport;
+use App\Exports\ProductsTemplateExport;
+use App\Imports\ProductsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -372,5 +376,63 @@ class ProductController extends Controller
             return redirect()->route('dashboard.products.index')
                 ->with('error', 'Error deleting product: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Export products to Excel or CSV
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $format     = $request->format ?? 'xlsx';
+        $filename   = 'products-' . date('Y-m-d') . '.' . $format;
+
+        return Excel::download(new ProductsExport, $filename);
+    }
+
+    /**
+     * Import products from Excel or CSV
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            Excel::import(new ProductsImport, $request->file('file'));
+
+            DB::commit();
+
+            return redirect()->route('dashboard.products.index')
+                ->with('success', 'Products imported successfully');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()
+                ->with('error', 'Error importing products: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Download product template for import
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function template(Request $request)
+    {
+        $format     = $request->format ?? 'xlsx';
+        $filename   = 'product-template.' . $format;
+
+        return Excel::download(new ProductsTemplateExport, $filename);
     }
 }
