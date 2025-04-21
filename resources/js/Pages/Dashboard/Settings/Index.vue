@@ -43,10 +43,8 @@
                                             <v-card-title class="text-subtitle-1">{{ setting.label }}</v-card-title>
                                             <v-card-text>
                                                 <!-- Show either the preview or the existing image -->
-                                                <div v-if="imagePreviews[setting.key] || setting.image_url"
-                                                    class="mb-3">
-                                                    <v-img :src="imagePreviews[setting.key] || setting.image_url"
-                                                        max-height="200" contain
+                                                <div v-if="getImageUrl(setting.key)" class="mb-3">
+                                                    <v-img :src="getImageUrl(setting.key)" max-height="200" contain
                                                         class="bg-grey-lighten-3 rounded"></v-img>
                                                 </div>
                                                 <v-file-input :label="`Change ${setting.label}`"
@@ -148,6 +146,45 @@
         };
         reader.readAsDataURL(file);
     };
+
+    // Helper method to safely get a setting
+    function getSetting(key) {
+        const setting = formData.value?.find(s => s.key === key);
+        return setting || { value: '', key: key };
+    }
+
+    // Get image URL for settings
+    function getImageUrl(key) {
+        const setting = formData.value?.find(s => s.key === key);
+        if (setting) {
+            // For images, return the preview if available, otherwise the stored value
+            if (imagePreviews.value[key]) {
+                return imagePreviews.value[key];
+            }
+
+            // Check if we have a value
+            if (setting.value) {
+                // Handle both formats: with and without storage/ prefix
+                if (setting.value.startsWith('settings/') ||
+                    setting.value.startsWith('banners/') ||
+                    setting.value.startsWith('brands/')) {
+                    return `/storage/${setting.value}`;
+                } else if (setting.value.startsWith('/storage/')) {
+                    return setting.value;
+                } else {
+                    return `/storage/${setting.value}`; // Assume it's a storage path
+                }
+            }
+        }
+
+        // Return a placeholder image if nothing is available
+        return '/images/placeholder.png';
+    }
+
+    // Add a method to handle form submission
+    function submitForm() {
+        updateSettings();
+    }
 
     // Handle tab change
     watch(activeTab, (newValue) => {

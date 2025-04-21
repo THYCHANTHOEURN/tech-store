@@ -57,7 +57,7 @@
 
                         <!-- Logo - More responsive sizing -->
                         <Link :href="route('index')" class="header-logo ml-1 ml-sm-2">
-                        <v-img src="/images/logo.png"
+                        <v-img :src="$page.props.siteSettings?.logoUrl || '/images/logo.png'"
                             :width="$vuetify.display.xs ? 120 : $vuetify.display.sm ? 150 : 180"
                             :height="$vuetify.display.xs ? 40 : $vuetify.display.sm ? 50 : 60" contain class="my-1"
                             alt="Tech Store Logo"></v-img>
@@ -227,7 +227,8 @@
         <!-- Navigation Drawer - Enhanced for mobile -->
         <v-navigation-drawer v-model="drawer" temporary :width="280">
             <v-list>
-                <v-list-item prepend-avatar="/images/logo.png" :title="'Tech Store'"></v-list-item>
+                <v-list-item :prepend-avatar="$page.props.siteSettings?.logoUrl || '/images/logo.png'"
+                    :title="'Tech Store'"></v-list-item>
             </v-list>
 
             <v-divider></v-divider>
@@ -353,7 +354,7 @@
                         <p class="text-body-2">
                             {{ $page.props.siteSettings.companyInfo.address }}<br>
                             {{ $page.props.siteSettings.companyInfo.state }}, {{
-                            $page.props.siteSettings.companyInfo.country
+                                $page.props.siteSettings.companyInfo.country
                             }}<br>
                             Phone: {{ $page.props.siteSettings.companyInfo.phone }}<br>
                             Email: {{ $page.props.siteSettings.companyInfo.email }}

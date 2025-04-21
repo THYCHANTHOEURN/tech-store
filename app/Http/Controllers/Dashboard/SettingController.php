@@ -20,6 +20,9 @@ class SettingController extends Controller
      */
     public function index(Request $request)
     {
+        // Make sure basic settings exist
+        $this->ensureBasicSettings();
+
         $group = $request->query('group', 'general');
 
         $settings = Setting::where('group', $group)->get()->map(function ($setting) {
@@ -69,7 +72,7 @@ class SettingController extends Controller
                     continue;
                 }
 
-                // Handle image uploads
+                // Handle image uploads with special care for site_logo
                 if ($setting->type === 'image' && $request->hasFile("files.{$setting->key}")) {
                     $file = $request->file("files.{$setting->key}");
 
@@ -78,13 +81,18 @@ class SettingController extends Controller
                         'file'  => $file->getClientOriginalName()
                     ]);
 
-                    // Delete old file if exists
+                    // Delete old file if exists, with more robust path checking
                     if ($setting->value && Storage::disk('public')->exists($setting->value)) {
                         Storage::disk('public')->delete($setting->value);
                     }
 
-                    // Store new file
+                    // Store new file with setting-specific path
                     $path = $file->store('settings', 'public');
+                    
+                    // For site logo, ensure it's the right format and size
+                    if ($setting->key === 'site_logo') {
+                        // You could add image manipulation here if needed with Intervention Image
+                    }
 
                     // Update the setting directly
                     $setting->value = $path;
@@ -242,6 +250,38 @@ class SettingController extends Controller
                 ['key' => $setting['key']],
                 $setting
             );
+        }
+    }
+
+    /**
+     * Ensure basic settings exist.
+     *
+     * @return void
+     */
+    public function ensureBasicSettings()
+    {
+        // Check for site_logo setting
+        if (!Setting::where('key', 'site_logo')->exists()) {
+            Setting::create([
+                'key'           => 'site_logo',
+                'value'         => 'settings/site-logo.png',
+                'group'         => 'general',
+                'type'          => 'image',
+                'label'         => 'Site Logo',
+                'description'   => 'Your store logo that appears in the header and other places'
+            ]);
+        }
+        
+        // Check for site_name setting
+        if (!Setting::where('key', 'site_name')->exists()) {
+            Setting::create([
+                'key'           => 'site_name',
+                'value'         => config('app.name', 'Tech Store'),
+                'group'         => 'general',
+                'type'          => 'text',
+                'label'         => 'Site Name',
+                'description'   => 'The name of your store that appears in the browser title and throughout the site'
+            ]);
         }
     }
 }

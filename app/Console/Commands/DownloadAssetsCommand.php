@@ -94,6 +94,10 @@ class DownloadAssetsCommand extends Command
         ],
         // Add settings-related images
         'settings' => [
+
+            // logo
+            'site-logo'         => 'public/images/logo.png', // Local logo image
+
             'about-us'          => 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1200&h=800', // Modern tech store interior
             'team-ceo'          => 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400', // Professional male CEO
             'team-cto'          => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400', // Professional female CTO

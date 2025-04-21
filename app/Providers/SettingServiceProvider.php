@@ -22,12 +22,29 @@ class SettingServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Share settings with all Inertia views - fixed for newer Laravel versions
+        // Share settings with all Inertia views
         if (class_exists(Inertia::class)) {
             Inertia::share('siteSettings', function () {
+                $siteLogo   = Setting::get('site_logo');
+                $logoUrl    = null;
+
+                if ($siteLogo) {
+                    // Ensure logo URL is properly formatted
+                    if (filter_var($siteLogo, FILTER_VALIDATE_URL)) {
+                        $logoUrl = $siteLogo;
+                    } else {
+                        // Handle storage path format
+                        $logoUrl = Storage::disk('public')->exists($siteLogo)
+                            ? Storage::url($siteLogo)
+                            : '/images/logo.png'; // Fallback
+                    }
+                } else {
+                    $logoUrl = '/images/logo.png'; // Default logo
+                }
+
                 return [
-                    'logoUrl'       => Setting::get('site_logo') ? Storage::url(Setting::get('site_logo')) : null,
-                    'siteName'      => Setting::get('site_name', config('app.name')),
+                    'logoUrl'       => $logoUrl,
+                    'siteName'      => Setting::get('site_name', config('app.name', 'Tech Store')),
                     'companyInfo'   => [
                         'name'          => Setting::get('company_name', 'Tech Store'),
                         'address'       => Setting::get('company_address', '123 Tech Street, Innovation City'),
