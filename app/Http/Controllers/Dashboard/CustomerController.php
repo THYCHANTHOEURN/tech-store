@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Enums\RolesEnum;
+use App\Exports\CustomerExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
@@ -245,5 +247,19 @@ class CustomerController extends Controller
             return redirect()->route('dashboard.customers.index')
                 ->with('error', 'Error deleting customer: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Export customers to Excel or CSV
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $format     = $request->format ?? 'xlsx';
+        $filename   = 'customers-' . date('Y-m-d') . '.' . $format;
+
+        return Excel::download(new CustomerExport, $filename);
     }
 }

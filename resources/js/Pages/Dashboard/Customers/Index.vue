@@ -9,6 +9,22 @@
                     Customers
                 </h2>
                 <v-spacer></v-spacer>
+
+                <!-- Export Menu -->
+                <v-menu location="bottom">
+                    <template v-slot:activator="{ props }">
+                        <v-btn color="secondary" class="mr-2" v-bind="props" prepend-icon="mdi-database-export-outline">
+                            Export
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item :href="route('dashboard.customers.export', { format: 'xlsx' })"
+                            prepend-icon="mdi-microsoft-excel" title="Export to Excel" />
+                        <v-list-item :href="route('dashboard.customers.export', { format: 'csv' })"
+                            prepend-icon="mdi-file-delimited" title="Export to CSV" />
+                    </v-list>
+                </v-menu>
+
                 <Link :href="route('dashboard.customers.create')">
                 <v-btn color="primary" prepend-icon="mdi-plus">
                     Add Customer

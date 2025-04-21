@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
     // Dashboard home
     Route::get('/', [DashboardController::class, 'index'])->name('index');
+    
     // Product management, including export, import, and template download
     Route::resource('products', ProductController::class);
     Route::get('products-export', [ProductController::class, 'export'])->name('products.export');
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
 
     // Customer management
     Route::resource('customers', CustomerController::class);
+    Route::get('customers-export', [CustomerController::class, 'export'])->name('customers.export');
 
     // Users management with export
     Route::resource('users', UserController::class);
