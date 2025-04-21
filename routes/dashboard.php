@@ -30,10 +30,14 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
 
     // Brand management
     Route::resource('brands', BrandController::class);
+
     // Category management
     Route::resource('categories', CategoryController::class);
+    Route::get('categories-export', [CategoryController::class, 'export'])->name('categories.export');
+
     // Banner management
     Route::resource('banners', BannerController::class);
+
     // Order management
     Route::resource('orders', OrderController::class);
     // Order Invoice

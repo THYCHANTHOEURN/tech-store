@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use App\Exports\CategoryExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {
@@ -94,9 +96,9 @@ class CategoryController extends Controller
         ]);
 
         // Generate slug
-        $slug = Str::slug($validated['name']);
-        $count = 1;
-        $originalSlug = $slug;
+        $slug           = Str::slug($validated['name']);
+        $count          = 1;
+        $originalSlug   = $slug;
 
         // Check if slug exists
         while (Category::where('slug', $slug)->exists()) {
@@ -264,5 +266,19 @@ class CategoryController extends Controller
             return redirect()->back()
                 ->with('error', 'Error deleting category: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Export categories to Excel or CSV
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $format     = $request->format ?? 'xlsx';
+        $filename   = 'categories-' . date('Y-m-d') . '.' . $format;
+
+        return Excel::download(new CategoryExport, $filename);
     }
 }
