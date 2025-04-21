@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exports\BannerExport;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BannerController extends Controller
 {
@@ -235,5 +237,19 @@ class BannerController extends Controller
             return redirect()->back()
                 ->with('error', 'Error deleting banner: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Export banners to Excel or CSV
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $format     = $request->format ?? 'xlsx';
+        $filename   = 'banners-' . date('Y-m-d') . '.' . $format;
+
+        return Excel::download(new BannerExport, $filename);
     }
 }

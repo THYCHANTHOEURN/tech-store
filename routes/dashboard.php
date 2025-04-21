@@ -21,29 +21,27 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
     // Dashboard home
     Route::get('/', [DashboardController::class, 'index'])->name('index');
-    // Product management
+    // Product management, including export, import, and template download
     Route::resource('products', ProductController::class);
-    // Product export, import, and template routes
     Route::get('products-export', [ProductController::class, 'export'])->name('products.export');
     Route::post('products-import', [ProductController::class, 'import'])->name('products.import');
     Route::get('products-template', [ProductController::class, 'template'])->name('products.template');
 
-    // Brand management
+    // Brand management, including export
     Route::resource('brands', BrandController::class);
     Route::get('brands-export', [BrandController::class, 'export'])->name('brands.export');
 
-    // Category management
+    // Category management, including export
     Route::resource('categories', CategoryController::class);
     Route::get('categories-export', [CategoryController::class, 'export'])->name('categories.export');
 
-    // Banner management
+    // Banner management, including export
     Route::resource('banners', BannerController::class);
+    Route::get('banners-export', [BannerController::class, 'export'])->name('banners.export');
 
-    // Order management
+    // Order management, invoice generation, and export
     Route::resource('orders', OrderController::class);
-    // Order Invoice
     Route::get('orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
-    // Order Export
     Route::get('orders-export', [OrderController::class, 'export'])->name('orders.export');
 
     // Customer management
