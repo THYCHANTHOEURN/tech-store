@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use App\Exports\BrandExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BrandController extends Controller
 {
@@ -231,5 +233,19 @@ class BrandController extends Controller
             return redirect()->back()
                 ->with('error', 'Error deleting brand: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Export brands to Excel or CSV
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $format     = $request->format ?? 'xlsx';
+        $filename   = 'brands-' . date('Y-m-d') . '.' . $format;
+
+        return Excel::download(new BrandExport, $filename);
     }
 }

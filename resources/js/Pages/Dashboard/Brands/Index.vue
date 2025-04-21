@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Brands Management" />
 
     <DashboardLayout>
@@ -8,6 +9,22 @@
                     Brands Management
                 </h2>
                 <v-spacer></v-spacer>
+
+                <!-- Export Menu -->
+                <v-menu location="bottom">
+                    <template v-slot:activator="{ props }">
+                        <v-btn color="secondary" class="mr-2" v-bind="props" prepend-icon="mdi-database-export-outline">
+                            Export
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item :href="route('dashboard.brands.export', { format: 'xlsx' })"
+                            prepend-icon="mdi-microsoft-excel" title="Export to Excel" />
+                        <v-list-item :href="route('dashboard.brands.export', { format: 'csv' })"
+                            prepend-icon="mdi-file-delimited" title="Export to CSV" />
+                    </v-list>
+                </v-menu>
+
                 <Link :href="route('dashboard.brands.create')" class="text-decoration-none">
                 <v-btn color="primary" prepend-icon="mdi-plus">
                     Add Brand
@@ -18,36 +35,17 @@
 
         <v-container fluid class="py-8">
             <!-- Enhanced Filters -->
-            <FilterBar
-                :loading="loading"
-                :total-items="brands.total"
-                items-label="brands"
-                :active-filters="activeFilters"
-                @reset-filters="resetFilters"
-                @clear-filter="clearFilter"
-            >
+            <FilterBar :loading="loading" :total-items="brands.total" items-label="brands"
+                :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
                 <template #filters>
                     <v-col cols="12" md="6">
-                        <SearchField
-                            v-model="search"
-                            label="Search Brands"
-                            :loading="loading"
-                            @search="applyFilters"
-                            @clear="applyFilters"
-                        />
+                        <SearchField v-model="search" label="Search Brands" :loading="loading" @search="applyFilters"
+                            @clear="applyFilters" />
                     </v-col>
 
                     <v-col cols="12" md="6">
-                        <v-select
-                            v-model="selectedStatus"
-                            :items="statusOptions"
-                            label="Status"
-                            hide-details
-                            clearable
-                            @update:model-value="applyFilters"
-                            variant="outlined"
-                            density="comfortable"
-                        >
+                        <v-select v-model="selectedStatus" :items="statusOptions" label="Status" hide-details clearable
+                            @update:model-value="applyFilters" variant="outlined" density="comfortable">
                             <template v-slot:prepend-inner>
                                 <v-icon color="primary" size="small">mdi-check-circle</v-icon>
                             </template>
@@ -60,13 +58,8 @@
             <v-row>
                 <v-col cols="12">
                     <v-card>
-                        <v-data-table
-                            :headers="headers"
-                            :items="brands.data"
-                            :loading="loading"
-                            class="elevation-0"
-                            hide-default-footer
-                        >
+                        <v-data-table :headers="headers" :items="brands.data" :loading="loading" class="elevation-0"
+                            hide-default-footer>
                             <template v-slot:item.logo="{ item }">
                                 <div class="d-flex align-center py-2">
                                     <v-img :src="item.logo_url" width="50" height="50" cover class="rounded"></v-img>
@@ -81,13 +74,15 @@
 
                             <template v-slot:item.actions="{ item }">
                                 <div class="d-flex flex-nowrap justify-center justify-sm-end">
-                                    <Link :href="route('dashboard.brands.show', item.uuid)" class="text-decoration-none">
+                                    <Link :href="route('dashboard.brands.show', item.uuid)"
+                                        class="text-decoration-none">
                                     <v-btn icon size="x-small" color="info" class="mr-1" title="View" rounded="lg">
                                         <v-icon>mdi-eye</v-icon>
                                     </v-btn>
                                     </Link>
 
-                                    <Link :href="route('dashboard.brands.edit', item.uuid)" class="text-decoration-none">
+                                    <Link :href="route('dashboard.brands.edit', item.uuid)"
+                                        class="text-decoration-none">
                                     <v-btn icon size="x-small" color="warning" class="mr-1" title="Edit" rounded="lg">
                                         <v-icon>mdi-pencil</v-icon>
                                     </v-btn>

@@ -30,6 +30,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
 
     // Brand management
     Route::resource('brands', BrandController::class);
+    Route::get('brands-export', [BrandController::class, 'export'])->name('brands.export');
 
     // Category management
     Route::resource('categories', CategoryController::class);
