@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Enums\RolesEnum;
+use App\Exports\UserExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -269,5 +271,19 @@ class UserController extends Controller
             return redirect()->route('dashboard.users.index')
                 ->with('error', 'Error deleting user: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Export users to Excel or CSV
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $format     = $request->format ?? 'xlsx';
+        $filename   = 'users-' . date('Y-m-d') . '.' . $format;
+
+        return Excel::download(new UserExport, $filename);
     }
 }

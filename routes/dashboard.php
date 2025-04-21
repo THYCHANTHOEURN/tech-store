@@ -46,8 +46,11 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
 
     // Customer management
     Route::resource('customers', CustomerController::class);
-    // Users management
+
+    // Users management with export
     Route::resource('users', UserController::class);
+    Route::get('users-export', [UserController::class, 'export'])->name('users.export');
+
     // Roles management
     Route::resource('roles', RoleController::class);
 
