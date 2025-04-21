@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Orders" />
 
     <DashboardLayout>
@@ -6,6 +7,22 @@
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">Orders</h2>
                 <v-spacer></v-spacer>
+
+                <!-- Export Menu -->
+                <v-menu location="bottom">
+                    <template v-slot:activator="{ props }">
+                        <v-btn color="secondary" class="mr-2" v-bind="props" prepend-icon="mdi-database-export-outline">
+                            Export
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item :href="route('dashboard.orders.export', { format: 'xlsx' })"
+                            prepend-icon="mdi-microsoft-excel" title="Export to Excel" />
+                        <v-list-item :href="route('dashboard.orders.export', { format: 'csv' })"
+                            prepend-icon="mdi-file-delimited" title="Export to CSV" />
+                    </v-list>
+                </v-menu>
+
                 <Link :href="route('dashboard.orders.create')">
                 <v-btn color="primary" prepend-icon="mdi-plus" class="ml-2">
                     Create New Order
@@ -16,36 +33,18 @@
 
         <v-container fluid class="py-8">
             <!-- Enhanced Filters -->
-            <FilterBar
-                :loading="loading"
-                :total-items="orders.total"
-                items-label="orders"
-                :active-filters="activeFilters"
-                @reset-filters="resetFilters"
-                @clear-filter="clearFilter"
-            >
+            <FilterBar :loading="loading" :total-items="orders.total" items-label="orders"
+                :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
                 <template #filters>
                     <v-col cols="12" md="4">
-                        <SearchField
-                            v-model="search"
-                            label="Search Orders"
-                            :loading="loading"
-                            @search="applyFilters"
-                            @clear="applyFilters"
-                        />
+                        <SearchField v-model="search" label="Search Orders" :loading="loading" @search="applyFilters"
+                            @clear="applyFilters" />
                     </v-col>
 
                     <v-col cols="12" md="4">
-                        <v-select
-                            v-model="selectedOrderStatus"
-                            :items="orderStatusOptions"
-                            label="Order Status"
-                            hide-details
-                            clearable
-                            variant="outlined"
-                            density="comfortable"
-                            @update:model-value="applyFilters"
-                        >
+                        <v-select v-model="selectedOrderStatus" :items="orderStatusOptions" label="Order Status"
+                            hide-details clearable variant="outlined" density="comfortable"
+                            @update:model-value="applyFilters">
                             <template v-slot:prepend-inner>
                                 <v-icon color="primary" size="small">mdi-cart-outline</v-icon>
                             </template>
@@ -53,16 +52,9 @@
                     </v-col>
 
                     <v-col cols="12" md="4">
-                        <v-select
-                            v-model="selectedPaymentStatus"
-                            :items="paymentStatusOptions"
-                            label="Payment Status"
-                            hide-details
-                            clearable
-                            variant="outlined"
-                            density="comfortable"
-                            @update:model-value="applyFilters"
-                        >
+                        <v-select v-model="selectedPaymentStatus" :items="paymentStatusOptions" label="Payment Status"
+                            hide-details clearable variant="outlined" density="comfortable"
+                            @update:model-value="applyFilters">
                             <template v-slot:prepend-inner>
                                 <v-icon color="primary" size="small">mdi-credit-card-outline</v-icon>
                             </template>
@@ -73,13 +65,8 @@
 
             <!-- Orders Table -->
             <v-card elevation="2">
-                <v-data-table
-                    :headers="headers"
-                    :items="orders.data"
-                    :loading="loading"
-                    class="elevation-0"
-                    hide-default-footer
-                >
+                <v-data-table :headers="headers" :items="orders.data" :loading="loading" class="elevation-0"
+                    hide-default-footer>
                     <template v-slot:item.order_id="{ item }">
                         <span class="font-weight-medium text-primary">#{{ item.uuid.slice(-8).toUpperCase()
                             }}</span>

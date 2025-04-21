@@ -11,6 +11,8 @@ use App\Enums\PaymentStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use App\Exports\OrderExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
@@ -347,5 +349,19 @@ class OrderController extends Controller
                 'email'         => $companyEmail,
             ]
         ]);
+    }
+
+    /**
+     * Export orders to Excel or CSV
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request)
+    {
+        $format     = $request->format ?? 'xlsx';
+        $filename   = 'orders-' . date('Y-m-d') . '.' . $format;
+
+        return Excel::download(new OrderExport, $filename);
     }
 }

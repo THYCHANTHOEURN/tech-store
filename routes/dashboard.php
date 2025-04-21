@@ -43,6 +43,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
     Route::resource('orders', OrderController::class);
     // Order Invoice
     Route::get('orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
+    // Order Export
+    Route::get('orders-export', [OrderController::class, 'export'])->name('orders.export');
+
     // Customer management
     Route::resource('customers', CustomerController::class);
     // Users management
