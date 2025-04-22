@@ -11,6 +11,7 @@ use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\NotificationController;
+use App\Http\Controllers\Dashboard\MessageController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
     // Dashboard home
     Route::get('/', [DashboardController::class, 'index'])->name('index');
-    
+
     // Product management, including export, import, and template download
     Route::resource('products', ProductController::class);
     Route::get('products-export', [ProductController::class, 'export'])->name('products.export');
@@ -63,8 +64,18 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
         Route::post('/{id}/read', [NotificationController::class, 'markAsRead'])->name('read');
         Route::post('/read-all', [NotificationController::class, 'markAllAsRead'])->name('readAll');
     });
-});
 
+    /**
+     * Message management routes
+     */
+    Route::prefix('messages')->name('messages.')->group(function () {
+        Route::get('/', [MessageController::class, 'index'])->name('index');
+        Route::get('/{thread:uuid}', [MessageController::class, 'show'])->name('show');
+        Route::post('/{thread:uuid}/reply', [MessageController::class, 'reply'])->name('reply');
+        Route::post('/{thread:uuid}/close', [MessageController::class, 'close'])->name('close');
+        Route::post('/{thread:uuid}/reopen', [MessageController::class, 'reopen'])->name('reopen');
+    });
+});
 
 /**
  * Super Admin and Admin routes

@@ -122,6 +122,21 @@
                             </template>
                         </v-btn>
 
+                        <!-- Messages Button - Icon only on xs -->
+                        <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn"
+                            :href="route('messages.index')" :size="$vuetify.display.xs ? 'small' : 'default'"
+                            aria-label="Messages">
+                            <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
+                                class="mr-1">mdi-email-outline</v-icon>
+                            <span class="d-none d-sm-block">Messages</span>
+                            <template v-slot:append>
+                                <v-badge color="error" :content="messagesCount" :model-value="messagesCount > 0"
+                                    floating location="top end" :offset-x="$vuetify.display.xs ? 8 : 2"
+                                    :offset-y="$vuetify.display.xs ? 8 : 2"
+                                    :size="$vuetify.display.xs ? 'x-small' : 'small'"></v-badge>
+                            </template>
+                        </v-btn>
+
                         <!-- User Account Menu with enhanced touch target -->
                         <template v-if="$page.props.auth.user">
                             <v-menu location="bottom end" :close-on-content-click="true" offset="5">
@@ -140,7 +155,6 @@
                                         <v-list-item :href="route('profile.edit')" link prepend-icon="mdi-account-edit">
                                             <v-list-item-title>Profile</v-list-item-title>
                                         </v-list-item>
-
                                         <v-list-item @click="logout" link prepend-icon="mdi-logout">
                                             <v-list-item-title>Logout</v-list-item-title>
                                         </v-list-item>
@@ -270,6 +284,13 @@
                         My Orders
                         <v-badge v-if="ordersCount > 0" color="error" :content="ordersCount" inline></v-badge>
                     </v-list-item-title>
+                </v-list-item>
+
+                <v-list-item :href="route('messages.index')" link>
+                    <template v-slot:prepend>
+                        <v-icon>mdi-email-outline</v-icon>
+                    </template>
+                    <v-list-item-title>Messages</v-list-item-title>
                 </v-list-item>
 
             </v-list>

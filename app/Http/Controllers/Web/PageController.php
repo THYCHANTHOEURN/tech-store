@@ -79,29 +79,29 @@ class PageController extends Controller
         $companyHours           = Setting::get('company_hours', 'Monday - Friday: 9:00 AM - 6:00 PM; Saturday: 10:00 AM - 4:00 PM; Sunday: Closed');
 
         // Get social media links
-        $socialLinks = [
-            'facebook'  => Setting::get('company_facebook', 'https://www.facebook.com/'),
-            'twitter'   => Setting::get('company_twitter', 'https://twitter.com/'),
-            'instagram' => Setting::get('company_instagram', 'https://www.instagram.com/'),
-            'youtube'   => Setting::get('company_youtube', 'https://www.youtube.com/'),
-            'tiktok'    => Setting::get('company_tiktok', 'https://www.tiktok.com/'),
-            'telegram'  => Setting::get('company_telegram', 'https://t.me/'),
-        ];
+        $facebookLink = Setting::get('company_facebook', 'https://www.facebook.com/');
+        $instagramLink = Setting::get('company_instagram', 'https://www.instagram.com/');
+        $twitterLink = Setting::get('company_twitter', 'https://twitter.com/');
+        $youtubeLink = Setting::get('company_youtube', 'https://www.youtube.com/');
 
         return Inertia::render('Web/Contact', [
             'companyInfo' => [
-                'name'              => $companyName,
-                'address'           => $companyAddress,
-                'state'             => $companyState,
-                'country'           => $companyCountry,
-                'fullAddress'       => "$companyAddress, $companyState, $companyCountry",
-                'phone'             => $companyPhone,
-                'phoneSecondary'    => $companyPhoneSecondary,
-                'email'             => $companyEmail,
-                'emailSupport'      => $companyEmailSupport,
-                'hours'             => $companyHours,
-                'social'            => $socialLinks,
-            ]
+                'name' => $companyName,
+                'address' => $companyAddress,
+                'state' => $companyState,
+                'country' => $companyCountry,
+                'phone' => $companyPhone,
+                'phoneSecondary' => $companyPhoneSecondary,
+                'email' => $companyEmail,
+                'emailSupport' => $companyEmailSupport,
+                'hours' => $companyHours,
+                'social' => [
+                    'facebook' => $facebookLink,
+                    'instagram' => $instagramLink,
+                    'twitter' => $twitterLink,
+                    'youtube' => $youtubeLink,
+                ],
+            ],
         ]);
     }
 

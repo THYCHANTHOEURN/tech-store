@@ -31,21 +31,20 @@
 
         <!-- Enhanced Main Toolbar -->
         <v-app-bar elevation="2" color="white" class="border-b">
-            <v-app-bar-nav-icon @click="toggleDrawer" :aria-label="rail ? 'Expand menu' : 'Collapse menu'"></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon @click="toggleDrawer"
+                :aria-label="rail ? 'Expand menu' : 'Collapse menu'"></v-app-bar-nav-icon>
 
             <v-toolbar-title class="d-flex align-center">
                 <Link :href="route('dashboard.index')" class="text-decoration-none">
-                    <ApplicationLogo :width="125" class="ml-2" />
+                <ApplicationLogo :width="125" class="ml-2" />
                 </Link>
             </v-toolbar-title>
 
             <v-spacer></v-spacer>
 
             <!-- Notification Dropdown -->
-            <NotificationDropdown
-              :initial-notifications="$page.props.notifications"
-              :initial-unread-count="$page.props.unreadNotificationsCount"
-            />
+            <NotificationDropdown :initial-notifications="$page.props.notifications"
+                :initial-unread-count="$page.props.unreadNotificationsCount" />
 
             <!-- User Menu - Enhanced -->
             <v-menu transition="slide-y-transition" location="bottom end">
@@ -213,6 +212,17 @@
                     </template>
                     <v-list-item-title>Settings</v-list-item-title>
                     <v-tooltip v-if="rail" activator="parent" location="right">Settings</v-tooltip>
+                </v-list-item>
+                </Link>
+
+                <!-- Messages Menu Item -->
+                <Link :href="route('dashboard.messages.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.messages.index')" rounded="lg" class="mb-1">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-email-multiple-outline</v-icon>
+                    </template>
+                    <v-list-item-title>Messages</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Messages</v-tooltip>
                 </v-list-item>
                 </Link>
 

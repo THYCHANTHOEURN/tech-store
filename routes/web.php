@@ -11,6 +11,7 @@ use App\Http\Controllers\Web\WishlistController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\OrderController;
+use App\Http\Controllers\Web\MessageController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -29,6 +30,9 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
+
+// Contact form submission
+Route::post('/contact', [MessageController::class, 'store'])->name('contact.store');
 
 /**
  * Customer routes
@@ -52,6 +56,11 @@ Route::middleware(['auth', 'verified', 'customer'])->group(function () {
     Route::post('/checkout/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::get('/checkout/confirmation/{uuid}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
+
+    // Customer message routes
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::get('/messages/{thread:uuid}', [MessageController::class, 'show'])->name('messages.show');
+    Route::post('/messages/{thread:uuid}/reply', [MessageController::class, 'reply'])->name('messages.reply');
 });
 
 /**
