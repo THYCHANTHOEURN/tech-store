@@ -45,8 +45,8 @@
                                     <div class="message-header">
                                         <strong>
                                             {{ message.admin_id ? (message.admin?.name || 'Staff') : (message.user?.name
-                                            ||
-                                            'Customer') }}
+                                                ||
+                                                'Customer') }}
                                         </strong>
                                         <span class="message-time">{{ formatDate(message.created_at) }}</span>
                                     </div>
@@ -155,6 +155,7 @@
     import { Head, Link, router, useForm } from '@inertiajs/vue3';
     import { ref } from 'vue';
     import { format } from 'date-fns';
+    import { useMessages } from '@/Composables/useMessages';
 
     const props = defineProps({
         thread: Object,
@@ -178,6 +179,17 @@
             return dateString;
         }
     };
+
+    const { decrementUnreadCount } = useMessages();
+
+    // Decrement unread count for viewed messages
+    if (props.thread && props.thread.messages) {
+        const unreadMessages = props.thread.messages.filter(
+            message => message.user_id && !message.is_read
+        );
+
+        unreadMessages.forEach(() => decrementUnreadCount());
+    }
 
     // Submit reply
     const submitReply = () => {

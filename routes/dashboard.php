@@ -74,6 +74,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
         Route::post('/{thread:uuid}/reply', [MessageController::class, 'reply'])->name('reply');
         Route::post('/{thread:uuid}/close', [MessageController::class, 'close'])->name('close');
         Route::post('/{thread:uuid}/reopen', [MessageController::class, 'reopen'])->name('reopen');
+        Route::get('/unread/count', [MessageController::class, 'unreadCount'])->name('unread.count'); // Add this line
     });
 });
 

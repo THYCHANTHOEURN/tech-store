@@ -145,4 +145,23 @@ class MessageController extends Controller
 
         return redirect()->back()->with('success', 'Thread has been reopened.');
     }
+
+    /**
+     * Get count of unread messages for admin.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function unreadCount()
+    {
+        $count = \App\Models\Message::whereHas('thread', function($query) {
+                $query->where('status', 'active');
+            })
+            ->where('user_id', '!=', null)
+            ->where('is_read', false)
+            ->count();
+
+        return response()->json([
+            'count' => $count
+        ]);
+    }
 }

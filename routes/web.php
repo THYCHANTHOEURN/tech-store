@@ -77,6 +77,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/wishlist', [WishlistController::class, 'store'])->name('wishlist.store');
     Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+
+    // Messages routes
+    Route::prefix('messages')->name('messages.')->group(function () {
+        Route::get('/', [MessageController::class, 'index'])->name('index');
+        Route::get('/{thread:uuid}', [MessageController::class, 'show'])->name('show');
+        Route::post('/{thread:uuid}/reply', [MessageController::class, 'reply'])->name('reply');
+        Route::get('/unread/count', [MessageController::class, 'unreadCount'])->name('unread.count');
+    });
 });
 
 /**

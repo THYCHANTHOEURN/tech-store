@@ -1,9 +1,10 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, onMounted, onUnmounted } from 'vue';
     import ApplicationLogo from '@/Components/ApplicationLogo.vue';
     import { Link, usePage, router } from '@inertiajs/vue3';
     import FlashMessage from '@/Components/FlashMessage.vue';
     import NotificationDropdown from '@/Components/Dashboard/NotificationDropdown.vue';
+    import { useMessages } from '@/Composables/useMessages';
 
     const rail = ref(false);
     const drawer = ref(true);
@@ -22,6 +23,23 @@
         router.post(route('logout'));
     };
 
+    // Add messages state
+    const { unreadCount: unreadMessagesCount, fetchUnreadCount } = useMessages();
+
+    onMounted(() => {
+        // Fetch unread message count on mount
+        fetchUnreadCount();
+
+        // Set up polling to check for new messages
+        const messagesInterval = setInterval(() => {
+            fetchUnreadCount();
+        }, 30000); // Check every 30 seconds
+
+        // Clean up
+        onUnmounted(() => {
+            clearInterval(messagesInterval);
+        });
+    });
 </script>
 
 <template>
@@ -42,9 +60,20 @@
 
             <v-spacer></v-spacer>
 
-            <!-- Notification Dropdown -->
-            <NotificationDropdown :initial-notifications="$page.props.notifications"
-                :initial-unread-count="$page.props.unreadNotificationsCount" />
+            <div class="d-flex align-center">
+                <!-- Add badge to messages button -->
+                <Link :href="route('dashboard.messages.index')" class="text-decoration-none mr-2">
+                <v-btn icon variant="text" size="small">
+                    <v-badge :content="unreadMessagesCount" :value="unreadMessagesCount > 0" color="error" overlap>
+                        <v-icon>mdi-message-outline</v-icon>
+                    </v-badge>
+                </v-btn>
+                </Link>
+
+                <!-- Notification Dropdown -->
+                <NotificationDropdown :initial-notifications="$page.props.notifications"
+                    :initial-unread-count="$page.props.unreadNotificationsCount" />
+            </div>
 
             <!-- User Menu - Enhanced -->
             <v-menu transition="slide-y-transition" location="bottom end">
@@ -233,8 +262,7 @@
                 <v-list-item :active="route().current('profile.edit')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-account-circle</v-icon>
-                    </template>
-                    <v-list-item-title>My Profile</v-list-item-title>
+                    </template> <v-list-item-title>My Profile</v-list-item-title>
                     <v-tooltip v-if="rail" activator="parent" location="right">My Profile</v-tooltip>
                 </v-list-item>
                 </Link>

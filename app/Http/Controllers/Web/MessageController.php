@@ -188,4 +188,23 @@ class MessageController extends Controller
 
         return redirect()->back()->with('success', 'Your reply has been sent.');
     }
+
+    /**
+     * Get count of unread message replies for the customer.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function unreadCount()
+    {
+        $count = \App\Models\Message::whereHas('thread', function($query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->where('admin_id', '!=', null)
+            ->where('is_read', false)
+            ->count();
+        
+        return response()->json([
+            'count' => $count
+        ]);
+    }
 }

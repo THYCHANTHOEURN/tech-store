@@ -94,6 +94,7 @@
     import { Head, Link, router, useForm } from '@inertiajs/vue3';
     import { ref } from 'vue';
     import { format } from 'date-fns';
+    import { useCustomerMessages } from '@/Composables/useCustomerMessages';
 
     const props = defineProps({
         thread: Object,
@@ -117,6 +118,18 @@
             return dateString;
         }
     };
+
+    const { decrementUnreadCount } = useCustomerMessages();
+
+    // Similar to admin side, update the badge count when viewing messages
+    if (props.thread && props.thread.messages) {
+        const unreadMessages = props.thread.messages.filter(
+            message => message.admin_id && !message.is_read
+        );
+        
+        // Decrease the unread count to match the UI immediately
+        unreadMessages.forEach(() => decrementUnreadCount());
+    }
 
     // Send reply
     const sendReply = () => {

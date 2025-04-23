@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Inertia\Inertia;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Message;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,5 +40,20 @@ class AppServiceProvider extends ServiceProvider
 
             Inertia::share('userMetaTags', $metaTags);
         }
+
+        // Share data with Inertia
+        Inertia::share([
+            'unreadMessagesCount' => function () {
+                if (Auth::check() && (Auth::user()->hasRole('admin') || Auth::user()->hasRole('super_admin'))) {
+                    return Message::whereHas('thread', function($query) {
+                            $query->where('status', 'active');
+                        })
+                        ->where('user_id', '!=', null)
+                        ->where('is_read', false)
+                        ->count();
+                }
+                return 0;
+            },
+        ]);
     }
 }

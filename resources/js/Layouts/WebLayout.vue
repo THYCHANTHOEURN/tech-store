@@ -290,7 +290,10 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-email-outline</v-icon>
                     </template>
-                    <v-list-item-title>Messages</v-list-item-title>
+                    <v-list-item-title>
+                        Messages
+                        <v-badge v-if="messagesCount > 0" color="error" :content="messagesCount" inline></v-badge>
+                    </v-list-item-title>
                 </v-list-item>
 
             </v-list>
@@ -436,7 +439,7 @@
 </template>
 
 <script setup>
-    import { ref, onMounted, computed, watch } from 'vue'
+    import { ref, onMounted, computed, watch, onUnmounted } from 'vue'
     import { router, usePage } from '@inertiajs/vue3'
     import FlashMessage from '@/Components/FlashMessage.vue'
 
@@ -445,6 +448,14 @@
     const search = ref('')
     const categories = ref([])
     const showAuthOptions = ref(false)
+
+    const unreadMessagesCount = ref(0);
+    const message = ref('');
+    const showMessage = ref(false);
+    const messageType = ref('');
+    const messagesCount = computed(() => {
+        return unreadMessagesCount.value || usePage().props.messagesCount || 0;
+    });
 
     // Updated menu items (removed categories since they'll be dynamic)
     const menuItems = [
@@ -466,9 +477,32 @@
         }
     };
 
+    // Function to fetch unread messages count
+    const fetchUnreadMessagesCount = async () => {
+        try {
+            const response = await axios.get(route('messages.unread.count'));
+            if (response.data && response.data.count !== undefined) {
+                unreadMessagesCount.value = response.data.count;
+            }
+        } catch (error) {
+            console.error('Error fetching unread messages count:', error);
+        }
+    };
+
     onMounted(() => {
-        getCategories()
-    })
+        getCategories();
+        fetchUnreadMessagesCount(); // Initial fetch
+
+        // Set up periodic checking for new messages
+        const messagesInterval = setInterval(() => {
+            fetchUnreadMessagesCount();
+        }, 30000); // Check every 30 seconds
+
+        // Clean up interval on component unmount
+        onUnmounted(() => {
+            clearInterval(messagesInterval);
+        });
+    });
 
     const searchCallback = () => {
         if (!search.value.trim()) return  // Check for empty or whitespace-only search
