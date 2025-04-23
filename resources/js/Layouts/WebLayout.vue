@@ -79,62 +79,51 @@
                         </v-btn>
 
                         <!-- Wishlist Button with Badge - Icon only on xs -->
-                        <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn"
+                        <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn position-relative"
                             :href="route('wishlist.index')" :size="$vuetify.display.xs ? 'small' : 'default'"
                             aria-label="Wishlist">
                             <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
                                 class="mr-1">mdi-heart-outline</v-icon>
                             <span class="d-none d-sm-block">Wishlist</span>
-                            <template v-slot:append>
-                                <v-badge color="error" :content="wishlistCount" :model-value="wishlistCount > 0"
-                                    floating location="top end" :offset-x="$vuetify.display.xs ? 8 : 2"
-                                    :offset-y="$vuetify.display.xs ? 8 : 2"
-                                    :size="$vuetify.display.xs ? 'x-small' : 'small'"></v-badge>
-                            </template>
+                            <v-badge color="error" :content="wishlistCount" :model-value="wishlistCount > 0"
+                                class="badge-position" dot-size="18" :offset-x="$vuetify.display.xs ? 3 : 2"
+                                :offset-y="$vuetify.display.xs ? 3 : 2"></v-badge>
                         </v-btn>
 
                         <!-- Cart Button with Badge - Icon only on xs -->
-                        <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn" :href="route('cart.index')"
-                            :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Cart">
+                        <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn position-relative"
+                            :href="route('cart.index')" :size="$vuetify.display.xs ? 'small' : 'default'"
+                            aria-label="Cart">
                             <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
                                 class="mr-1">mdi-cart-outline</v-icon>
                             <span class="d-none d-sm-block">Cart</span>
-                            <template v-slot:append>
-                                <v-badge color="error" :content="cartCount" :model-value="cartCount > 0" floating
-                                    location="top end" :offset-x="$vuetify.display.xs ? 8 : 2"
-                                    :offset-y="$vuetify.display.xs ? 8 : 2"
-                                    :size="$vuetify.display.xs ? 'x-small' : 'small'"></v-badge>
-                            </template>
+                            <v-badge color="error" :content="cartCount" :model-value="cartCount > 0"
+                                class="badge-position" dot-size="18" :offset-x="$vuetify.display.xs ? 3 : 2"
+                                :offset-y="$vuetify.display.xs ? 3 : 2"></v-badge>
                         </v-btn>
 
                         <!-- My Orders Button - Icon only on xs -->
-                        <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn"
+                        <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn position-relative"
                             :href="route('orders.index')" :size="$vuetify.display.xs ? 'small' : 'default'"
                             aria-label="My Orders">
                             <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
                                 class="mr-1">mdi-receipt-text-outline</v-icon>
                             <span class="d-none d-sm-block">My Orders</span>
-                            <template v-slot:append>
-                                <v-badge color="error" :content="ordersCount" :model-value="ordersCount > 0" floating
-                                    location="top end" :offset-x="$vuetify.display.xs ? 8 : 2"
-                                    :offset-y="$vuetify.display.xs ? 8 : 2"
-                                    :size="$vuetify.display.xs ? 'x-small' : 'small'"></v-badge>
-                            </template>
+                            <v-badge color="error" :content="ordersCount" :model-value="ordersCount > 0"
+                                class="badge-position" dot-size="18" :offset-x="$vuetify.display.xs ? 3 : 2"
+                                :offset-y="$vuetify.display.xs ? 3 : 2"></v-badge>
                         </v-btn>
 
                         <!-- Messages Button - Icon only on xs -->
-                        <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn"
+                        <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn position-relative"
                             :href="route('messages.index')" :size="$vuetify.display.xs ? 'small' : 'default'"
                             aria-label="Messages">
                             <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
                                 class="mr-1">mdi-email-outline</v-icon>
                             <span class="d-none d-sm-block">Messages</span>
-                            <template v-slot:append>
-                                <v-badge color="error" :content="messagesCount" :model-value="messagesCount > 0"
-                                    floating location="top end" :offset-x="$vuetify.display.xs ? 8 : 2"
-                                    :offset-y="$vuetify.display.xs ? 8 : 2"
-                                    :size="$vuetify.display.xs ? 'x-small' : 'small'"></v-badge>
-                            </template>
+                            <v-badge color="error" :content="messagesCount" :model-value="messagesCount > 0"
+                                class="badge-position" dot-size="18" :offset-x="$vuetify.display.xs ? 3 : 2"
+                                :offset-y="$vuetify.display.xs ? 3 : 2"></v-badge>
                         </v-btn>
 
                         <!-- User Account Menu with enhanced touch target -->
@@ -644,6 +633,28 @@
         letter-spacing: 0;
     }
 
+    /* Enhanced badge visibility for mobile */
+    :deep(.v-badge__badge) {
+        font-weight: bold;
+    }
+
+    @media (max-width: 599px) {
+        :deep(.v-badge__badge) {
+            transform: scale(1.2);
+            min-width: 20px;
+            height: 20px;
+            font-size: 12px;
+        }
+
+        /* Improve tap targets for mobile */
+        .action-btn.v-btn--icon {
+            margin: 0 2px;
+            height: 40px;
+            width: 40px;
+            position: relative;
+        }
+    }
+
     /* Responsive breakpoints - Professional cascade */
     @media (max-width: 599px) {
         .v-container {
@@ -715,5 +726,12 @@
 
     :deep(.v-list-item--density-compact) {
         min-height: 32px;
+    }
+
+    /* Badge position styles */
+    .badge-position {
+        position: absolute;
+        top: 0;
+        right: 0;
     }
 </style>
