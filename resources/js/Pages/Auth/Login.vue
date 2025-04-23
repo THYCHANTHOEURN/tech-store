@@ -34,16 +34,25 @@
                 </v-row>
 
                 <v-row class="mt-4">
-                    <v-col class="d-flex justify-end">
-                        <Link v-if="canResetPassword" :href="route('password.request')"
-                            class="text-sm text-gray-600 underline hover:text-gray-900">
-                        Forgot your password?
-                        </Link>
+                    <v-col class="d-flex align-center justify-space-between">
+                        <div>
+                            <span class="text-sm text-gray-600 me-2">Don't have an account?</span>
+                            <Link :href="route('register')" class="text-sm text-primary text-decoration-underline">
+                            Register
+                            </Link>
+                        </div>
 
-                        <v-btn class="ms-4" :loading="form.processing" :disabled="form.processing" type="submit"
-                            color="primary" prepend-icon="mdi-login">
-                            Log in
-                        </v-btn>
+                        <div class="d-flex align-center">
+                            <Link v-if="canResetPassword" :href="route('password.request')"
+                                class="text-sm text-gray-600 underline hover:text-gray-900 me-4">
+                            Forgot your password?
+                            </Link>
+
+                            <v-btn :loading="form.processing" :disabled="form.processing" type="submit" color="primary"
+                                prepend-icon="mdi-login">
+                                Log in
+                            </v-btn>
+                        </div>
                     </v-col>
                 </v-row>
             </v-form>
