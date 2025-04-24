@@ -27,29 +27,29 @@
                 </v-list-item>
 
                 <v-list-item v-for="notification in notifications" :key="notification.id" :value="notification.id"
-                    :class="{ 'unread': !notification.read_at }">
+                    :class="{ 'unread': !notification.read_at }" @click="handleNotificationClick(notification)">
                     <template v-slot:prepend>
                         <v-avatar color="primary" size="36" class="mr-3">
                             <v-icon color="white">mdi-shopping</v-icon>
                         </v-avatar>
                     </template>
 
-                    <Link :href="route('dashboard.orders.show', notification.data.order_uuid)"
-                        class="text-decoration-none" @click="markAsRead(notification.id)">
-                    <v-list-item-title class="text-subtitle-1">
-                        New Order #{{ notification.data.order_uuid.slice(-8).toUpperCase() }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                        ${{ formatCurrency(notification.data.total_amount) }} - {{ notification.data.customer_name }}
-                    </v-list-item-subtitle>
-                    <div class="text-caption mt-1 text-grey">
-                        {{ formatNotificationDate(notification.created_at) }}
+                    <div class="text-decoration-none">
+                        <v-list-item-title class="text-subtitle-1">
+                            New Order #{{ notification.data.order_uuid.slice(-8).toUpperCase() }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                            ${{ formatCurrency(notification.data.total_amount) }} - {{ notification.data.customer_name
+                            }}
+                        </v-list-item-subtitle>
+                        <div class="text-caption mt-1 text-grey">
+                            {{ formatNotificationDate(notification.created_at) }}
+                        </div>
                     </div>
-                    </Link>
 
                     <template v-slot:append>
-                        <v-btn icon variant="text" size="x-small" color="grey" @click="markAsRead(notification.id)"
-                            v-if="!notification.read_at">
+                        <v-btn icon variant="text" size="x-small" color="grey"
+                            @click.stop="markAsReadOnly(notification.id)" v-if="!notification.read_at">
                             <v-icon>mdi-check</v-icon>
                         </v-btn>
                     </template>
@@ -87,6 +87,47 @@
 
     const formatCurrency = (amount) => {
         return parseFloat(amount).toFixed(2);
+    };
+
+    // Add a new function to handle notification clicks
+    const handleNotificationClick = (notification) => {
+        if (!notification.read_at) {
+            // First mark the notification as read
+            markAsReadOnly(notification.id, () => {
+                // Then navigate to the order page
+                navigateToOrder(notification.data.order_uuid);
+            });
+        } else {
+            // If already read, just navigate
+            navigateToOrder(notification.data.order_uuid);
+        }
+    };
+
+    // Add a function to mark a notification as read without navigating
+    const markAsReadOnly = (id, callback = null) => {
+        axios.post(route('dashboard.notifications.mark-as-read', id))
+            .then(() => {
+                // Update local state
+                const index = notifications.value.findIndex(n => n.id === id);
+                if (index !== -1) {
+                    notifications.value[index].read_at = new Date().toISOString();
+                    unreadCount.value = Math.max(0, unreadCount.value - 1);
+                }
+
+                // Execute callback if provided
+                if (callback && typeof callback === 'function') {
+                    callback();
+                }
+            })
+            .catch(error => {
+                console.error('Error marking notification as read:', error);
+            });
+    };
+
+    // Add a function to navigate to the order page
+    const navigateToOrder = (orderUuid) => {
+        menu.value = false; // Close the dropdown
+        router.visit(route('dashboard.orders.show', orderUuid));
     };
 
     const formatNotificationDate = (dateString) => {
