@@ -79,9 +79,9 @@
                         </v-btn>
 
                         <!-- Wishlist Button with Badge - Icon only on xs -->
+                        <Link :href="route('wishlist.index')" class="text-decoration-none">
                         <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn position-relative"
-                            :href="route('wishlist.index')" :size="$vuetify.display.xs ? 'small' : 'default'"
-                            aria-label="Wishlist">
+                            :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Wishlist">
                             <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
                                 class="mr-1">mdi-heart-outline</v-icon>
                             <span class="d-none d-sm-block">Wishlist</span>
@@ -89,11 +89,12 @@
                                 class="badge-position" dot-size="18" :offset-x="$vuetify.display.xs ? 3 : 2"
                                 :offset-y="$vuetify.display.xs ? 3 : 2"></v-badge>
                         </v-btn>
+                        </Link>
 
                         <!-- Cart Button with Badge - Icon only on xs -->
+                        <Link :href="route('cart.index')" class="text-decoration-none">
                         <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn position-relative"
-                            :href="route('cart.index')" :size="$vuetify.display.xs ? 'small' : 'default'"
-                            aria-label="Cart">
+                            :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Cart">
                             <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
                                 class="mr-1">mdi-cart-outline</v-icon>
                             <span class="d-none d-sm-block">Cart</span>
@@ -101,11 +102,12 @@
                                 class="badge-position" dot-size="18" :offset-x="$vuetify.display.xs ? 3 : 2"
                                 :offset-y="$vuetify.display.xs ? 3 : 2"></v-badge>
                         </v-btn>
+                        </Link>
 
                         <!-- My Orders Button - Icon only on xs -->
+                        <Link :href="route('orders.index')" class="text-decoration-none">
                         <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn position-relative"
-                            :href="route('orders.index')" :size="$vuetify.display.xs ? 'small' : 'default'"
-                            aria-label="My Orders">
+                            :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="My Orders">
                             <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
                                 class="mr-1">mdi-receipt-text-outline</v-icon>
                             <span class="d-none d-sm-block">My Orders</span>
@@ -113,11 +115,12 @@
                                 class="badge-position" dot-size="18" :offset-x="$vuetify.display.xs ? 3 : 2"
                                 :offset-y="$vuetify.display.xs ? 3 : 2"></v-badge>
                         </v-btn>
+                        </Link>
 
                         <!-- Messages Button - Icon only on xs -->
+                        <Link :href="route('messages.index')" class="text-decoration-none">
                         <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn position-relative"
-                            :href="route('messages.index')" :size="$vuetify.display.xs ? 'small' : 'default'"
-                            aria-label="Messages">
+                            :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Messages">
                             <v-icon :size="$vuetify.display.xs ? 'default' : 'small'"
                                 class="mr-1">mdi-email-outline</v-icon>
                             <span class="d-none d-sm-block">Messages</span>
@@ -125,6 +128,7 @@
                                 class="badge-position" dot-size="18" :offset-x="$vuetify.display.xs ? 3 : 2"
                                 :offset-y="$vuetify.display.xs ? 3 : 2"></v-badge>
                         </v-btn>
+                        </Link>
 
                         <!-- User Account Menu with enhanced touch target -->
                         <template v-if="$page.props.auth.user">
@@ -141,9 +145,11 @@
                                 </template>
                                 <v-card min-width="200" class="mt-1">
                                     <v-list density="compact">
-                                        <v-list-item :href="route('profile.edit')" link prepend-icon="mdi-account-edit">
+                                        <Link :href="route('profile.edit')" class="text-decoration-none">
+                                        <v-list-item link prepend-icon="mdi-account-edit">
                                             <v-list-item-title>Profile</v-list-item-title>
                                         </v-list-item>
+                                        </Link>
                                         <v-list-item @click="logout" link prepend-icon="mdi-logout">
                                             <v-list-item-title>Logout</v-list-item-title>
                                         </v-list-item>
@@ -154,13 +160,16 @@
 
                         <!-- Auth buttons with better mobile design -->
                         <template v-else>
-                            <v-btn v-if="!$vuetify.display.xs" variant="text" :href="route('login')" class="action-btn">
+                            <Link v-if="!$vuetify.display.xs" :href="route('login')" class="text-decoration-none">
+                            <v-btn variant="text" class="action-btn">
                                 <span>Login</span>
                             </v-btn>
-                            <v-btn v-if="!$vuetify.display.xs" color="primary" :href="route('register')"
-                                class="action-btn">
+                            </Link>
+                            <Link v-if="!$vuetify.display.xs" :href="route('register')" class="text-decoration-none">
+                            <v-btn color="primary" class="action-btn">
                                 <span>Register</span>
                             </v-btn>
+                            </Link>
                             <v-btn v-else icon @click="showAuthOptions = true"
                                 :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Account options">
                                 <v-icon>mdi-account</v-icon>
