@@ -7,6 +7,8 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Inertia\Inertia;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -41,6 +43,9 @@ class DashboardController extends Controller
                 ];
             });
 
+        // Get sales data for chart - last 7 days
+        $salesData = $this->getSalesChartData();
+
         // Popular products
         $popularProducts = Product::withCount('orderItems')
             ->having('order_items_count', '>', 0)
@@ -59,10 +64,52 @@ class DashboardController extends Controller
                 ];
             });
 
+        // dd($salesData);
         return Inertia::render('Dashboard/Index', [
             'stats'             => $stats,
             'recentOrders'      => $recentOrders,
-            'popularProducts'   => $popularProducts
+            'popularProducts'   => $popularProducts,
+            'salesChart'        => $salesData
         ]);
+    }
+
+    /**
+     * Get sales data for chart display
+     *
+     * @return array
+     */
+    private function getSalesChartData()
+    {
+        // Get dates for the last 7 days
+        $dates = collect();
+        for ($i = 6; $i >= 0; $i--) {
+            $dates->push(Carbon::now()->subDays($i)->format('Y-m-d'));
+        }
+
+        // Get sales data
+        $salesByDate = Order::select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('SUM(total_amount) as total')
+            )
+            ->whereDate('created_at', '>=', Carbon::now()->subDays(6))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->pluck('total', 'date')
+            ->toArray();
+
+        // Prepare data for the chart
+        $chartLabels = $dates->map(function ($date) {
+            return Carbon::parse($date)->format('M d');
+        })->toArray();
+
+        $chartData = $dates->map(function ($date) use ($salesByDate) {
+            return isset($salesByDate[$date]) ? round($salesByDate[$date], 2) : 0;
+        })->toArray();
+
+        return [
+            'labels' => $chartLabels,
+            'data' => $chartData
+        ];
     }
 }

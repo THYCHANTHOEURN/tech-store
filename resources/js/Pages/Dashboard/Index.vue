@@ -195,11 +195,13 @@
                             <div v-if="loading" class="d-flex justify-center align-center" style="height: 250px">
                                 <v-progress-circular indeterminate color="primary"></v-progress-circular>
                             </div>
-                            <div v-else id="sales-chart" style="height: 250px">
-                                <!-- Chart will be rendered here -->
-                                <div class="text-center text-grey-darken-1">
-                                    Sales chart will appear here when data is available
-                                </div>
+                            <div v-else style="height: 250px; position: relative;">
+                                <apexchart
+                                    type="area"
+                                    height="250"
+                                    :options="chartOptions"
+                                    :series="chartSeries"
+                                ></apexchart>
                             </div>
                         </v-card-text>
                     </v-card>
@@ -300,21 +302,24 @@
 <script setup>
     import DashboardLayout from '@/Layouts/DashboardLayout.vue';
     import { Head, Link, usePage } from '@inertiajs/vue3';
-    import { ref, computed, onMounted } from 'vue';
+    import { ref, computed, onMounted, watch } from 'vue';
 
     const loading = ref(true);
+    const chartOptions = ref({});
+    const chartSeries = ref([]);
 
     // Get data from controller via Inertia props
     const props = defineProps({
         stats: Object,
         recentOrders: Array,
-        popularProducts: Array
+        popularProducts: Array,
+        salesChart: Object
     });
 
     // Get user information
     const page = usePage();
     const userName = computed(() => {
-        return page.props.auth.user?.name?.split(' ')[0] || 'Admin';
+        return page.props.auth.user?.name || 'Admin';
     });
 
     const userInitials = computed(() => {
@@ -374,10 +379,143 @@
         return new Date(dateString).toLocaleDateString('en-US', options);
     };
 
+    /**
+     * Initialize sales chart with ApexCharts
+     */
+    const initSalesChart = () => {
+        if (!props.salesChart) {
+            console.error("No sales chart data available");
+            return;
+        }
+
+        console.log("Sales Chart Data:", props.salesChart);
+
+        // Update chart options
+        chartOptions.value = {
+            chart: {
+                id: 'sales-overview',
+                toolbar: {
+                    show: false,
+                },
+                zoom: {
+                    enabled: false,
+                },
+                fontFamily: 'inherit',
+                sparkline: {
+                    enabled: false,
+                },
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800,
+                    animateGradually: {
+                        enabled: true,
+                        delay: 150
+                    },
+                    dynamicAnimation: {
+                        enabled: true,
+                        speed: 350
+                    }
+                }
+            },
+            colors: ['#42A5F5'],
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    type: 'vertical',
+                    shadeIntensity: 0.5,
+                    gradientToColors: ['#1976D2'],
+                    inverseColors: false,
+                    opacityFrom: 0.6,
+                    opacityTo: 0.1,
+                    stops: [0, 100],
+                }
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 3,
+            },
+            dataLabels: {
+                enabled: false
+            },
+            grid: {
+                borderColor: 'rgba(0,0,0,0.1)',
+                strokeDashArray: 3,
+                xaxis: {
+                    lines: {
+                        show: false
+                    }
+                },
+            },
+            tooltip: {
+                theme: 'dark',
+                x: {
+                    format: 'dd MMM'
+                },
+                y: {
+                    formatter: function(value) {
+                        return '$ ' + value.toFixed(2);
+                    }
+                }
+            },
+            xaxis: {
+                categories: props.salesChart.labels,
+                labels: {
+                    style: {
+                        colors: '#999',
+                    }
+                },
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: '#999',
+                    },
+                    formatter: function(value) {
+                        return '$ ' + value;
+                    }
+                }
+            },
+            markers: {
+                size: 4,
+                colors: ['#1976D2'],
+                strokeColors: '#fff',
+                strokeWidth: 2,
+                hover: {
+                    size: 6,
+                }
+            }
+        };
+
+        // Update chart series data
+        chartSeries.value = [
+            {
+                name: 'Sales',
+                data: props.salesChart.data
+            }
+        ];
+    };
+
+    // Watch for changes in salesChart data
+    watch(() => props.salesChart, (newData) => {
+        if (newData) {
+            initSalesChart();
+        }
+    }, { immediate: false, deep: true });
+
     // Simulate loading state
     onMounted(() => {
         setTimeout(() => {
             loading.value = false;
+            // Initialize chart after loading completes
+            initSalesChart();
         }, 700);
     });
 </script>

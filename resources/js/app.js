@@ -7,6 +7,7 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import vuetify from './Plugins/vuetify';
 import RichTextEditor from './Components/RichTextEditor.vue';
+import VueApexCharts from 'vue3-apexcharts';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -23,6 +24,9 @@ createInertiaApp({
         app.use(plugin);
         app.use(ZiggyVue);
         app.use(vuetify);
+
+        // Register ApexCharts component globally
+        app.component('apexchart', VueApexCharts);
 
         app.component('Head', Head);
         app.component('Link', Link);
