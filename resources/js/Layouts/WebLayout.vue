@@ -254,7 +254,8 @@
                     <v-list-item-title>{{ item.text }}</v-list-item-title>
                 </v-list-item>
 
-                <v-list-item :href="route('wishlist.index')" link>
+                <Link :href="route('wishlist.index')" class="text-decoration-none">
+                <v-list-item>
                     <template v-slot:prepend>
                         <v-icon>mdi-heart-outline</v-icon>
                     </template>
@@ -263,8 +264,10 @@
                         <v-badge v-if="wishlistCount > 0" color="error" :content="wishlistCount" inline></v-badge>
                     </v-list-item-title>
                 </v-list-item>
+                </Link>
 
-                <v-list-item :href="route('cart.index')" link>
+                <Link :href="route('cart.index')" class="text-decoration-none">
+                <v-list-item>
                     <template v-slot:prepend>
                         <v-icon>mdi-cart-outline</v-icon>
                     </template>
@@ -273,8 +276,10 @@
                         <v-badge v-if="cartCount > 0" color="error" :content="cartCount" inline></v-badge>
                     </v-list-item-title>
                 </v-list-item>
+                </Link>
 
-                <v-list-item :href="route('orders.index')" link>
+                <Link :href="route('orders.index')" class="text-decoration-none">
+                <v-list-item>
                     <template v-slot:prepend>
                         <v-icon>mdi-receipt-text-outline</v-icon>
                     </template>
@@ -283,8 +288,10 @@
                         <v-badge v-if="ordersCount > 0" color="error" :content="ordersCount" inline></v-badge>
                     </v-list-item-title>
                 </v-list-item>
+                </Link>
 
-                <v-list-item :href="route('messages.index')" link>
+                <Link :href="route('messages.index')" class="text-decoration-none">
+                <v-list-item>
                     <template v-slot:prepend>
                         <v-icon>mdi-email-outline</v-icon>
                     </template>
@@ -293,6 +300,7 @@
                         <v-badge v-if="messagesCount > 0" color="error" :content="messagesCount" inline></v-badge>
                     </v-list-item-title>
                 </v-list-item>
+                </Link>
 
             </v-list>
 
