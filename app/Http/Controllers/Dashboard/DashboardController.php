@@ -9,15 +9,18 @@ use App\Models\User;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     /**
      * Display the dashboard overview.
      *
+     * @param Request $request
+     *
      * @return \Inertia\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // Count statistics
         $stats = [
@@ -43,8 +46,10 @@ class DashboardController extends Controller
                 ];
             });
 
-        // Get sales data for chart - last 7 days
-        $salesData = $this->getSalesChartData();
+        // Get sales data for chart with optional date range parameters
+        $startDate  = $request->input('start_date');
+        $endDate    = $request->input('end_date');
+        $salesData  = $this->getSalesChartData($startDate, $endDate);
 
         // Popular products
         $popularProducts = Product::withCount('orderItems')
@@ -76,14 +81,30 @@ class DashboardController extends Controller
     /**
      * Get sales data for chart display
      *
+     * @param string|null $startDate Optional start date in Y-m-d format
+     * @param string|null $endDate Optional end date in Y-m-d format
      * @return array
      */
-    private function getSalesChartData()
+    private function getSalesChartData($startDate = null, $endDate = null)
     {
-        // Get dates for the last 7 days
-        $dates = collect();
-        for ($i = 6; $i >= 0; $i--) {
-            $dates->push(Carbon::now()->subDays($i)->format('Y-m-d'));
+        // Set default date range (last 7 days) if none provided
+        $startDate  = $startDate ? Carbon::parse($startDate) : Carbon::now()->subDays(6);
+        $endDate    = $endDate ? Carbon::parse($endDate) : Carbon::now();
+
+        // Ensure end date is not before start date
+        if ($endDate->isBefore($startDate)) {
+            $temp       = $startDate;
+            $startDate  = $endDate;
+            $endDate    = $temp;
+        }
+
+        // Get all dates in the range
+        $dates          = collect();
+        $currentDate    = $startDate->copy();
+
+        while ($currentDate->lte($endDate)) {
+            $dates->push($currentDate->format('Y-m-d'));
+            $currentDate->addDay();
         }
 
         // Get sales data
@@ -91,7 +112,8 @@ class DashboardController extends Controller
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('SUM(total_amount) as total')
             )
-            ->whereDate('created_at', '>=', Carbon::now()->subDays(6))
+            ->whereDate('created_at', '>=', $startDate)
+            ->whereDate('created_at', '<=', $endDate)
             ->groupBy('date')
             ->orderBy('date')
             ->get()
@@ -107,9 +129,17 @@ class DashboardController extends Controller
             return isset($salesByDate[$date]) ? round($salesByDate[$date], 2) : 0;
         })->toArray();
 
+        // Format date range for display
+        $formattedStartDate = $startDate->format('M d, Y');
+        $formattedEndDate   = $endDate->format('M d, Y');
+
         return [
-            'labels' => $chartLabels,
-            'data' => $chartData
+            'labels'        => $chartLabels,
+            'data'          => $chartData,
+            'dateRange'     => [
+                'start' => $formattedStartDate,
+                'end'   => $formattedEndDate
+            ]
         ];
     }
 }

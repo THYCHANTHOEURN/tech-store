@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Admin Dashboard" />
 
     <DashboardLayout>
@@ -36,7 +37,8 @@
             <v-row>
                 <v-col cols="12" sm="6" md="3">
                     <v-hover v-slot="{ isHovering, props }">
-                        <v-card v-bind="props" :elevation="isHovering ? 4 : 1" color="primary" class="white--text stats-card">
+                        <v-card v-bind="props" :elevation="isHovering ? 4 : 1" color="primary"
+                            class="white--text stats-card">
                             <v-card-text>
                                 <div class="d-flex justify-space-between align-center">
                                     <div>
@@ -45,7 +47,8 @@
                                     </div>
                                     <v-icon x-large color="white" class="stats-icon">mdi-package-variant-closed</v-icon>
                                 </div>
-                                <v-progress-linear v-if="loading" color="white" indeterminate class="mt-2"></v-progress-linear>
+                                <v-progress-linear v-if="loading" color="white" indeterminate
+                                    class="mt-2"></v-progress-linear>
                             </v-card-text>
                         </v-card>
                     </v-hover>
@@ -53,7 +56,8 @@
 
                 <v-col cols="12" sm="6" md="3">
                     <v-hover v-slot="{ isHovering, props }">
-                        <v-card v-bind="props" :elevation="isHovering ? 4 : 1" color="success" class="white--text stats-card">
+                        <v-card v-bind="props" :elevation="isHovering ? 4 : 1" color="success"
+                            class="white--text stats-card">
                             <v-card-text>
                                 <div class="d-flex justify-space-between align-center">
                                     <div>
@@ -62,7 +66,8 @@
                                     </div>
                                     <v-icon x-large color="white" class="stats-icon">mdi-cart</v-icon>
                                 </div>
-                                <v-progress-linear v-if="loading" color="white" indeterminate class="mt-2"></v-progress-linear>
+                                <v-progress-linear v-if="loading" color="white" indeterminate
+                                    class="mt-2"></v-progress-linear>
                             </v-card-text>
                         </v-card>
                     </v-hover>
@@ -70,7 +75,8 @@
 
                 <v-col cols="12" sm="6" md="3">
                     <v-hover v-slot="{ isHovering, props }">
-                        <v-card v-bind="props" :elevation="isHovering ? 4 : 1" color="warning" class="white--text stats-card">
+                        <v-card v-bind="props" :elevation="isHovering ? 4 : 1" color="warning"
+                            class="white--text stats-card">
                             <v-card-text>
                                 <div class="d-flex justify-space-between align-center">
                                     <div>
@@ -79,7 +85,8 @@
                                     </div>
                                     <v-icon x-large color="white" class="stats-icon">mdi-account-group</v-icon>
                                 </div>
-                                <v-progress-linear v-if="loading" color="white" indeterminate class="mt-2"></v-progress-linear>
+                                <v-progress-linear v-if="loading" color="white" indeterminate
+                                    class="mt-2"></v-progress-linear>
                             </v-card-text>
                         </v-card>
                     </v-hover>
@@ -87,7 +94,8 @@
 
                 <v-col cols="12" sm="6" md="3">
                     <v-hover v-slot="{ isHovering, props }">
-                        <v-card v-bind="props" :elevation="isHovering ? 4 : 1" color="info" class="white--text stats-card">
+                        <v-card v-bind="props" :elevation="isHovering ? 4 : 1" color="info"
+                            class="white--text stats-card">
                             <v-card-text>
                                 <div class="d-flex justify-space-between align-center">
                                     <div>
@@ -96,7 +104,8 @@
                                     </div>
                                     <v-icon x-large color="white" class="stats-icon">mdi-currency-usd</v-icon>
                                 </div>
-                                <v-progress-linear v-if="loading" color="white" indeterminate class="mt-2"></v-progress-linear>
+                                <v-progress-linear v-if="loading" color="white" indeterminate
+                                    class="mt-2"></v-progress-linear>
                             </v-card-text>
                         </v-card>
                     </v-hover>
@@ -115,62 +124,62 @@
                             <v-row>
                                 <v-col cols="6" sm="4" md="2">
                                     <Link :href="route('dashboard.products.create')" class="text-decoration-none">
-                                        <v-hover v-slot="{ isHovering, props }">
-                                            <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
-                                                <v-icon size="32" color="primary">mdi-plus-box</v-icon>
-                                                <div class="text-body-2 mt-2">Add Product</div>
-                                            </v-card>
-                                        </v-hover>
+                                    <v-hover v-slot="{ isHovering, props }">
+                                        <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
+                                            <v-icon size="32" color="primary">mdi-plus-box</v-icon>
+                                            <div class="text-body-2 mt-2">Add Product</div>
+                                        </v-card>
+                                    </v-hover>
                                     </Link>
                                 </v-col>
                                 <v-col cols="6" sm="4" md="2">
                                     <Link :href="route('dashboard.orders.index')" class="text-decoration-none">
-                                        <v-hover v-slot="{ isHovering, props }">
-                                            <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
-                                                <v-icon size="32" color="success">mdi-receipt</v-icon>
-                                                <div class="text-body-2 mt-2">View Orders</div>
-                                            </v-card>
-                                        </v-hover>
+                                    <v-hover v-slot="{ isHovering, props }">
+                                        <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
+                                            <v-icon size="32" color="success">mdi-receipt</v-icon>
+                                            <div class="text-body-2 mt-2">View Orders</div>
+                                        </v-card>
+                                    </v-hover>
                                     </Link>
                                 </v-col>
                                 <v-col cols="6" sm="4" md="2">
                                     <Link :href="route('dashboard.customers.index')" class="text-decoration-none">
-                                        <v-hover v-slot="{ isHovering, props }">
-                                            <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
-                                                <v-icon size="32" color="warning">mdi-account-multiple</v-icon>
-                                                <div class="text-body-2 mt-2">Customers</div>
-                                            </v-card>
-                                        </v-hover>
+                                    <v-hover v-slot="{ isHovering, props }">
+                                        <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
+                                            <v-icon size="32" color="warning">mdi-account-multiple</v-icon>
+                                            <div class="text-body-2 mt-2">Customers</div>
+                                        </v-card>
+                                    </v-hover>
                                     </Link>
                                 </v-col>
                                 <v-col cols="6" sm="4" md="2">
                                     <Link :href="route('dashboard.categories.index')" class="text-decoration-none">
-                                        <v-hover v-slot="{ isHovering, props }">
-                                            <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
-                                                <v-icon size="32" color="deep-purple">mdi-format-list-bulleted</v-icon>
-                                                <div class="text-body-2 mt-2">Categories</div>
-                                            </v-card>
-                                        </v-hover>
+                                    <v-hover v-slot="{ isHovering, props }">
+                                        <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
+                                            <v-icon size="32" color="deep-purple">mdi-format-list-bulleted</v-icon>
+                                            <div class="text-body-2 mt-2">Categories</div>
+                                        </v-card>
+                                    </v-hover>
                                     </Link>
                                 </v-col>
                                 <v-col cols="6" sm="4" md="2">
                                     <Link :href="route('dashboard.banners.index')" class="text-decoration-none">
-                                        <v-hover v-slot="{ isHovering, props }">
-                                            <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
-                                                <v-icon size="32" color="pink">mdi-image-multiple</v-icon>
-                                                <div class="text-body-2 mt-2">Banners</div>
-                                            </v-card>
-                                        </v-hover>
+                                    <v-hover v-slot="{ isHovering, props }">
+                                        <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
+                                            <v-icon size="32" color="pink">mdi-image-multiple</v-icon>
+                                            <div class="text-body-2 mt-2">Banners</div>
+                                        </v-card>
+                                    </v-hover>
                                     </Link>
                                 </v-col>
                                 <v-col cols="6" sm="4" md="2">
                                     <Link :href="route('index')" target="_blank" class="text-decoration-none">
-                                        <v-hover v-slot="{ isHovering, props }">
-                                            <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
-                                                <v-icon size="32" color="blue">mdi-web</v-icon>
-                                                <div class="text-body-2 mt-2">View Store</div>
-                                            </v-card>
-                                        </v-hover>
+                                    <v-hover v-slot="{ isHovering, props }">
+                                        <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
+                                            <v-icon size="32" color="blue">mdi-web</v-icon>
+                                            <div class="text-body-2 mt-2">View Store</div>
+                                        </v-card>
+                                    </v-hover>
                                     </Link>
                                 </v-col>
                             </v-row>
@@ -188,7 +197,52 @@
                             <v-icon left color="primary" class="mr-2">mdi-chart-line</v-icon>
                             Sales Overview
                             <v-spacer></v-spacer>
-                            <v-chip small>Last 7 days</v-chip>
+                            <div class="d-flex align-center">
+                                <v-menu v-model="dateMenu" :close-on-content-click="false" transition="scale-transition"
+                                    offset-y min-width="auto">
+                                    <template v-slot:activator="{ props }">
+                                        <v-btn v-bind="props" variant="outlined" size="small" color="primary"
+                                            class="mr-2" prepend-icon="mdi-calendar-range">
+                                            {{ formatShortDateRange }}
+                                        </v-btn>
+                                    </template>
+
+                                    <v-card min-width="300">
+                                        <v-card-text>
+                                            <div class="mb-4 text-subtitle-1">Select Date Range</div>
+                                            <v-row>
+                                                <v-col cols="12">
+                                                    <v-text-field v-model="dateRange.start" label="Start Date"
+                                                        type="date" variant="outlined" density="compact" />
+                                                </v-col>
+                                                <v-col cols="12">
+                                                    <v-text-field v-model="dateRange.end" label="End Date" type="date"
+                                                        variant="outlined" density="compact" />
+                                                </v-col>
+                                            </v-row>
+                                            <div class="d-flex mt-2">
+                                                <!-- Preset date ranges -->
+                                                <v-chip-group>
+                                                    <v-chip size="small" @click="selectDateRange('last7')">Last 7
+                                                        days</v-chip>
+                                                    <v-chip size="small" @click="selectDateRange('last30')">Last 30
+                                                        days</v-chip>
+                                                    <v-chip size="small" @click="selectDateRange('thisMonth')">This
+                                                        Month</v-chip>
+                                                </v-chip-group>
+                                            </div>
+                                        </v-card-text>
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                            <v-btn color="grey" variant="text" @click="dateMenu = false">Cancel</v-btn>
+                                            <v-btn color="primary" variant="text" @click="applyDateRange">Apply</v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-menu>
+                                <v-chip small>
+                                    {{ salesDateRange }}
+                                </v-chip>
+                            </div>
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-card-text class="chart-container">
@@ -196,12 +250,8 @@
                                 <v-progress-circular indeterminate color="primary"></v-progress-circular>
                             </div>
                             <div v-else style="height: 250px; position: relative;">
-                                <apexchart
-                                    type="area"
-                                    height="250"
-                                    :options="chartOptions"
-                                    :series="chartSeries"
-                                ></apexchart>
+                                <apexchart type="area" height="250" :options="chartOptions" :series="chartSeries">
+                                </apexchart>
                             </div>
                         </v-card-text>
                     </v-card>
@@ -213,10 +263,10 @@
                             Recent Orders
                             <v-spacer></v-spacer>
                             <Link :href="route('dashboard.orders.index')">
-                                <v-btn color="primary" text variant="plain" size="small" class="text-none">
-                                    View All
-                                    <v-icon small class="ml-1">mdi-arrow-right</v-icon>
-                                </v-btn>
+                            <v-btn color="primary" text variant="plain" size="small" class="text-none">
+                                View All
+                                <v-icon small class="ml-1">mdi-arrow-right</v-icon>
+                            </v-btn>
                             </Link>
                         </v-card-title>
                         <v-divider></v-divider>
@@ -224,8 +274,9 @@
                             <v-data-table :headers="orderHeaders" :items="recentOrders" :items-per-page="5"
                                 hide-default-footer class="elevation-0" :loading="loading">
                                 <template v-slot:item.uuid="{ item }">
-                                    <Link :href="route('dashboard.orders.show', item.uuid)" class="font-weight-medium text-decoration-none">
-                                        #{{ item.uuid.slice(-8).toUpperCase() }}
+                                    <Link :href="route('dashboard.orders.show', item.uuid)"
+                                        class="font-weight-medium text-decoration-none">
+                                    #{{ item.uuid.slice(-8).toUpperCase() }}
                                     </Link>
                                 </template>
                                 <template v-slot:item.customer="{ item }">
@@ -255,10 +306,10 @@
                             Popular Products
                             <v-spacer></v-spacer>
                             <Link :href="route('dashboard.products.index')">
-                                <v-btn color="primary" text variant="plain" size="small" class="text-none">
-                                    View All
-                                    <v-icon small class="ml-1">mdi-arrow-right</v-icon>
-                                </v-btn>
+                            <v-btn color="primary" text variant="plain" size="small" class="text-none">
+                                View All
+                                <v-icon small class="ml-1">mdi-arrow-right</v-icon>
+                            </v-btn>
                             </Link>
                         </v-card-title>
                         <v-divider></v-divider>
@@ -271,23 +322,29 @@
                                 </template>
                                 <template v-else>
                                     <Link v-for="(product, index) in popularProducts" :key="index"
-                                        :href="route('dashboard.products.show', product.uuid)" class="text-decoration-none">
-                                        <v-list-item>
-                                            <template v-slot:prepend>
-                                                <v-avatar rounded="lg" size="60">
-                                                    <v-img :src="product.primary_image_url" cover alt="Product Image"></v-img>
-                                                </v-avatar>
-                                            </template>
-                                            <v-list-item-title class="font-weight-medium">{{ product.name }}</v-list-item-title>
-                                            <v-list-item-subtitle>
-                                                <v-icon small color="success">mdi-shopping</v-icon> Sold: {{ product.sold }}
-                                                <v-icon small color="info" class="ml-2">mdi-package-variant</v-icon> Stock: {{ product.stock }}
-                                            </v-list-item-subtitle>
-                                            <template v-slot:append>
-                                                <v-chip color="primary" size="small">${{ formatCurrency(product.price) }}</v-chip>
-                                            </template>
-                                        </v-list-item>
-                                        <v-divider v-if="index < popularProducts.length - 1"></v-divider>
+                                        :href="route('dashboard.products.show', product.uuid)"
+                                        class="text-decoration-none">
+                                    <v-list-item>
+                                        <template v-slot:prepend>
+                                            <v-avatar rounded="lg" size="60">
+                                                <v-img :src="product.primary_image_url" cover
+                                                    alt="Product Image"></v-img>
+                                            </v-avatar>
+                                        </template>
+                                        <v-list-item-title class="font-weight-medium">{{ product.name
+                                        }}</v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <v-icon small color="success">mdi-shopping</v-icon> Sold: {{ product.sold }}
+                                            <v-icon small color="info" class="ml-2">mdi-package-variant</v-icon> Stock:
+                                            {{ product.stock
+                                            }}
+                                        </v-list-item-subtitle>
+                                        <template v-slot:append>
+                                            <v-chip color="primary" size="small">${{ formatCurrency(product.price)
+                                            }}</v-chip>
+                                        </template>
+                                    </v-list-item>
+                                    <v-divider v-if="index < popularProducts.length - 1"></v-divider>
                                     </Link>
                                 </template>
                             </v-list>
@@ -303,10 +360,71 @@
     import DashboardLayout from '@/Layouts/DashboardLayout.vue';
     import { Head, Link, usePage } from '@inertiajs/vue3';
     import { ref, computed, onMounted, watch } from 'vue';
+    import { router } from '@inertiajs/vue3';
 
     const loading = ref(true);
     const chartOptions = ref({});
     const chartSeries = ref([]);
+    const dateMenu = ref(false);
+    const dateRange = ref({
+        start: formatDateForInput(new Date(new Date().setDate(new Date().getDate() - 6))),
+        end: formatDateForInput(new Date())
+    });
+
+    // Format date for input field (YYYY-MM-DD)
+    function formatDateForInput(date) {
+        return date.toISOString().split('T')[0];
+    }
+
+    // Computed property for short date format in button
+    const formatShortDateRange = computed(() => {
+        return `${formatShortDate(dateRange.value.start)} - ${formatShortDate(dateRange.value.end)}`;
+    });
+
+    // Format date to short format (MM/DD)
+    function formatShortDate(dateString) {
+        const date = new Date(dateString);
+        return `${date.getMonth() + 1}/${date.getDate()}`;
+    }
+
+    // Select preset date range
+    function selectDateRange(preset) {
+        const today = new Date();
+        const end = formatDateForInput(today);
+        let start;
+
+        switch (preset) {
+            case 'last7':
+                start = formatDateForInput(new Date(today.setDate(today.getDate() - 6)));
+                break;
+            case 'last30':
+                start = formatDateForInput(new Date(today.setDate(today.getDate() - 29)));
+                break;
+            case 'thisMonth':
+                start = formatDateForInput(new Date(today.getFullYear(), today.getMonth(), 1));
+                break;
+        }
+
+        dateRange.value = { start, end };
+    }
+
+    // Apply selected date range
+    function applyDateRange() {
+        dateMenu.value = false;
+        loading.value = true;
+
+        // Use Inertia to reload the page with date range parameters
+        router.visit(route('dashboard.index'), {
+            data: {
+                start_date: dateRange.value.start,
+                end_date: dateRange.value.end
+            },
+            preserveState: true,
+            onFinish: () => {
+                loading.value = false;
+            }
+        });
+    }
 
     // Get data from controller via Inertia props
     const props = defineProps({
@@ -340,6 +458,14 @@
             month: 'long',
             day: 'numeric'
         });
+    });
+
+    // Computed property for sales date range display
+    const salesDateRange = computed(() => {
+        if (!props.salesChart || !props.salesChart.dateRange) {
+            return 'Last 7 days';
+        }
+        return `${props.salesChart.dateRange.start} - ${props.salesChart.dateRange.end}`;
     });
 
     // Table headers for recent orders
@@ -454,7 +580,7 @@
                     format: 'dd MMM'
                 },
                 y: {
-                    formatter: function(value) {
+                    formatter: function (value) {
                         return '$ ' + value.toFixed(2);
                     }
                 }
@@ -478,7 +604,7 @@
                     style: {
                         colors: '#999',
                     },
-                    formatter: function(value) {
+                    formatter: function (value) {
                         return '$ ' + value;
                     }
                 }
