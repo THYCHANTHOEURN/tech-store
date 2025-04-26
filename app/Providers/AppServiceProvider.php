@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\View;
 use Inertia\Inertia;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Message;
+use App\Models\Setting;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -55,5 +58,17 @@ class AppServiceProvider extends ServiceProvider
                 return 0;
             },
         ]);
+
+        // Set the application name from settings if the Setting table exists
+        try {
+            if (Schema::hasTable('settings')) {
+                $siteName = Setting::where('key', 'site_name')->first();
+                if ($siteName) {
+                    Config::set('app.name', $siteName->value);
+                }
+            }
+        } catch (\Exception $e) {
+            // Table might not exist during migration
+        }
     }
 }

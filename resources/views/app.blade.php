@@ -4,7 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        {{-- <title inertia>{{ config('app.name', 'Laravel') }}</title> --}}
+        
+        <!-- Title on the page -->
+        <title inertia>{{ \App\Models\Setting::get('site_name', config('app.name', 'Tech Store')) }}</title>
 
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
