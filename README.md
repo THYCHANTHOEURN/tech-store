@@ -132,7 +132,6 @@ Tech Store is a full-featured e-commerce platform specializing in tech products.
 - **Manager**: Product and order management
 - **Customer**: Standard user access
 
-```
 
 ## Contributing
 
