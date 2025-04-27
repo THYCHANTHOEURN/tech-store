@@ -1,7 +1,7 @@
 <template>
     <v-menu v-model="menu" :close-on-content-click="false" location="bottom">
         <template v-slot:activator="{ props }">
-            <v-btn v-bind="props" icon variant="text" size="small">
+            <v-btn v-bind="props" icon variant="text" size="large">
                 <v-badge :content="unreadCount" :value="unreadCount" color="error" overlap>
                     <v-icon>mdi-bell-outline</v-icon>
                 </v-badge>
@@ -29,18 +29,17 @@
                 <v-list-item v-for="notification in notifications" :key="notification.id" :value="notification.id"
                     :class="{ 'unread': !notification.read_at }" @click="handleNotificationClick(notification)">
                     <template v-slot:prepend>
-                        <v-avatar color="primary" size="36" class="mr-3">
-                            <v-icon color="white">mdi-shopping</v-icon>
+                        <v-avatar :color="getNotificationColor(notification)" size="36" class="mr-3">
+                            <v-icon color="white">{{ getNotificationIcon(notification) }}</v-icon>
                         </v-avatar>
                     </template>
 
                     <div class="text-decoration-none">
                         <v-list-item-title class="text-subtitle-1">
-                            New Order #{{ notification.data.order_uuid.slice(-8).toUpperCase() }}
+                            {{ getNotificationTitle(notification) }}
                         </v-list-item-title>
                         <v-list-item-subtitle>
-                            ${{ formatCurrency(notification.data.total_amount) }} - {{ notification.data.customer_name
-                            }}
+                            {{ getNotificationContent(notification) }}
                         </v-list-item-subtitle>
                         <div class="text-caption mt-1 text-grey">
                             {{ formatNotificationDate(notification.created_at) }}
@@ -89,23 +88,68 @@
         return parseFloat(amount).toFixed(2);
     };
 
-    // Add a new function to handle notification clicks
+    // Get notification title based on type
+    const getNotificationTitle = (notification) => {
+        if (notification.data && notification.data.order_uuid) {
+            return `New Order #${notification.data.order_uuid.slice(-8).toUpperCase()}`;
+        }
+        // Default title for other notification types
+        return notification.data?.title || 'Notification';
+    };
+
+    // Get notification content based on type
+    const getNotificationContent = (notification) => {
+        if (notification.data && notification.data.order_uuid) {
+            return `$${formatCurrency(notification.data.total_amount)} - ${notification.data.customer_name}`;
+        }
+        // Default content for other notification types
+        return notification.data?.message || '';
+    };
+
+    // Get icon based on notification type
+    const getNotificationIcon = (notification) => {
+        if (notification.data && notification.data.order_uuid) {
+            return 'mdi-shopping';
+        }
+        // Default icon
+        return 'mdi-bell-outline';
+    };
+
+    // Get color based on notification type
+    const getNotificationColor = (notification) => {
+        if (notification.data && notification.data.order_uuid) {
+            return 'primary';
+        }
+        return 'info';
+    };
+
+    // Handle notification click based on type
     const handleNotificationClick = (notification) => {
         if (!notification.read_at) {
-            // First mark the notification as read
+            // Mark as read first
             markAsReadOnly(notification.id, () => {
-                // Then navigate to the order page
-                navigateToOrder(notification.data.order_uuid);
+                navigateToNotificationTarget(notification);
             });
         } else {
             // If already read, just navigate
-            navigateToOrder(notification.data.order_uuid);
+            navigateToNotificationTarget(notification);
+        }
+    };
+
+    // Navigate based on notification type
+    const navigateToNotificationTarget = (notification) => {
+        menu.value = false; // Close the dropdown
+
+        if (notification.data && notification.data.order_uuid) {
+            router.visit(route('dashboard.orders.show', notification.data.order_uuid));
+        } else if (notification.data && notification.data.url) {
+            router.visit(notification.data.url);
         }
     };
 
     // Add a function to mark a notification as read without navigating
     const markAsReadOnly = (id, callback = null) => {
-        axios.post(route('dashboard.notifications.mark-as-read', id))
+        axios.post(route('dashboard.notifications.read', id))
             .then(() => {
                 // Update local state
                 const index = notifications.value.findIndex(n => n.id === id);
@@ -122,12 +166,6 @@
             .catch(error => {
                 console.error('Error marking notification as read:', error);
             });
-    };
-
-    // Add a function to navigate to the order page
-    const navigateToOrder = (orderUuid) => {
-        menu.value = false; // Close the dropdown
-        router.visit(route('dashboard.orders.show', orderUuid));
     };
 
     const formatNotificationDate = (dateString) => {

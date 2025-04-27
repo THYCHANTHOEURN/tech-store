@@ -38,18 +38,17 @@
                                     :class="{ 'unread': !notification.read_at }" :value="notification.id"
                                     @click="handleNotificationClick(notification)">
                                     <template v-slot:prepend>
-                                        <v-avatar color="primary" class="mr-3">
-                                            <v-icon color="white">mdi-shopping</v-icon>
+                                        <v-avatar :color="getNotificationType(notification).color" class="mr-3">
+                                            <v-icon color="white">{{ getNotificationType(notification).icon }}</v-icon>
                                         </v-avatar>
                                     </template>
 
                                     <div class="text-decoration-none">
                                         <v-list-item-title class="text-subtitle-1">
-                                            New Order #{{ notification.data.order_uuid.slice(-8).toUpperCase() }}
+                                            {{ getNotificationTitle(notification) }}
                                         </v-list-item-title>
                                         <v-list-item-subtitle>
-                                            ${{ formatCurrency(notification.data.total_amount) }} - {{
-                                                notification.data.customer_name }}
+                                            {{ getNotificationContent(notification) }}
                                         </v-list-item-subtitle>
                                         <div class="text-caption mt-1 text-grey">
                                             {{ formatDate(notification.created_at) }}
@@ -102,17 +101,97 @@
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
+    // Helper functions to handle different notification types
+    const getNotificationType = (notification) => {
+        // Check notification type based on data structure
+        if (notification.data && notification.data.order_uuid) {
+            return { type: 'order', icon: 'mdi-shopping', color: 'primary' };
+        } else if (notification.data && notification.data.type === 'product') {
+            return { type: 'product', icon: 'mdi-package-variant-closed', color: 'success' };
+        } else if (notification.data && notification.data.type === 'user') {
+            return { type: 'user', icon: 'mdi-account', color: 'info' };
+        }
+
+        // Default type
+        return { type: 'general', icon: 'mdi-bell-outline', color: 'grey' };
+    };
+
+    const getNotificationTitle = (notification) => {
+        const type = getNotificationType(notification).type;
+
+        switch (type) {
+            case 'order':
+                if (notification.data && notification.data.order_uuid) {
+                    return `New Order #${notification.data.order_uuid.slice(-8).toUpperCase()}`;
+                }
+                return "New Order";
+            case 'product':
+                return notification.data.title || "Product Notification";
+            case 'user':
+                return notification.data.title || "User Notification";
+            default:
+                return notification.data?.title || "Notification";
+        }
+    };
+
+    const getNotificationContent = (notification) => {
+        const type = getNotificationType(notification).type;
+
+        switch (type) {
+            case 'order':
+                if (notification.data && notification.data.total_amount && notification.data.customer_name) {
+                    return `$${formatCurrency(notification.data.total_amount)} - ${notification.data.customer_name}`;
+                }
+                return notification.data?.message || "New order received";
+            case 'product':
+                return notification.data?.message || "Product update";
+            case 'user':
+                return notification.data?.message || "User notification";
+            default:
+                return notification.data?.message || "System notification";
+        }
+    };
+
     // Handle notification click - separate marking as read from navigation
     const handleNotificationClick = (notification) => {
         if (!notification.read_at) {
-            // First mark the notification as read
+            // Mark as read first
             markAsReadOnly(notification.id, () => {
-                // Then navigate to the order page
-                navigateToOrder(notification.data.order_uuid);
+                // Navigate based on notification type
+                navigateToNotificationTarget(notification);
             });
         } else {
             // If already read, just navigate
-            navigateToOrder(notification.data.order_uuid);
+            navigateToNotificationTarget(notification);
+        }
+    };
+
+    // Navigate based on notification type
+    const navigateToNotificationTarget = (notification) => {
+        const type = getNotificationType(notification).type;
+
+        switch (type) {
+            case 'order':
+                if (notification.data && notification.data.order_uuid) {
+                    router.visit(route('dashboard.orders.show', notification.data.order_uuid));
+                }
+                break;
+            case 'product':
+                if (notification.data && notification.data.product_id) {
+                    router.visit(route('dashboard.products.show', notification.data.product_id));
+                }
+                break;
+            case 'user':
+                if (notification.data && notification.data.user_id) {
+                    router.visit(route('dashboard.users.show', notification.data.user_id));
+                }
+                break;
+            default:
+                // If there's a specific URL in the data, navigate to it
+                if (notification.data && notification.data.url) {
+                    router.visit(notification.data.url);
+                }
+                break;
         }
     };
 
@@ -134,11 +213,6 @@
             .catch(error => {
                 console.error('Error marking notification as read:', error);
             });
-    };
-
-    // Navigate to order page
-    const navigateToOrder = (orderUuid) => {
-        router.visit(route('dashboard.orders.show', orderUuid));
     };
 
     // Mark all notifications as read using axios to avoid Inertia response conflicts

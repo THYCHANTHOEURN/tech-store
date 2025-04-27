@@ -63,9 +63,9 @@
             <div class="d-flex align-center">
                 <!-- Add badge to messages button -->
                 <Link :href="route('dashboard.messages.index')" class="text-decoration-none mr-2">
-                <v-btn icon variant="text" size="small">
+                <v-btn icon variant="text" size="large">
                     <v-badge :content="unreadMessagesCount" :value="unreadMessagesCount > 0" color="error" overlap>
-                        <v-icon>mdi-message-outline</v-icon>
+                        <v-icon>mdi-email-outline</v-icon>
                     </v-badge>
                 </v-btn>
                 </Link>
