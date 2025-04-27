@@ -20,7 +20,8 @@
                         {{ $page.props.siteSettings.companyInfo.email }}
                     </span>
                 </div>
-                <div class="d-flex align-center">
+                <!-- Social icons with better spacing for touch targets -->
+                <div class="d-flex align-center social-icons">
                     <v-btn variant="text" class="text-white icon-btn"
                         :href="$page.props.siteSettings.companyInfo.social.facebook" target="_blank">
                         <v-icon size="small">mdi-facebook</v-icon>
@@ -49,18 +50,19 @@
         <v-app-bar class="bg-white" :height="$vuetify.display.xs ? 70 : 80" :elevation="1">
             <v-container class="px-1 px-sm-2 px-md-4 py-0">
                 <div class="d-flex align-center justify-space-between w-100">
-                    <!-- Left Side: Mobile Menu Button + Logo -->
+                    <!-- Left Side: Mobile Menu Button + Logo + Site Name -->
                     <div class="d-flex align-center">
                         <!-- Mobile Menu Button - More compact on xs -->
                         <v-app-bar-nav-icon class="d-flex d-md-none" @click="drawer = !drawer" density="compact"
                             :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Menu"></v-app-bar-nav-icon>
 
-                        <!-- Logo - More responsive sizing -->
-                        <Link :href="route('index')" class="header-logo ml-1 ml-sm-2">
-                        <v-img :src="$page.props.siteSettings?.logoUrl || '/images/logo.png'"
-                            :width="$vuetify.display.xs ? 120 : $vuetify.display.sm ? 150 : 180"
-                            :height="$vuetify.display.xs ? 40 : $vuetify.display.sm ? 50 : 60" contain class="my-1"
-                            alt="Tech Store Logo"></v-img>
+                        <!-- Logo with company name - responsive sizing -->
+                        <Link :href="route('index')" class="header-logo ml-1 ml-sm-2 d-flex align-center">
+                            <v-img :src="$page.props.siteSettings?.logoUrl || '/images/logo.png'"
+                                :width="$vuetify.display.xs ? 100 : $vuetify.display.sm ? 130 : 150"
+                                :height="$vuetify.display.xs ? 35 : $vuetify.display.sm ? 45 : 50"
+                                contain class="my-1" alt="Tech Store Logo"></v-img>
+                            <span class="site-name text-truncate d-none d-sm-block ml-2">{{ siteName }}</span>
                         </Link>
                     </div>
 
@@ -72,12 +74,13 @@
 
                     <!-- Right Side: Action buttons - Better spacing & touch targets -->
                     <div class="d-flex align-center header-actions">
-                        <!-- Mobile search button -->
+                        <!-- Mobile search button with better touch target -->
                         <v-btn icon class="d-md-none action-btn-touch" @click="showMobileSearch = true"
                             :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Search">
                             <v-icon>mdi-magnify</v-icon>
                         </v-btn>
 
+                        <!-- Action buttons with improved spacing and responsive badges -->
                         <!-- Wishlist Button with Badge - Icon only on xs -->
                         <Link :href="route('wishlist.index')" class="text-decoration-none">
                         <v-btn :icon="$vuetify.display.xs" variant="text" class="action-btn position-relative"
@@ -160,19 +163,29 @@
 
                         <!-- Auth buttons with better mobile design -->
                         <template v-else>
-                            <Link v-if="!$vuetify.display.xs" :href="route('login')" class="text-decoration-none">
-                            <v-btn variant="text" class="action-btn">
-                                <span>Login</span>
-                            </v-btn>
+                            <!-- Visible on medium screens and up -->
+                            <Link v-if="!$vuetify.display.xs && !$vuetify.display.sm" :href="route('login')" class="text-decoration-none">
+                                <v-btn variant="text" class="action-btn">
+                                    <span>Login</span>
+                                </v-btn>
                             </Link>
-                            <Link v-if="!$vuetify.display.xs" :href="route('register')" class="text-decoration-none">
-                            <v-btn color="primary" class="action-btn">
-                                <span>Register</span>
-                            </v-btn>
+                            <Link v-if="!$vuetify.display.xs && !$vuetify.display.sm" :href="route('register')" class="text-decoration-none">
+                                <v-btn color="primary" class="action-btn">
+                                    <span>Register</span>
+                                </v-btn>
                             </Link>
-                            <v-btn v-else icon @click="showAuthOptions = true"
-                                :size="$vuetify.display.xs ? 'small' : 'default'" aria-label="Account options">
-                                <v-icon>mdi-account</v-icon>
+
+                            <!-- Enhanced mobile auth button with better visual prominence -->
+                            <v-btn v-else @click="showAuthOptions = true"
+                                class="auth-btn-mobile"
+                                :icon="$vuetify.display.xs"
+                                :size="$vuetify.display.xs ? 'x-small' : 'default'"
+                                :class="{'rounded-circle': $vuetify.display.xs, 'px-2': !$vuetify.display.xs}"
+                                :color="$vuetify.display.xs ? 'primary' : 'primary'"
+                                :variant="$vuetify.display.xs ? 'flat' : 'tonal'"
+                                aria-label="Account options">
+                                <v-icon :size="$vuetify.display.xs ? 'small' : 'default'">mdi-account</v-icon>
+                                <span v-if="!$vuetify.display.xs" class="ml-1">Account</span>
                             </v-btn>
                         </template>
                     </div>
@@ -357,21 +370,36 @@
             </v-card>
         </v-dialog>
 
-        <!-- Mobile auth options dialog with better UX -->
-        <v-dialog v-model="showAuthOptions" max-width="300">
-            <v-card>
-                <v-card-title class="text-center pb-0">Account</v-card-title>
+        <!-- Enhanced Mobile auth options dialog with better UX -->
+        <v-dialog v-model="showAuthOptions" max-width="350" transition="dialog-bottom-transition">
+            <v-card rounded="lg" class="auth-dialog">
+                <v-card-title class="d-flex justify-center pb-1">
+                    <v-icon size="large" color="primary" class="mb-2">mdi-account-circle</v-icon>
+                </v-card-title>
+                <v-card-subtitle class="text-center pb-4">Sign in or create an account</v-card-subtitle>
                 <v-card-text>
                     <v-row>
-                        <v-col cols="6">
-                            <v-btn block color="primary" variant="elevated" :href="route('login')"
-                                class="mb-2">Login</v-btn>
+                        <v-col cols="12" class="py-2">
+                            <v-btn block color="primary" variant="elevated" size="large"
+                                :height="56" :href="route('login')" class="text-none font-weight-medium">
+                                <v-icon start>mdi-login-variant</v-icon>
+                                Login
+                            </v-btn>
                         </v-col>
-                        <v-col cols="6">
-                            <v-btn block color="secondary" variant="elevated" :href="route('register')">Register</v-btn>
+                        <v-col cols="12" class="py-2">
+                            <v-btn block color="secondary" variant="elevated" size="large"
+                                :height="56" :href="route('register')" class="text-none font-weight-medium">
+                                <v-icon start>mdi-account-plus</v-icon>
+                                Register
+                            </v-btn>
                         </v-col>
                     </v-row>
                 </v-card-text>
+                <v-card-actions class="justify-center pb-4">
+                    <v-btn variant="text" @click="showAuthOptions = false">
+                        Close
+                    </v-btn>
+                </v-card-actions>
             </v-card>
         </v-dialog>
 
@@ -446,7 +474,7 @@
 
 <script setup>
     import { ref, onMounted, computed, watch, onUnmounted } from 'vue'
-    import { router, usePage } from '@inertiajs/vue3'
+    import { router, usePage, Link } from '@inertiajs/vue3'
     import FlashMessage from '@/Components/FlashMessage.vue'
 
     const drawer = ref(false)
@@ -454,6 +482,12 @@
     const search = ref('')
     const categories = ref([])
     const showAuthOptions = ref(false)
+
+    // Add smooth transitions for auth dialog
+    const transitionProps = {
+        'transition-show': 'fade-transition',
+        'transition-hide': 'fade-transition'
+    };
 
     const unreadMessagesCount = ref(0);
     const message = ref('');
@@ -553,21 +587,40 @@
             router.visit(`/search?searchTerm=${encodeURIComponent(searchTerm.value.trim())}`);
         }
     };
+
+    // Add computed property for site name
+    const siteName = computed(() => {
+        return usePage().props.siteSettings?.siteName ||
+               usePage().props.siteSettings?.companyInfo?.name ||
+               'Tech Store';
+    });
 </script>
 
 <style scoped>
-
     /* Core Layout - Professional responsive optimization */
     .header-logo {
         display: flex;
         align-items: center;
     }
 
+    /* Site name styling */
+    .site-name {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #333;
+        max-width: 150px;
+    }
+
     /* Top bar styles - Optimized for touch */
     .icon-btn {
-        min-width: 32px;
-        height: 32px;
+        min-width: 36px;
+        height: 36px;
         padding: 0;
+    }
+
+    /* Improve spacing for social icons */
+    .social-icons {
+        gap: 2px;
     }
 
     /* Modern search field with consistent styling */
@@ -596,11 +649,11 @@
         min-width: unset;
     }
 
-    /* Action button touch areas */
+    /* Action button touch areas - Improved for all devices */
     .action-btn-touch {
         margin: 0;
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
     }
 
     /* Account name truncation */
@@ -618,6 +671,8 @@
         scrollbar-width: none;
         -ms-overflow-style: none;
         -webkit-overflow-scrolling: touch;
+        gap: 8px;
+        padding: 0 8px;
     }
 
     .nav-links-container::-webkit-scrollbar {
@@ -657,7 +712,7 @@
 
     @media (max-width: 599px) {
         :deep(.v-badge__badge) {
-            transform: scale(1.2);
+            transform: scale(1.1);
             min-width: 20px;
             height: 20px;
             font-size: 12px;
@@ -672,7 +727,7 @@
         }
     }
 
-    /* Responsive breakpoints - Professional cascade */
+    /* Enhanced responsive breakpoints */
     @media (max-width: 599px) {
         .v-container {
             padding-left: 8px !important;
@@ -680,20 +735,31 @@
         }
 
         .header-actions {
-            gap: 2px;
+            gap: 1px;
         }
 
         .action-btn.v-btn--icon {
             margin: 0;
-            height: 36px;
-            width: 36px;
-            min-width: 36px;
+            height: 40px;
+            width: 40px;
+            min-width: 40px;
+        }
+
+        /* Better badge position on very small screens */
+        :deep(.v-badge__badge) {
+            transform: scale(1.1);
+            top: 0 !important;
+            right: 0 !important;
         }
     }
 
     @media (min-width: 600px) {
+        .site-name {
+            max-width: 120px;
+        }
+
         .header-actions {
-            gap: 8px;
+            gap: 6px;
         }
 
         .action-btn {
@@ -706,6 +772,11 @@
     }
 
     @media (min-width: 960px) {
+        .site-name {
+            max-width: 150px;
+            font-size: 1.1rem;
+        }
+
         .search-field {
             margin: 0 16px;
         }
@@ -713,9 +784,18 @@
         .account-name {
             max-width: 150px;
         }
+
+        .header-actions {
+            gap: 8px;
+        }
     }
 
     @media (min-width: 1264px) {
+        .site-name {
+            max-width: 200px;
+            font-size: 1.2rem;
+        }
+
         .search-field {
             margin: 0 24px;
             max-width: 600px;
@@ -727,6 +807,10 @@
 
         .header-actions {
             gap: 12px;
+        }
+
+        .social-icons {
+            gap: 8px;
         }
     }
 
@@ -750,5 +834,48 @@
         position: absolute;
         top: 0;
         right: 0;
+    }
+
+    /* Authentication button and dialog styles */
+    .auth-btn-mobile {
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .auth-dialog :deep(.v-card-title) {
+        font-size: 1.5rem;
+        padding-top: 24px;
+    }
+
+    /* Ensure proper sizing on different devices */
+    @media (max-width: 400px) {
+        /* Galaxy S8+ optimization */
+        .auth-btn-mobile {
+            min-width: 36px;
+            min-height: 36px;
+        }
+    }
+
+    @media (min-width: 401px) and (max-width: 600px) {
+        /* General phone optimization */
+        .auth-btn-mobile {
+            min-width: 40px;
+            min-height: 40px;
+        }
+    }
+
+    @media (min-width: 600px) and (max-width: 960px) {
+        /* iPad Mini and Galaxy Z Fold 5 (unfolded) */
+        .auth-dialog {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    }
+
+    /* Enhanced touch targets for foldables and tablets */
+    @media (min-width: 768px) {
+        .auth-dialog :deep(.v-btn) {
+            padding: 0 24px;
+        }
     }
 </style>

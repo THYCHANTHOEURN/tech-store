@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted, onUnmounted } from 'vue';
+    import { ref, onMounted, onUnmounted, computed } from 'vue';
     import ApplicationLogo from '@/Components/ApplicationLogo.vue';
     import { Link, usePage, router } from '@inertiajs/vue3';
     import FlashMessage from '@/Components/FlashMessage.vue';
@@ -40,6 +40,13 @@
             clearInterval(messagesInterval);
         });
     });
+
+    // Add computed property for site name
+    const siteName = computed(() => {
+        return usePage().props.siteSettings?.siteName ||
+               usePage().props.siteSettings?.companyInfo?.name ||
+               'Tech Store';
+    });
 </script>
 
 <template>
@@ -53,17 +60,18 @@
                 :aria-label="rail ? 'Expand menu' : 'Collapse menu'"></v-app-bar-nav-icon>
 
             <v-toolbar-title class="d-flex align-center">
-                <Link :href="route('dashboard.index')" class="text-decoration-none">
-                <ApplicationLogo :width="125" class="ml-2" />
+                <Link :href="route('dashboard.index')" class="text-decoration-none d-flex align-center">
+                <ApplicationLogo :width="rail ? 40 : 125" height="40" class="ml-2" />
+                <span class="ml-2 site-name text-truncate" :class="{'d-none d-sm-block': rail}">{{ siteName }}</span>
                 </Link>
             </v-toolbar-title>
 
             <v-spacer></v-spacer>
 
             <div class="d-flex align-center">
-                <!-- Add badge to messages button -->
-                <Link :href="route('dashboard.messages.index')" class="text-decoration-none mr-2">
-                <v-btn icon variant="text" size="large">
+                <!-- Add badge to messages button - Add responsive margin -->
+                <Link :href="route('dashboard.messages.index')" class="text-decoration-none" :class="{'mr-2': $vuetify.display.width > 400}">
+                <v-btn icon variant="text" :size="$vuetify.display.xs ? 'default' : 'large'">
                     <v-badge :content="unreadMessagesCount" :value="unreadMessagesCount > 0" color="error" overlap>
                         <v-icon>mdi-email-outline</v-icon>
                     </v-badge>
@@ -78,12 +86,12 @@
             <!-- User Menu - Enhanced -->
             <v-menu transition="slide-y-transition" location="bottom end">
                 <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" variant="text" rounded="pill" class="text-none px-3">
-                        <v-avatar size="32" color="primary" class="mr-2">
+                    <v-btn v-bind="props" variant="text" rounded="pill" class="text-none px-2 px-sm-3">
+                        <v-avatar size="32" color="primary" class="mr-1 mr-sm-2">
                             <span class="text-white text-subtitle-2">{{ user.name.charAt(0).toUpperCase() }}</span>
                         </v-avatar>
-                        <span class="hidden-sm-and-down">{{ user.name }}</span>
-                        <v-icon size="small" class="ml-2">mdi-chevron-down</v-icon>
+                        <span class="d-none d-sm-block text-truncate user-name">{{ user.name }}</span>
+                        <v-icon size="small" class="ml-1 ml-sm-2">mdi-chevron-down</v-icon>
                     </v-btn>
                 </template>
                 <v-list density="compact" width="200">
@@ -304,5 +312,31 @@
     /* Hover effect on list items */
     .v-list-item:not(.v-list-item--active):hover {
         background-color: rgba(var(--v-theme-primary), 0.05);
+    }
+
+    /* Site name styling */
+    .site-name {
+        font-size: 1.1rem;
+        font-weight: 500;
+        max-width: 150px;
+    }
+
+    /* User name responsiveness */
+    .user-name {
+        max-width: 120px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .site-name {
+            font-size: 1rem;
+            max-width: 120px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .site-name {
+            max-width: 80px;
+        }
     }
 </style>
