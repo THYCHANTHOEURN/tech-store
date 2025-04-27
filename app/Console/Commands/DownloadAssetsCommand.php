@@ -19,6 +19,7 @@ class DownloadAssetsCommand extends Command
             'msi'       => 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=500',
         ],
         'products' => [
+            // Existing products with multiple images
             'rog-ally' => [
                 'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800', // Gaming device
                 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800', // Gaming device
@@ -28,9 +29,34 @@ class DownloadAssetsCommand extends Command
                 'https://images.unsplash.com/photo-1605134513573-384dcf99a44c?w=800',
                 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800', // Gaming laptop
             ],
-            'msi-katana'        => 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800',
-            'razer-keyboard'    => 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800',
-            'rog-mouse'         => 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800',
+
+            // Fixing mismatched slugs to match product seeder
+            'msi-katana-gf66' => [
+                'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800',
+                'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800',
+            ],
+            'razer-blackwidow-v3' => [
+                'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800',
+                'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800',
+            ],
+            'rog-chakram-mouse' => [
+                'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800',
+                'https://images.unsplash.com/photo-1613141411244-0e4ac259d217?w=800',
+            ],
+
+            // Adding missing products from the seeder
+            'gaming-laptop-bundle' => [
+                'https://images.unsplash.com/photo-1611078489935-0cb964de46d6?w=800',
+                'https://images.unsplash.com/photo-1542393545-10f5cde2c810?w=800',
+            ],
+            'pro-gaming-setup' => [
+                'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800',
+                'https://images.unsplash.com/photo-1547394765-185e1e68f34e?w=800',
+            ],
+            'ultimate-console-package' => [
+                'https://images.unsplash.com/photo-1486572788966-cfd3df1f5b42?w=800',
+                'https://images.unsplash.com/photo-1600080972464-8e5f35572e51?w=800',
+            ],
 
             // default images for products
             'default' => 'public/images/default.jpg', // Local default image
@@ -58,7 +84,7 @@ class DownloadAssetsCommand extends Command
 
             // Gaming Consoles subcategories
             'playstation'   => 'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=800',    // PS5 console
-            'xbox'          => 'https://images.unsplash.com/photo-1605901309584-818e25960a8f?w=800',          // Updated Xbox image
+            'xbox'          => 'https://images.unsplash.com/photo-1605901309584-818e25960a8f?w=800',    // Updated Xbox image
             'nintendo'      => 'https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=800',    // Nintendo Switch
             'rog-ally'      => 'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800',       // Handheld gaming
 
@@ -157,7 +183,14 @@ class DownloadAssetsCommand extends Command
                                 File::put($filepath, $response->body());
                                 $this->info("✓ Successfully downloaded: {$filename}");
                             } else {
-                                $this->error("✗ Failed to download {$filename}: HTTP {$response->status()}");
+                                // Try to use default image instead
+                                $defaultImagePath = storage_path("app/public/products/default.jpg");
+                                if (File::exists($defaultImagePath)) {
+                                    File::copy($defaultImagePath, $filepath);
+                                    $this->info("✓ Using default image for: {$filename}");
+                                } else {
+                                    $this->error("✗ Failed to download {$filename}: HTTP {$response->status()} and default image not found");
+                                }
                             }
                         } catch (\Exception $e) {
                             $this->error("✗ Error downloading {$filename}: " . $e->getMessage());

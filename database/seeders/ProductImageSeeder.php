@@ -30,6 +30,19 @@ class ProductImageSeeder extends Seeder
             'rog-chakram-mouse' => [
                 ['image' => 'products/rog-mouse.jpg', 'is_primary' => true],
             ],
+            // Add the missing products
+            'gaming-laptop-bundle' => [
+                ['image' => 'products/gaming-laptop-bundle-1.jpg', 'is_primary' => true],
+                ['image' => 'products/gaming-laptop-bundle-2.jpg', 'is_primary' => false],
+            ],
+            'pro-gaming-setup' => [
+                ['image' => 'products/pro-gaming-setup-1.jpg', 'is_primary' => true],
+                ['image' => 'products/pro-gaming-setup-2.jpg', 'is_primary' => false],
+            ],
+            'ultimate-console-package' => [
+                ['image' => 'products/ultimate-console-package-1.jpg', 'is_primary' => true],
+                ['image' => 'products/ultimate-console-package-2.jpg', 'is_primary' => false],
+            ],
         ];
 
         foreach ($images as $productSlug => $productImages) {

@@ -53,7 +53,8 @@ class ProductSeeder extends Seeder
                 'status' => true,
                 'description' => 'Complete gaming laptop bundle with accessories...',
                 'images' => [
-                    ['image' => 'products/gaming-laptop-bundle.jpg', 'is_primary' => true],
+                    ['image' => 'products/gaming-laptop-bundle-1.jpg', 'is_primary' => true],
+                    ['image' => 'products/gaming-laptop-bundle-2.jpg', 'is_primary' => false],
                 ]
             ],
             [
@@ -69,7 +70,8 @@ class ProductSeeder extends Seeder
                 'status' => true,
                 'description' => 'Complete professional gaming setup bundle...',
                 'images' => [
-                    ['image' => 'products/pro-gaming-setup.jpg', 'is_primary' => true],
+                    ['image' => 'products/pro-gaming-setup-1.jpg', 'is_primary' => true],
+                    ['image' => 'products/pro-gaming-setup-2.jpg', 'is_primary' => false],
                 ]
             ],
             [
@@ -85,7 +87,8 @@ class ProductSeeder extends Seeder
                 'status' => true,
                 'description' => 'Ultimate gaming console package with accessories...',
                 'images' => [
-                    ['image' => 'products/ultimate-console-package.jpg', 'is_primary' => true],
+                    ['image' => 'products/ultimate-console-package-1.jpg', 'is_primary' => true],
+                    ['image' => 'products/ultimate-console-package-2.jpg', 'is_primary' => false],
                 ]
             ],
 
