@@ -65,6 +65,10 @@ Tech Store is a full-featured e-commerce platform specializing in tech products.
 6. **Run migrations and seed the database**
    ```bash
    php artisan migrate --seed
+
+   or 
+   
+   php artisan migrate:fresh --seed
    ```
 
 7. **Link storage**
@@ -74,7 +78,7 @@ Tech Store is a full-featured e-commerce platform specializing in tech products.
 
 8. **Download demo assets** (optional)
    ```bash
-   php artisan app:download-assets
+   php artisan assets:download
    ```
 
 9. **Build frontend assets**
