@@ -20,13 +20,13 @@
             <v-divider></v-divider>
 
             <v-list class="notification-list" max-height="400" style="overflow-y: auto">
-                <v-list-item v-if="notifications.length === 0">
+                <v-list-item v-if="notificationItems.length === 0">
                     <v-list-item-title class="text-center py-4 text-grey">
                         No notifications
                     </v-list-item-title>
                 </v-list-item>
 
-                <v-list-item v-for="notification in notifications" :key="notification.id" :value="notification.id"
+                <v-list-item v-for="notification in notificationItems" :key="notification.id" :value="notification.id"
                     :class="{ 'unread': !notification.read_at }" @click="handleNotificationClick(notification)">
                     <template v-slot:prepend>
                         <v-avatar :color="getNotificationColor(notification)" size="36" class="mr-3">
@@ -70,44 +70,72 @@
     import { ref, computed, onMounted } from 'vue';
     import { Link, router } from '@inertiajs/vue3';
     import { useNotifications } from '@/Composables/useNotifications';
+    import axios from 'axios';
 
     const props = defineProps({
-        initialNotifications: Array,
-        initialUnreadCount: Number,
+        initialNotifications: {
+            type: [Array, Object],
+            default: () => []
+        },
+        initialUnreadCount: {
+            type: Number,
+            default: 0
+        }
     });
 
     const menu = ref(false);
+
+    // Extract notifications from either array or pagination object
+    const extractNotifications = (source) => {
+        if (!source) return [];
+        if (Array.isArray(source)) return source;
+        if (source.data && Array.isArray(source.data)) return source.data;
+        return [];
+    };
+
     const { notifications, unreadCount, fetchNotifications, markAsRead, markAllAsRead } = useNotifications(
-        props.initialNotifications || [],
+        extractNotifications(props.initialNotifications),
         props.initialUnreadCount || 0
     );
+
+    // Create a computed property for notifications that handles both array and object formats
+    const notificationItems = computed(() => {
+        return notifications.value || [];
+    });
 
     const hasUnread = computed(() => unreadCount.value > 0);
 
     const formatCurrency = (amount) => {
+        if (!amount) return '0.00';
         return parseFloat(amount).toFixed(2);
     };
 
     // Get notification title based on type
     const getNotificationTitle = (notification) => {
+        if (!notification || !notification.data) return 'Notification';
+
         if (notification.data && notification.data.order_uuid) {
             return `New Order #${notification.data.order_uuid.slice(-8).toUpperCase()}`;
         }
         // Default title for other notification types
-        return notification.data?.title || 'Notification';
+        return notification.data.title || 'Notification';
     };
 
     // Get notification content based on type
     const getNotificationContent = (notification) => {
+        if (!notification || !notification.data) return '';
+
         if (notification.data && notification.data.order_uuid) {
-            return `$${formatCurrency(notification.data.total_amount)} - ${notification.data.customer_name}`;
+            return `$${formatCurrency(notification.data.total_amount)} - ${notification.data.customer_name || 'Customer'}`;
         }
         // Default content for other notification types
-        return notification.data?.message || '';
+        return notification.data.message || '';
     };
 
     // Get icon based on notification type
     const getNotificationIcon = (notification) => {
+        if (!notification || !notification.data) return 'mdi-bell-outline';
+
         if (notification.data && notification.data.order_uuid) {
             return 'mdi-shopping';
         }
@@ -117,6 +145,8 @@
 
     // Get color based on notification type
     const getNotificationColor = (notification) => {
+        if (!notification || !notification.data) return 'info';
+
         if (notification.data && notification.data.order_uuid) {
             return 'primary';
         }
@@ -125,6 +155,8 @@
 
     // Handle notification click based on type
     const handleNotificationClick = (notification) => {
+        if (!notification) return;
+
         if (!notification.read_at) {
             // Mark as read first
             markAsReadOnly(notification.id, () => {
@@ -138,6 +170,8 @@
 
     // Navigate based on notification type
     const navigateToNotificationTarget = (notification) => {
+        if (!notification || !notification.data) return;
+
         menu.value = false; // Close the dropdown
 
         if (notification.data && notification.data.order_uuid) {
@@ -149,6 +183,8 @@
 
     // Add a function to mark a notification as read without navigating
     const markAsReadOnly = (id, callback = null) => {
+        if (!id) return;
+
         axios.post(route('dashboard.notifications.read', id))
             .then(() => {
                 // Update local state
@@ -169,6 +205,8 @@
     };
 
     const formatNotificationDate = (dateString) => {
+        if (!dateString) return '';
+
         const date = new Date(dateString);
         const now = new Date();
         const diffMs = now - date;
