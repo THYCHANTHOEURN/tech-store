@@ -42,7 +42,7 @@ class NotificationController extends Controller
      * Mark a notification as read.
      *
      * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function markAsRead($id)
     {
@@ -52,18 +52,28 @@ class NotificationController extends Controller
             $notification->markAsRead();
         }
 
-        return response()->json(['success' => true]);
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()->back();
     }
 
     /**
      * Mark all notifications as read.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function markAllAsRead()
     {
         auth()->user()->unreadNotifications->markAsRead();
 
-        return response()->json(['success' => true]);
+        // Better detection of request type - handle both Inertia and AJAX requests
+        if (request()->ajax() && !request()->header('X-Inertia')) {
+            return response()->json(['success' => true]);
+        }
+
+        // For Inertia requests, use a redirect to prevent the JSON response modal
+        return redirect()->back();
     }
 }
