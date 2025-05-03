@@ -74,6 +74,158 @@
                                     </v-col>
                                 </v-row>
                             </div>
+
+                            <!-- Theme Settings -->
+                            <div v-if="activeTab === 'appearance'" class="mb-6">
+                                <h3 class="text-h6 mb-4">Theme Options</h3>
+                                <v-row>
+                                    <!-- Theme Mode Selection -->
+                                    <v-col cols="12" md="6">
+                                        <v-card outlined class="mb-4">
+                                            <v-card-title class="text-subtitle-1">Theme Mode</v-card-title>
+                                            <v-card-text>
+                                                <v-select :items="['light', 'dark', 'system']"
+                                                    v-model="getSettingByKey('default_theme_mode').value"
+                                                    label="Default Theme Mode" variant="outlined" density="comfortable">
+                                                    <template v-slot:prepend-inner>
+                                                        <v-icon>{{ getSettingByKey('default_theme_mode').value ===
+                                                            'dark' ? 'mdi-weather-night' : 'mdi-weather-sunny'
+                                                            }}</v-icon>
+                                                    </template>
+                                                </v-select>
+                                                <p class="text-caption text-grey mt-2">
+                                                    System will use your device theme preference if selected
+                                                </p>
+
+                                                <v-switch label="Allow users to override theme" color="primary"
+                                                    class="mt-3" v-model="allowUserThemeOverride"></v-switch>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-col>
+
+                                    <!-- UI Density -->
+                                    <v-col cols="12" md="6">
+                                        <v-card outlined class="mb-4">
+                                            <v-card-title class="text-subtitle-1">Interface Density</v-card-title>
+                                            <v-card-text>
+                                                <v-select :items="[
+                                                        {title: 'Comfortable', value: 'comfortable'},
+                                                        {title: 'Compact', value: 'compact'},
+                                                        {title: 'Default', value: 'default'}
+                                                    ]" v-model="getSettingByKey('density').value" label="UI Density"
+                                                    item-title="title" item-value="value" variant="outlined"
+                                                    density="comfortable">
+                                                    <template v-slot:prepend-inner>
+                                                        <v-icon>mdi-format-line-spacing</v-icon>
+                                                    </template>
+                                                </v-select>
+                                                <p class="text-caption text-grey mt-2">
+                                                    Controls the spacing of UI elements throughout the dashboard
+                                                </p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-col>
+
+                                    <!-- Color Picker for Primary Color -->
+                                    <v-col cols="12" md="4">
+                                        <v-card outlined class="mb-4">
+                                            <v-card-title class="text-subtitle-1">Primary Color</v-card-title>
+                                            <v-card-text>
+                                                <div class="d-flex align-center">
+                                                    <v-color-picker v-model="getSettingByKey('primary_color').value"
+                                                        hide-inputs hide-canvas show-swatches :swatches="swatchesColors"
+                                                        class="ma-2"></v-color-picker>
+                                                </div>
+                                                <p class="text-caption text-grey mt-2">
+                                                    The main color used throughout the dashboard
+                                                </p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-col>
+
+                                    <!-- Color Picker for Secondary Color -->
+                                    <v-col cols="12" md="4">
+                                        <v-card outlined class="mb-4">
+                                            <v-card-title class="text-subtitle-1">Secondary Color</v-card-title>
+                                            <v-card-text>
+                                                <div class="d-flex align-center">
+                                                    <v-color-picker v-model="getSettingByKey('secondary_color').value"
+                                                        hide-inputs hide-canvas show-swatches :swatches="swatchesColors"
+                                                        class="ma-2"></v-color-picker>
+                                                </div>
+                                                <p class="text-caption text-grey mt-2">
+                                                    The secondary color used throughout the dashboard
+                                                </p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-col>
+
+                                    <!-- Color Picker for Accent Color -->
+                                    <v-col cols="12" md="4">
+                                        <v-card outlined class="mb-4">
+                                            <v-card-title class="text-subtitle-1">Accent Color</v-card-title>
+                                            <v-card-text>
+                                                <div class="d-flex align-center">
+                                                    <v-color-picker v-model="getSettingByKey('accent_color').value"
+                                                        hide-inputs hide-canvas show-swatches :swatches="swatchesColors"
+                                                        class="ma-2"></v-color-picker>
+                                                </div>
+                                                <p class="text-caption text-grey mt-2">
+                                                    The accent color used for highlights and emphasis
+                                                </p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-col>
+
+                                    <!-- Theme Preview -->
+                                    <v-col cols="12">
+                                        <v-card outlined class="mb-4">
+                                            <v-card-title class="text-subtitle-1">Preview</v-card-title>
+                                            <v-card-text>
+                                                <v-sheet
+                                                    :color="getSettingByKey('default_theme_mode').value === 'dark' ? '#121212' : '#FFFFFF'"
+                                                    :dark="getSettingByKey('default_theme_mode').value === 'dark'"
+                                                    class="pa-6 rounded" border>
+                                                    <div class="d-flex align-center justify-space-between mb-6">
+                                                        <h3 class="text-h6">Theme Preview</h3>
+                                                        <div>
+                                                            <v-btn :color="getSettingByKey('primary_color').value"
+                                                                class="mr-2" size="small">
+                                                                Primary
+                                                            </v-btn>
+                                                            <v-btn :color="getSettingByKey('secondary_color').value"
+                                                                size="small" variant="outlined">
+                                                                Secondary
+                                                            </v-btn>
+                                                        </div>
+                                                    </div>
+
+                                                    <v-row>
+                                                        <v-col cols="12" md="6">
+                                                            <v-text-field label="Sample Text Field" variant="outlined"
+                                                                :density="getSettingByKey('density').value"></v-text-field>
+                                                            <v-switch label="Sample Switch"
+                                                                :color="getSettingByKey('primary_color').value"></v-switch>
+                                                        </v-col>
+                                                        <v-col cols="12" md="6">
+                                                            <v-card>
+                                                                <v-card-text>
+                                                                    <p>This is how your cards will look.</p>
+                                                                    <v-chip
+                                                                        :color="getSettingByKey('accent_color').value"
+                                                                        class="mt-2">
+                                                                        Accent Color
+                                                                    </v-chip>
+                                                                </v-card-text>
+                                                            </v-card>
+                                                        </v-col>
+                                                    </v-row>
+                                                </v-sheet>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-col>
+                                </v-row>
+                            </div>
                         </div>
 
                         <v-divider class="my-4"></v-divider>
@@ -109,6 +261,14 @@
     const files = ref({});
     const imagePreviews = ref({});
     const processing = ref(false);
+    const allowUserThemeOverride = ref(true);
+    const swatchesColors = [
+        ['#1976D2', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50'],
+        ['#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'],
+        ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#607D8B'],
+        ['#000000', '#424242', '#616161', '#757575', '#9E9E9E', '#FFFFFF'],
+    ];
+
     // Format group names for display
     const formattedGroups = computed(() => {
         return props.groups.map(group => ({
@@ -133,6 +293,14 @@
     const hasTextSettings = computed(() => {
         return textSettings.value.length > 0;
     });
+
+    // Helper method to get a setting by key
+    const getSettingByKey = (key) => {
+        const setting = formData.value.find(s => s.key === key);
+        if (setting) return setting;
+        return { value: '', type: 'text' };
+    };
+
     // Preview uploaded image
     const previewImage = (file, key) => {
         if (!file) {
@@ -211,7 +379,8 @@
             'contact': 'mdi-phone',
             'social': 'mdi-share-variant',
             'seo': 'mdi-google',
-            'legal': 'mdi-gavel'
+            'legal': 'mdi-gavel',
+            'appearance': 'mdi-palette', // Add icon for appearance group
         };
 
         return icons[group] || 'mdi-cog';

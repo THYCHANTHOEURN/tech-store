@@ -21,6 +21,7 @@ class Setting extends Model
         'value',
         'group',
         'type',
+        'options',  // Add this field to support select options for theme settings
         'label',
         'description'
     ];
@@ -87,9 +88,23 @@ class Setting extends Model
     public function getImageUrlAttribute()
     {
         if ($this->type === 'image' && $this->value) {
-            return Storage::url($this->value);
+            return Storage::disk('public')->url($this->value);
         }
 
         return null;
+    }
+
+    /**
+     * Get options as array
+     *
+     * @return array
+     */
+    public function getOptionsArrayAttribute()
+    {
+        if ($this->options) {
+            return json_decode($this->options, true);
+        }
+
+        return [];
     }
 }

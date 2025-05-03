@@ -43,68 +43,46 @@ class SettingController extends Controller
     }
 
     /**
-     * Update the specified settings.
+     * Update the settings.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request)
     {
-        // For debugging
-        Log::info('Settings update request received', [
-            'has_files' => $request->hasFile('files')
-        ]);
-
-        $request->validate([
-            'settings' => 'required'
-        ]);
-
-        // Decode JSON settings data
-        $settingsData = json_decode($request->settings, true);
-
-        DB::beginTransaction();
-
         try {
-            foreach ($settingsData as $item) {
-                $setting = Setting::find($item['id']);
+            DB::beginTransaction();
 
-                if (!$setting) {
-                    continue;
-                }
+            $settings = json_decode($request->settings, true);
 
-                // Handle image uploads with special care for site_logo
-                if ($setting->type === 'image' && $request->hasFile("files.{$setting->key}")) {
-                    $file = $request->file("files.{$setting->key}");
+            foreach ($settings as $item) {
+                $setting = Setting::where('key', $item['key'])->first();
 
-                    Log::info('Processing image upload', [
-                        'key'   => $setting->key,
-                        'file'  => $file->getClientOriginalName()
-                    ]);
+                if (!$setting) continue;
 
-                    // Delete old file if exists, with more robust path checking
+                // Handle file uploads - special case for images
+                if ($setting->type === 'image' && isset($request->files) && $request->files->has('files.' . $setting->key)) {
+                    $file = $request->file('files.' . $setting->key);
+
+                    // Delete old image if exists
                     if ($setting->value && Storage::disk('public')->exists($setting->value)) {
                         Storage::disk('public')->delete($setting->value);
                     }
 
-                    // Store new file with setting-specific path
+                    // Store the new image
                     $path = $file->store('settings', 'public');
-                    
-                    // For site logo, ensure it's the right format and size
-                    if ($setting->key === 'site_logo') {
-                        // You could add image manipulation here if needed with Intervention Image
-                    }
-
-                    // Update the setting directly
                     $setting->value = $path;
                     $setting->save();
 
                     // Clear cache for this setting
                     Cache::forget('setting.' . $setting->key);
+                } else if ($setting->type === 'color') {
+                    // Ensure color values are properly formatted
+                    $setting->value = $item['value'];
+                    $setting->save();
 
-                    Log::info('Image updated', [
-                        'key'   => $setting->key,
-                        'path'  => $path
-                    ]);
+                    // Clear cache for this setting
+                    Cache::forget('setting.' . $setting->key);
                 } else {
                     // For non-image settings or when no new file is uploaded
                     $setting->value = $item['value'];
@@ -243,6 +221,49 @@ class SettingController extends Controller
                 'label'         => 'Support Lead Position',
                 'description'   => 'Job title of the Support Lead displayed on the About Us page'
             ],
+            // Theme Settings
+            [
+                'key'           => 'default_theme_mode',
+                'value'         => 'light',
+                'group'         => 'appearance',
+                'type'          => 'select',
+                'options'       => json_encode(['light', 'dark', 'system']),
+                'label'         => 'Default Theme Mode',
+                'description'   => 'Choose the default theme mode for all users'
+            ],
+            [
+                'key'           => 'primary_color',
+                'value'         => '#1976D2',
+                'group'         => 'appearance',
+                'type'          => 'color',
+                'label'         => 'Primary Color',
+                'description'   => 'The main color used throughout the dashboard'
+            ],
+            [
+                'key'           => 'secondary_color',
+                'value'         => '#424242',
+                'group'         => 'appearance',
+                'type'          => 'color',
+                'label'         => 'Secondary Color',
+                'description'   => 'The secondary color used throughout the dashboard'
+            ],
+            [
+                'key'           => 'accent_color',
+                'value'         => '#82B1FF',
+                'group'         => 'appearance',
+                'type'          => 'color',
+                'label'         => 'Accent Color',
+                'description'   => 'The accent color used for highlights and emphasis'
+            ],
+            [
+                'key'           => 'density',
+                'value'         => 'comfortable',
+                'group'         => 'appearance',
+                'type'          => 'select',
+                'options'       => json_encode(['comfortable', 'compact', 'default']),
+                'label'         => 'Interface Density',
+                'description'   => 'Controls the spacing and sizing of UI elements'
+            ],
         ];
 
         foreach ($defaultSettings as $setting) {
@@ -271,7 +292,7 @@ class SettingController extends Controller
                 'description'   => 'Your store logo that appears in the header and other places'
             ]);
         }
-        
+
         // Check for site_name setting
         if (!Setting::where('key', 'site_name')->exists()) {
             Setting::create([
@@ -281,6 +302,19 @@ class SettingController extends Controller
                 'type'          => 'text',
                 'label'         => 'Site Name',
                 'description'   => 'The name of your store that appears in the browser title and throughout the site'
+            ]);
+        }
+
+        // Check for theme settings
+        if (!Setting::where('key', 'default_theme_mode')->exists()) {
+            Setting::create([
+                'key'           => 'default_theme_mode',
+                'value'         => 'light',
+                'group'         => 'appearance',
+                'type'          => 'select',
+                'options'       => json_encode(['light', 'dark', 'system']),
+                'label'         => 'Default Theme Mode',
+                'description'   => 'Choose the default theme mode for all users'
             ]);
         }
     }

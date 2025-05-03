@@ -1,9 +1,10 @@
 <script setup>
-    import { ref, onMounted, onUnmounted, computed } from 'vue';
+    import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
     import ApplicationLogo from '@/Components/ApplicationLogo.vue';
     import { Link, usePage, router } from '@inertiajs/vue3';
     import FlashMessage from '@/Components/FlashMessage.vue';
     import NotificationDropdown from '@/Components/Dashboard/NotificationDropdown.vue';
+    import ThemeToggle from '@/Components/Dashboard/ThemeToggle.vue';
     import { useMessages } from '@/Composables/useMessages';
 
     const rail = ref(false);
@@ -26,31 +27,43 @@
     // Add messages state
     const { unreadCount: unreadMessagesCount, fetchUnreadCount } = useMessages();
 
+    // Theme settings
+    const currentTheme = ref(localStorage.getItem('theme') || 'light');
+
+    const updateTheme = () => {
+        currentTheme.value = localStorage.getItem('theme') || 'light';
+        // Additional theme updates can be performed here if needed
+    };
+
     onMounted(() => {
         // Fetch unread message count on mount
         fetchUnreadCount();
 
-        // Set up polling to check for new messages
+        // Set up interval to check for new messages
         const messagesInterval = setInterval(() => {
             fetchUnreadCount();
         }, 30000); // Check every 30 seconds
 
+        // Listen for theme changes
+        window.addEventListener('theme-changed', updateTheme);
+
         // Clean up
         onUnmounted(() => {
             clearInterval(messagesInterval);
+            window.removeEventListener('theme-changed', updateTheme);
         });
     });
 
     // Add computed property for site name
     const siteName = computed(() => {
         return usePage().props.siteSettings?.siteName ||
-               usePage().props.siteSettings?.companyInfo?.name ||
-               'Tech Store';
+            usePage().props.siteSettings?.companyInfo?.name ||
+            'Tech Store';
     });
 </script>
 
 <template>
-    <v-app>
+    <v-app :theme="currentTheme">
         <!-- Flash messages component -->
         <FlashMessage />
 
@@ -62,15 +75,19 @@
             <v-toolbar-title class="d-flex align-center">
                 <Link :href="route('dashboard.index')" class="text-decoration-none d-flex align-center">
                 <ApplicationLogo :width="rail ? 40 : 125" height="40" class="ml-2" />
-                <span class="ml-2 site-name text-truncate" :class="{'d-none d-sm-block': rail}">{{ siteName }}</span>
+                <span class="ml-2 site-name text-truncate" :class="{ 'd-none d-sm-block': rail }">{{ siteName }}</span>
                 </Link>
             </v-toolbar-title>
 
             <v-spacer></v-spacer>
 
             <div class="d-flex align-center">
+                <!-- Theme Toggle Button -->
+                <ThemeToggle :size="$vuetify.display.xs ? 'default' : 'large'" :show-full-options="true" class="mr-2" />
+
                 <!-- Add badge to messages button - Add responsive margin -->
-                <Link :href="route('dashboard.messages.index')" class="text-decoration-none" :class="{'mr-2': $vuetify.display.width > 400}">
+                <Link :href="route('dashboard.messages.index')" class="text-decoration-none"
+                    :class="{ 'mr-2': $vuetify.display.width > 400 }">
                 <v-btn icon variant="text" :size="$vuetify.display.xs ? 'default' : 'large'">
                     <v-badge :content="unreadMessagesCount" :value="unreadMessagesCount > 0" color="error" overlap>
                         <v-icon>mdi-email-outline</v-icon>
@@ -103,7 +120,7 @@
                         <v-list-item-title>Profile</v-list-item-title>
                     </v-list-item>
                     </Link>
-                    <Link :href="route('index')" class="text-decoration-none">
+                    <Link :href="route('index')" class="text-decoration-none" target="_blank">
                     <v-list-item link>
                         <template v-slot:prepend>
                             <v-icon>mdi-web</v-icon>
