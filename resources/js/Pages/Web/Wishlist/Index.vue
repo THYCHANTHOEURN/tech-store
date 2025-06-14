@@ -42,8 +42,12 @@
 
                             <!-- Stock Status -->
                             <template v-slot:item.stock="{ item }">
-                                <v-chip :color="item.product.stock > 0 ? 'success' : 'error'" size="small">
-                                    {{ item.product.stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                                <v-chip
+                                    :color="getStockColor(item.product)"
+                                    size="small"
+                                    :prepend-icon="getStockIcon(item.product)"
+                                >
+                                    {{ getStockStatusText(item.product) }}
                                 </v-chip>
                             </template>
 
@@ -123,4 +127,25 @@
             }
         });
     };
+
+    const getStockColor = (product) => {
+        if (product.stock <= 0) return 'error'
+        if (product.is_critical_stock) return 'warning'
+        if (product.is_low_stock) return 'orange'
+        return 'success'
+    }
+
+    const getStockIcon = (product) => {
+        if (product.stock <= 0) return 'mdi-alert-circle'
+        if (product.is_critical_stock) return 'mdi-alert'
+        if (product.is_low_stock) return 'mdi-trending-down'
+        return 'mdi-check-circle'
+    }
+
+    const getStockStatusText = (product) => {
+        if (product.stock <= 0) return 'Out of Stock'
+        if (product.is_critical_stock) return 'Critical Stock'
+        if (product.is_low_stock) return 'Low Stock'
+        return `${product.stock} in Stock`
+    }
 </script>

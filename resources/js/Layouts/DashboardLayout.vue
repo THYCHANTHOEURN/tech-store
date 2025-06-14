@@ -181,6 +181,17 @@
                 </v-list-item>
                 </Link>
 
+                <!-- Inventory Management -->
+                <Link :href="route('dashboard.inventory.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.inventory.*')" rounded="lg" class="mb-1">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-package-variant</v-icon>
+                    </template>
+                    <v-list-item-title>Inventory</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Inventory</v-tooltip>
+                </v-list-item>
+                </Link>
+
                 <!-- Categories Menu Item -->
                 <Link :href="route('dashboard.categories.index')" class="text-decoration-none">
                 <v-list-item :active="route().current('dashboard.categories.*')" rounded="lg" class="mb-1">

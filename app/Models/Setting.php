@@ -107,4 +107,19 @@ class Setting extends Model
 
         return [];
     }
+
+    /**
+     * Get inventory settings
+     *
+     * @return array
+     */
+    public static function getInventorySettings()
+    {
+        return [
+            'low_stock_threshold'       => (int) self::get('low_stock_threshold', 10),
+            'critical_stock_threshold'  => (int) self::get('critical_stock_threshold', 5),
+            'overstock_threshold'       => (int) self::get('overstock_threshold', 1000),
+            'enable_stock_alerts'       => (bool) self::get('enable_stock_alerts', true),
+        ];
+    }
 }

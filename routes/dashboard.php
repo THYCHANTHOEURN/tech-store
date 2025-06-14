@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\BannerController;
+use App\Http\Controllers\Dashboard\InventoryController;
 use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\SettingController;
@@ -75,6 +76,14 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
         Route::post('/{thread:uuid}/close', [MessageController::class, 'close'])->name('close');
         Route::post('/{thread:uuid}/reopen', [MessageController::class, 'reopen'])->name('reopen');
         Route::get('/unread/count', [MessageController::class, 'unreadCount'])->name('unread.count'); // Add this line
+    });
+
+    // Inventory management
+    Route::prefix('inventory')->name('inventory.')->group(function () {
+        Route::get('/', [InventoryController::class, 'index'])->name('index');
+        Route::post('/settings', [InventoryController::class, 'updateSettings'])->name('settings');
+        Route::post('/bulk-update', [InventoryController::class, 'bulkUpdateStock'])->name('bulk-update');
+        Route::get('/alerts', [InventoryController::class, 'alerts'])->name('alerts');
     });
 });
 

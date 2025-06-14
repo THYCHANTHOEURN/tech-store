@@ -62,6 +62,10 @@ class Product extends Model
 
     protected $appends = [
         'primary_image_url',
+        'stock_status',
+        'is_low_stock',
+        'is_critical_stock',
+        'is_overstock',
     ];
 
     /**
@@ -154,4 +158,117 @@ class Product extends Model
         return $this->primaryImage?->image_url;
     }
 
+    /**
+     * Get stock status attribute
+     * This method determines the stock status of the product based on its stock level and the inventory settings.
+     *
+     * @return string
+     */
+    public function getStockStatusAttribute(): string
+    {
+        $settings = Setting::getInventorySettings();
+
+        if ($this->stock <= 0) {
+            return 'out_of_stock';
+        } elseif ($this->stock <= $settings['critical_stock_threshold']) {
+            return 'critical';
+        } elseif ($this->stock <= $settings['low_stock_threshold']) {
+            return 'low';
+        } elseif ($this->stock >= $settings['overstock_threshold']) {
+            return 'overstock';
+        }
+
+        return 'in_stock';
+    }
+
+    /**
+     * Check if product is low stock
+     * This method checks if the product's stock is greater than zero and less than or equal to the low stock threshold.
+     *
+     * @return bool
+     */
+    public function getIsLowStockAttribute(): bool
+    {
+        $threshold = Setting::get('low_stock_threshold', 10);
+        return $this->stock > 0 && $this->stock <= $threshold;
+    }
+
+    /**
+     * Check if product is critical stock
+     * This method checks if the product's stock is greater than zero and less than or equal to the critical stock threshold.
+     *
+     * @return bool
+     */
+    public function getIsCriticalStockAttribute(): bool
+    {
+        $threshold = Setting::get('critical_stock_threshold', 5);
+        return $this->stock > 0 && $this->stock <= $threshold;
+    }
+
+    /**
+     * Check if product is overstock
+     * This method checks if the product's stock is greater than or equal to the overstock threshold.
+     *
+     * @return bool
+     */
+    public function getIsOverstockAttribute(): bool
+    {
+        $threshold = Setting::get('overstock_threshold', 1000);
+        return $this->stock >= $threshold;
+    }
+
+    /**
+     * Scope for low stock products
+     * This scope retrieves products that have stock greater than zero and less than or equal to the low stock threshold.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeLowStock($query)
+    {
+        $threshold = Setting::get('low_stock_threshold', 10);
+        return $query->where('stock', '>', 0)->where('stock', '<=', $threshold);
+    }
+
+    /**
+     * Scope for critical stock products
+     * This scope retrieves products that have stock greater than zero and less than or equal to the critical stock threshold.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCriticalStock($query)
+    {
+        $threshold = Setting::get('critical_stock_threshold', 5);
+        return $query->where('stock', '>', 0)->where('stock', '<=', $threshold);
+    }
+
+    /**
+     * Scope for out of stock products
+     * This scope retrieves products that have stock less than or equal to zero.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOutOfStock($query)
+    {
+        return $query->where('stock', '<=', 0);
+    }
+
+    /**
+     * Scope for overstock products
+     * This scope retrieves products that have stock greater than or equal to the overstock threshold.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOverstock($query)
+    {
+        $threshold = Setting::get('overstock_threshold', 1000);
+        return $query->where('stock', '>=', $threshold);
+    }
 }

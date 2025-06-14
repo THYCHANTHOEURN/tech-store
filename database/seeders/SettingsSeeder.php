@@ -244,6 +244,39 @@ class SettingsSeeder extends Seeder
                 'label'         => 'Telegram URL',
                 'description'   => 'Company Telegram channel URL'
             ],
+            // Inventory Settings
+            [
+                'key'           => 'low_stock_threshold',
+                'value'         => '10',
+                'group'         => 'inventory',
+                'type'          => 'integer',
+                'label'         => 'Low Stock Threshold',
+                'description'   => 'Threshold for low stock alerts'
+            ],
+            [
+                'key'           => 'critical_stock_threshold',
+                'value'         => '5',
+                'group'         => 'inventory',
+                'type'          => 'integer',
+                'label'         => 'Critical Stock Threshold',
+                'description'   => 'Threshold for critical stock alerts'
+            ],
+            [
+                'key'           => 'overstock_threshold',
+                'value'         => '1000',
+                'group'         => 'inventory',
+                'type'          => 'integer',
+                'label'         => 'Overstock Threshold',
+                'description'   => 'Threshold for overstock alerts'
+            ],
+            [
+                'key'           => 'enable_stock_alerts',
+                'value'         => '1',
+                'group'         => 'inventory',
+                'type'          => 'boolean',
+                'label'         => 'Enable Stock Alerts',
+                'description'   => 'Enable stock alert notifications'
+            ],
         ];
 
         foreach ($defaultSettings as $setting) {
