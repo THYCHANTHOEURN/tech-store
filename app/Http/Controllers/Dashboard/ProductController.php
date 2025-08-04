@@ -386,7 +386,7 @@ class ProductController extends Controller
      */
     public function export(Request $request)
     {
-        $format     = $request->format ?? 'xlsx';
+        $format     = $request->input('format', 'xlsx');
         $filename   = 'products-' . date('Y-m-d') . '.' . $format;
 
         return Excel::download(new ProductsExport, $filename);
@@ -430,7 +430,7 @@ class ProductController extends Controller
      */
     public function template(Request $request)
     {
-        $format     = $request->format ?? 'xlsx';
+        $format     = $request->input('format', 'xlsx');
         $filename   = 'product-template.' . $format;
 
         return Excel::download(new ProductsTemplateExport, $filename);

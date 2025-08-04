@@ -66,7 +66,7 @@ class Setting extends Model
 
         Cache::forget('setting.' . $key);
 
-        return $setting;
+        // No return value as the method should return null
     }
 
     /**
@@ -88,7 +88,7 @@ class Setting extends Model
     public function getImageUrlAttribute()
     {
         if ($this->type === 'image' && $this->value) {
-            return Storage::disk('public')->url($this->value);
+            return Storage::url($this->value);
         }
 
         return null;
