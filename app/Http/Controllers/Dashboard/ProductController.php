@@ -15,10 +15,13 @@ use Inertia\Inertia;
 use App\Exports\ProductsExport;
 use App\Exports\ProductsTemplateExport;
 use App\Imports\ProductsImport;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of products.
      *
@@ -27,6 +30,8 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Product::class);
+
         $query = Product::with(['category', 'brand', 'primaryImage']);
 
         // Handle search
@@ -96,6 +101,8 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Product::class);
+
         $categories = Category::where('status', true)->get();
         $brands     = Brand::where('status', true)->get();
 
@@ -113,6 +120,8 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Product::class);
+
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
             'category_id'   => 'required|exists:categories,id',
@@ -203,6 +212,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $this->authorize('view', $product);
+
         $product->load(['category', 'brand', 'productImages', 'reviews.user']);
 
         return Inertia::render('Dashboard/Products/Show', [
@@ -218,6 +229,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
+        $this->authorize('update', $product);
+
         $product->load(['productImages']);
         $categories = Category::all();
         $brands     = Brand::all();
@@ -238,6 +251,8 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $this->authorize('update', $product);
+
         $validated = $request->validate([
             'name'              => 'required|string|max:255',
             'category_id'       => 'required|exists:categories,id',
@@ -353,6 +368,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        $this->authorize('delete', $product);
 
         DB::beginTransaction();
 
@@ -386,6 +402,8 @@ class ProductController extends Controller
      */
     public function export(Request $request)
     {
+        $this->authorize('export', Product::class);
+        
         $format     = $request->input('format', 'xlsx');
         $filename   = 'products-' . date('Y-m-d') . '.' . $format;
 
@@ -400,6 +418,8 @@ class ProductController extends Controller
      */
     public function import(Request $request)
     {
+        $this->authorize('import', Product::class);
+
         $request->validate([
             'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
         ]);
@@ -430,6 +450,8 @@ class ProductController extends Controller
      */
     public function template(Request $request)
     {
+        $this->authorize('template', Product::class);
+
         $format     = $request->input('format', 'xlsx');
         $filename   = 'product-template.' . $format;
 

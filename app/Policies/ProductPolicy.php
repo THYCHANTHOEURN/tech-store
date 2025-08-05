@@ -44,4 +44,19 @@ class ProductPolicy
     {
         return $user->can(PermissionsEnum::FORCE_DELETE_PRODUCT->value);
     }
+
+    public function export(User $user)
+    {
+        return $user->can(PermissionsEnum::EXPORT_PRODUCT->value);
+    }
+
+    public function import(User $user)
+    {
+        return $user->can(PermissionsEnum::IMPORT_PRODUCT->value);
+    }
+
+    public function template(User $user)
+    {
+        return $user->can(PermissionsEnum::DOWNLOAD_PRODUCT_TEMPLATE->value);
+    }
 }

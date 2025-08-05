@@ -39,13 +39,16 @@ enum PermissionsEnum: string {
     case FORCE_DELETE_BRAND = 'force delete brand';
 
     // Product Management
-    case VIEW_ANY_PRODUCT     = 'view any product';
-    case VIEW_PRODUCT         = 'view product';
-    case CREATE_PRODUCT       = 'create product';
-    case UPDATE_PRODUCT       = 'update product';
-    case DELETE_PRODUCT       = 'delete product';
-    case RESTORE_PRODUCT      = 'restore product';
-    case FORCE_DELETE_PRODUCT = 'force delete product';
+    case VIEW_ANY_PRODUCT          = 'view any product';
+    case VIEW_PRODUCT              = 'view product';
+    case CREATE_PRODUCT            = 'create product';
+    case UPDATE_PRODUCT            = 'update product';
+    case DELETE_PRODUCT            = 'delete product';
+    case RESTORE_PRODUCT           = 'restore product';
+    case FORCE_DELETE_PRODUCT      = 'force delete product';
+    case EXPORT_PRODUCT            = 'export product';
+    case IMPORT_PRODUCT            = 'import product';
+    case DOWNLOAD_PRODUCT_TEMPLATE = 'download product template';
 
     // Product Image Management
     case VIEW_ANY_PRODUCT_IMAGE     = 'view any product image';
@@ -120,16 +123,16 @@ enum PermissionsEnum: string {
     case FORCE_DELETE_WISHLIST_ITEM = 'force delete wishlist item';
 
     // Message Management
-    case VIEW_ANY_MESSAGE_THREAD     = 'view any message thread';
-    case VIEW_MESSAGE_THREAD         = 'view message thread';
-    case REPLY_MESSAGE_THREAD        = 'reply message thread';
-    case CLOSE_MESSAGE_THREAD        = 'close message thread';
-    case REOPEN_MESSAGE_THREAD       = 'reopen message thread';
+    case VIEW_ANY_MESSAGE_THREAD = 'view any message thread';
+    case VIEW_MESSAGE_THREAD     = 'view message thread';
+    case REPLY_MESSAGE_THREAD    = 'reply message thread';
+    case CLOSE_MESSAGE_THREAD    = 'close message thread';
+    case REOPEN_MESSAGE_THREAD   = 'reopen message thread';
 
     // Notification Management
-    case VIEW_ANY_NOTIFICATION     = 'view any notification';
-    case VIEW_NOTIFICATION         = 'view notification';
-    case MARK_AS_READ_NOTIFICATION = 'mark as read notification';
+    case VIEW_ANY_NOTIFICATION         = 'view any notification';
+    case VIEW_NOTIFICATION             = 'view notification';
+    case MARK_AS_READ_NOTIFICATION     = 'mark as read notification';
     case MARK_ALL_AS_READ_NOTIFICATION = 'mark all as read notification';
 
     // Customer Management
