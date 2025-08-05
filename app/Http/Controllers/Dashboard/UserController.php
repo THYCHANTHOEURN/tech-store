@@ -281,7 +281,7 @@ class UserController extends Controller
      */
     public function export(Request $request)
     {
-        $format     = $request->format ?? 'xlsx';
+        $format     = $request->input('format', 'xlsx');
         $filename   = 'users-' . date('Y-m-d') . '.' . $format;
 
         return Excel::download(new UserExport, $filename);

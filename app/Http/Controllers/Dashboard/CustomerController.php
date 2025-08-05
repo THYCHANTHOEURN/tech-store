@@ -257,7 +257,7 @@ class CustomerController extends Controller
      */
     public function export(Request $request)
     {
-        $format     = $request->format ?? 'xlsx';
+        $format     = $request->input('format', 'xlsx');
         $filename   = 'customers-' . date('Y-m-d') . '.' . $format;
 
         return Excel::download(new CustomerExport, $filename);

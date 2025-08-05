@@ -243,7 +243,7 @@ class BrandController extends Controller
      */
     public function export(Request $request)
     {
-        $format     = $request->format ?? 'xlsx';
+        $format     = $request->input('format', 'xlsx');
         $filename   = 'brands-' . date('Y-m-d') . '.' . $format;
 
         return Excel::download(new BrandExport, $filename);

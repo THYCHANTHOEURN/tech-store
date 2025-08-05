@@ -247,7 +247,7 @@ class BannerController extends Controller
      */
     public function export(Request $request)
     {
-        $format     = $request->format ?? 'xlsx';
+        $format     = $request->input('format', 'xlsx');
         $filename   = 'banners-' . date('Y-m-d') . '.' . $format;
 
         return Excel::download(new BannerExport, $filename);
