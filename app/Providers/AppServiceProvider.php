@@ -2,13 +2,30 @@
 
 namespace App\Providers;
 
+use App\Exports\CustomerExport;
+use App\Models\Banner;
+use App\Models\Brand;
+use App\Models\Category;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Inertia\Inertia;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Message;
+use App\Models\MessageThread;
+use App\Models\Order;
+use App\Models\Product;
 use App\Models\Setting;
+use App\Models\User;
+use App\Policies\BannerPolicy;
+use App\Policies\BrandPolicy;
+use App\Policies\CategoryPolicy;
+use App\Policies\CustomerPolicy;
+use App\Policies\MessageThreadPolicy;
+use App\Policies\OrderPolicy;
+use App\Policies\ProductPolicy;
+use App\Policies\SettingPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 
@@ -71,4 +88,23 @@ class AppServiceProvider extends ServiceProvider
             // Table might not exist during migration
         }
     }
+
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected $policies = [
+        Banner::class           => BannerPolicy::class,
+        Brand::class            => BrandPolicy::class,
+        Category::class         => CategoryPolicy::class,
+        Product::class          => ProductPolicy::class,
+        User::class             => UserPolicy::class,
+        Setting::class          => SettingPolicy::class,
+        \Spatie\Permission\Models\Role::class => \App\Policies\RolePolicy::class,
+        Order::class            => OrderPolicy::class,
+        MessageThread::class    => MessageThreadPolicy::class,
+    ];
+
+
 }

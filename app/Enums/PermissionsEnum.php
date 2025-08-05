@@ -110,4 +110,35 @@ enum PermissionsEnum: string {
     case RESTORE_SETTING      = 'restore setting';
     case FORCE_DELETE_SETTING = 'force delete setting';
 
+    // Wishlist Management
+    case VIEW_ANY_WISHLIST_ITEM     = 'view any wishlist item';
+    case VIEW_WISHLIST_ITEM         = 'view wishlist item';
+    case CREATE_WISHLIST_ITEM       = 'create wishlist item';
+    case UPDATE_WISHLIST_ITEM       = 'update wishlist item';
+    case DELETE_WISHLIST_ITEM       = 'delete wishlist item';
+    case RESTORE_WISHLIST_ITEM      = 'restore wishlist item';
+    case FORCE_DELETE_WISHLIST_ITEM = 'force delete wishlist item';
+
+    // Message Management
+    case VIEW_ANY_MESSAGE_THREAD     = 'view any message thread';
+    case VIEW_MESSAGE_THREAD         = 'view message thread';
+    case REPLY_MESSAGE_THREAD        = 'reply message thread';
+    case CLOSE_MESSAGE_THREAD        = 'close message thread';
+    case REOPEN_MESSAGE_THREAD       = 'reopen message thread';
+
+    // Notification Management
+    case VIEW_ANY_NOTIFICATION     = 'view any notification';
+    case VIEW_NOTIFICATION         = 'view notification';
+    case MARK_AS_READ_NOTIFICATION = 'mark as read notification';
+    case MARK_ALL_AS_READ_NOTIFICATION = 'mark all as read notification';
+
+    // Customer Management
+    case VIEW_ANY_CUSTOMER     = 'view any customer';
+    case VIEW_CUSTOMER         = 'view customer';
+    case CREATE_CUSTOMER       = 'create customer';
+    case UPDATE_CUSTOMER       = 'update customer';
+    case DELETE_CUSTOMER       = 'delete customer';
+    case RESTORE_CUSTOMER      = 'restore customer';
+    case FORCE_DELETE_CUSTOMER = 'force delete customer';
+
 }
