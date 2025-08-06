@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\MessageThread;
 use App\Notifications\MessageReplyNotification;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,8 @@ use Inertia\Inertia;
 
 class MessageController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of all message threads.
      *
@@ -20,6 +23,8 @@ class MessageController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', MessageThread::class);
+
         $query = MessageThread::with(['user', 'lastMessage'])
             ->orderBy('last_message_at', 'desc');
 
@@ -63,6 +68,8 @@ class MessageController extends Controller
      */
     public function show(MessageThread $thread)
     {
+        $this->authorize('view', $thread);
+
         $thread->load(['user', 'messages' => function($query) {
             $query->with(['user', 'admin'])->orderBy('created_at', 'asc');
         }]);
@@ -87,6 +94,8 @@ class MessageController extends Controller
      */
     public function reply(Request $request, MessageThread $thread)
     {
+        $this->authorize('reply', $thread);
+
         $validated = $request->validate([
             'message'       => 'required|string',
             'attachment'    => 'nullable|file|max:10240', // 10MB max
@@ -128,6 +137,8 @@ class MessageController extends Controller
      */
     public function close(MessageThread $thread)
     {
+        $this->authorize('close', $thread);
+
         $thread->update(['status' => 'closed']);
 
         return redirect()->back()->with('success', 'Thread has been closed.');
@@ -141,6 +152,8 @@ class MessageController extends Controller
      */
     public function reopen(MessageThread $thread)
     {
+        $this->authorize('reopen', $thread);
+
         $thread->update(['status' => 'active']);
 
         return redirect()->back()->with('success', 'Thread has been reopened.');
@@ -153,6 +166,8 @@ class MessageController extends Controller
      */
     public function unreadCount()
     {
+        $this->authorize('viewAny', MessageThread::class);
+        
         $count = \App\Models\Message::whereHas('thread', function($query) {
                 $query->where('status', 'active');
             })
