@@ -10,10 +10,13 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use App\Exports\BrandExport;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
 
 class BrandController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the brands.
      *
@@ -22,6 +25,8 @@ class BrandController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Brand::class);
+
         $query = Brand::query();
 
         // Handle search
@@ -65,6 +70,8 @@ class BrandController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Brand::class);
+
         return Inertia::render('Dashboard/Brands/Create');
     }
 
@@ -76,6 +83,8 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Brand::class);
+
         $validated = $request->validate([
             'name'          => ['required', 'string', 'max:255'],
             'description'   => ['nullable', 'string'],
@@ -129,6 +138,8 @@ class BrandController extends Controller
      */
     public function show(Brand $brand)
     {
+        $this->authorize('view', $brand);
+
         // Get products belonging to this brand with pagination
         $products = $brand->products()->with(['category', 'primaryImage'])->paginate(10);
 
@@ -146,6 +157,8 @@ class BrandController extends Controller
      */
     public function edit(Brand $brand)
     {
+        $this->authorize('update', $brand);
+
         return Inertia::render('Dashboard/Brands/Edit', [
             'brand' => $brand,
         ]);
@@ -160,6 +173,8 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
+        $this->authorize('update', $brand);
+
         $validated = $request->validate([
             'name'          => ['required', 'string', 'max:255'],
             'description'   => ['nullable', 'string'],
@@ -206,6 +221,8 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand)
     {
+        $this->authorize('delete', $brand);
+
         DB::beginTransaction();
 
         try {
@@ -243,6 +260,8 @@ class BrandController extends Controller
      */
     public function export(Request $request)
     {
+        $this->authorize('export', Brand::class);
+        
         $format     = $request->input('format', 'xlsx');
         $filename   = 'brands-' . date('Y-m-d') . '.' . $format;
 

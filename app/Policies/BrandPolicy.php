@@ -44,4 +44,9 @@ class BrandPolicy
     {
         return $user->can(PermissionsEnum::FORCE_DELETE_BRAND->value);
     }
+
+    public function export(User $user)
+    {
+        return $user->can(PermissionsEnum::EXPORT_BRAND->value);
+    }
 }

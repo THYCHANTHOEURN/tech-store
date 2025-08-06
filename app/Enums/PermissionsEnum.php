@@ -38,6 +38,7 @@ enum PermissionsEnum: string {
     case DELETE_BRAND       = 'delete brand';
     case RESTORE_BRAND      = 'restore brand';
     case FORCE_DELETE_BRAND = 'force delete brand';
+    case EXPORT_BRAND       = 'export brand';
 
     // Product Management
     case VIEW_ANY_PRODUCT          = 'view any product';
