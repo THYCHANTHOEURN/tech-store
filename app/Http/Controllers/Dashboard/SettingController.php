@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,8 @@ use Inertia\Inertia;
 
 class SettingController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display the settings page.
      *
@@ -20,6 +23,8 @@ class SettingController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Setting::class);
+
         // Make sure basic settings exist
         $this->ensureBasicSettings();
 
@@ -50,6 +55,8 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
+        $this->authorize('update', Setting::class);
+
         try {
             DB::beginTransaction();
 
@@ -110,6 +117,8 @@ class SettingController extends Controller
      */
     public function initialize()
     {
+        $this->authorize('create', Setting::class);
+
         $defaultSettings = [
             // About Us Page Images
             [
@@ -281,6 +290,7 @@ class SettingController extends Controller
      */
     public function ensureBasicSettings()
     {
+        
         // Check for site_logo setting
         if (!Setting::where('key', 'site_logo')->exists()) {
             Setting::create([
