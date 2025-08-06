@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Exports\BannerExport;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class BannerController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the banners.
      *
@@ -21,6 +24,8 @@ class BannerController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Banner::class);
+
         $query = Banner::query();
 
         // Handle search
@@ -71,6 +76,8 @@ class BannerController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Banner::class);
+
         return Inertia::render('Dashboard/Banners/Create', [
             'positions' => [
                 ['label' => 'Slider', 'value'   => Banner::POSITION_SLIDER],
@@ -88,6 +95,8 @@ class BannerController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Banner::class);
+
         $validated = $request->validate([
             'title'     => ['required', 'string', 'max:255'],
             'link'      => ['required', 'string', 'max:255'],
@@ -132,6 +141,8 @@ class BannerController extends Controller
      */
     public function show(Banner $banner)
     {
+        $this->authorize('view', $banner);
+
         return Inertia::render('Dashboard/Banners/Show', [
             'banner'    => $banner,
             'positions' => [
@@ -150,6 +161,8 @@ class BannerController extends Controller
      */
     public function edit(Banner $banner)
     {
+        $this->authorize('update', $banner);
+
         return Inertia::render('Dashboard/Banners/Edit', [
             'banner'    => $banner,
             'positions' => [
@@ -169,6 +182,8 @@ class BannerController extends Controller
      */
     public function update(Request $request, Banner $banner)
     {
+        $this->authorize('update', $banner);
+
         $validated = $request->validate([
             'title'     => ['required', 'string', 'max:255'],
             'link'      => ['required', 'string', 'max:255'],
@@ -216,6 +231,8 @@ class BannerController extends Controller
      */
     public function destroy(Banner $banner)
     {
+        $this->authorize('delete', $banner);
+
         DB::beginTransaction();
 
         try {
@@ -247,6 +264,8 @@ class BannerController extends Controller
      */
     public function export(Request $request)
     {
+        $this->authorize('export', Banner::class);
+
         $format     = $request->input('format', 'xlsx');
         $filename   = 'banners-' . date('Y-m-d') . '.' . $format;
 

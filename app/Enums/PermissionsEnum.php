@@ -96,6 +96,7 @@ enum PermissionsEnum: string {
     case DELETE_BANNER       = 'delete banner';
     case RESTORE_BANNER      = 'restore banner';
     case FORCE_DELETE_BANNER = 'force delete banner';
+    case EXPORT_BANNER       = 'export banner';
 
     // Cart Item Management
     case VIEW_ANY_CART_ITEM     = 'view any cart item';

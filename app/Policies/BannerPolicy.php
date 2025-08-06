@@ -45,4 +45,9 @@ class BannerPolicy
     {
         return $user->can(PermissionsEnum::FORCE_DELETE_BANNER->value);
     }
+
+    public function export(User $user)
+    {
+        return $user->can(PermissionsEnum::EXPORT_BANNER->value);
+    }
 }
