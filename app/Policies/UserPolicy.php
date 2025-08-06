@@ -43,4 +43,9 @@ class UserPolicy
     {
         return $user->can(PermissionsEnum::FORCE_DELETE_USER->value);
     }
+
+    public function export(User $user)
+    {
+        return $user->can(PermissionsEnum::EXPORT_USER->value);
+    }
 }

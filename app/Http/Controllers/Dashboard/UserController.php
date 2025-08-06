@@ -6,6 +6,7 @@ use App\Enums\RolesEnum;
 use App\Exports\UserExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +17,8 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the users.
      *
@@ -24,6 +27,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', User::class);
+
         // Exclude customers from this view as they are managed in CustomerController
         $query = User::query()
             ->with('roles')
@@ -82,6 +87,8 @@ class UserController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', User::class);
+
         // Get all roles except customer
         $roles = Role::where('name', '!=', RolesEnum::CUSTOMER->value)->get();
 
@@ -98,6 +105,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
+
         $validated = $request->validate([
             'name'      => ['required', 'string', 'max:255'],
             'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -142,6 +151,8 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        $this->authorize('view', $user);
+
         // Make sure the user is not a customer
         if ($user->hasRole(RolesEnum::CUSTOMER->value)) {
             return redirect()->route('dashboard.users.index')
@@ -163,6 +174,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        $this->authorize('update', $user);
+
         // Make sure the user is not a customer
         if ($user->hasRole(RolesEnum::CUSTOMER->value)) {
             return redirect()->route('dashboard.users.index')
@@ -188,6 +201,8 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        $this->authorize('update', $user);
+
         // Make sure the user is not a customer
         if ($user->hasRole(RolesEnum::CUSTOMER->value)) {
             return redirect()->route('dashboard.users.index')
@@ -244,6 +259,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
+
         // Make sure the user is not a customer
         if ($user->hasRole(RolesEnum::CUSTOMER->value)) {
             return redirect()->route('dashboard.users.index')
@@ -281,6 +298,8 @@ class UserController extends Controller
      */
     public function export(Request $request)
     {
+        $this->authorize('export', User::class);
+
         $format     = $request->input('format', 'xlsx');
         $filename   = 'users-' . date('Y-m-d') . '.' . $format;
 

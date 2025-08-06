@@ -10,7 +10,8 @@ enum PermissionsEnum: string {
     case DELETE_USER       = 'delete user';
     case RESTORE_USER      = 'restore user';
     case FORCE_DELETE_USER = 'force delete user';
-
+    case EXPORT_USER       = 'export user';
+    
     // Role Management
     case VIEW_ANY_ROLE     = 'view any role';
     case VIEW_ROLE         = 'view role';
