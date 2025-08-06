@@ -51,7 +51,7 @@ enum PermissionsEnum: string {
     case FORCE_DELETE_PRODUCT      = 'force delete product';
     case EXPORT_PRODUCT            = 'export product';
     case IMPORT_PRODUCT            = 'import product';
-    case DOWNLOAD_PRODUCT_TEMPLATE = 'download product template';
+    case DOWNLOAD_TEMPLATE_PRODUCT  = 'download template product';
 
     // Product Image Management
     case VIEW_ANY_PRODUCT_IMAGE     = 'view any product image';
@@ -71,7 +71,7 @@ enum PermissionsEnum: string {
     case RESTORE_ORDER      = 'restore order';
     case FORCE_DELETE_ORDER = 'force delete order';
     case EXPORT_ORDER       = 'export order';
-    case VIEW_ORDER_INVOICE = 'view order invoice';
+    case INVOICE_ORDER      = 'view invoice order';
 
     // Order Item Management
     case VIEW_ANY_ORDER_ITEM     = 'view any order item';
@@ -120,13 +120,13 @@ enum PermissionsEnum: string {
     case FORCE_DELETE_SETTING = 'force delete setting';
 
     // Wishlist Management
-    case VIEW_ANY_WISHLIST_ITEM     = 'view any wishlist item';
-    case VIEW_WISHLIST_ITEM         = 'view wishlist item';
-    case CREATE_WISHLIST_ITEM       = 'create wishlist item';
-    case UPDATE_WISHLIST_ITEM       = 'update wishlist item';
-    case DELETE_WISHLIST_ITEM       = 'delete wishlist item';
-    case RESTORE_WISHLIST_ITEM      = 'restore wishlist item';
-    case FORCE_DELETE_WISHLIST_ITEM = 'force delete wishlist item';
+    // case VIEW_ANY_WISHLIST_ITEM     = 'view any wishlist item';
+    // case VIEW_WISHLIST_ITEM         = 'view wishlist item';
+    // case CREATE_WISHLIST_ITEM       = 'create wishlist item';
+    // case UPDATE_WISHLIST_ITEM       = 'update wishlist item';
+    // case DELETE_WISHLIST_ITEM       = 'delete wishlist item';
+    // case RESTORE_WISHLIST_ITEM      = 'restore wishlist item';
+    // case FORCE_DELETE_WISHLIST_ITEM = 'force delete wishlist item';
 
     // Message Management
     case VIEW_ANY_MESSAGE_THREAD = 'view any message thread';
@@ -155,5 +155,5 @@ enum PermissionsEnum: string {
     case VIEW_INVENTORY           = 'view inventory';
     case UPDATE_INVENTORY         = 'update inventory';
     case BULK_UPDATE_INVENTORY    = 'bulk update inventory';
-    case ALERTS_INVENTORY         = 'view inventory alerts';
+    case ALERTS_INVENTORY         = 'alerts inventory';
 }

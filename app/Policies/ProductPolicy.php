@@ -57,6 +57,6 @@ class ProductPolicy
 
     public function template(User $user)
     {
-        return $user->can(PermissionsEnum::DOWNLOAD_PRODUCT_TEMPLATE->value);
+        return $user->can(PermissionsEnum::DOWNLOAD_TEMPLATE_PRODUCT->value);
     }
 }

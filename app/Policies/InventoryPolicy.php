@@ -25,6 +25,6 @@ class InventoryPolicy
 
     public function alerts(User $user)
     {
-        return $user->can(PermissionsEnum::VIEW_INVENTORY_ALERTS->value);
+        return $user->can(PermissionsEnum::ALERTS_INVENTORY->value);
     }
 }

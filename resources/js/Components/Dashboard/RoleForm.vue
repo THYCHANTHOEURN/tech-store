@@ -467,6 +467,11 @@
             'review': 'mdi-star',
             'banner': 'mdi-image-multiple',
             'cart item': 'mdi-cart-plus',
+            'customer' : 'mdi-account-multiple',
+            'inventory' : 'mdi-warehouse',
+            'notification': 'mdi-bell',
+            'setting': 'mdi-cog',
+            'thread': 'mdi-forum',
         };
 
         return icons[groupName] || 'mdi-shield';

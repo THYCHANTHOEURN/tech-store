@@ -52,6 +52,6 @@ class OrderPolicy
 
     public function viewInvoice(User $user, Order $order)
     {
-        return $user->can(PermissionsEnum::VIEW_ORDER_INVOICE->value);
+        return $user->can(PermissionsEnum::INVOICE_ORDER->value);
     }
 }
