@@ -44,4 +44,9 @@ class CategoryPolicy
     {
         return $user->can(PermissionsEnum::FORCE_DELETE_CATEGORY->value);
     }
+
+    public function export(User $user)
+    {
+        return $user->can(PermissionsEnum::EXPORT_CATEGORY->value);
+    }
 }

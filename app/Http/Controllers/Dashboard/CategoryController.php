@@ -10,10 +10,13 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use App\Exports\CategoryExport;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the categories.
      *
@@ -22,6 +25,8 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Category::class);
+
         $query = Category::with(['parent']);
 
         // Handle search
@@ -72,6 +77,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Category::class);
+
         $parentCategories = Category::whereNull('parent_id')->where('status', true)->get();
 
         return Inertia::render('Dashboard/Categories/Create', [
@@ -87,6 +94,8 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Category::class);
+
         $validated = $request->validate([
             'name'              => 'required|string|max:255',
             'parent_id'         => 'nullable|exists:categories,id',
@@ -142,6 +151,8 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
+        $this->authorize('view', $category);
+
         $category->load(['parent', 'children']);
 
         // Get products belonging to this category
@@ -161,6 +172,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
+        $this->authorize('update', $category);
 
         $parentCategories = Category::whereNull('parent_id')->where('status', true)->get();
 
@@ -179,6 +191,8 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
+        $this->authorize('update', $category);
+
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
             'parent_id'     => 'nullable|exists:categories,id',
@@ -233,6 +247,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        $this->authorize('delete', $category);
+
         DB::beginTransaction();
 
         try {
@@ -276,6 +292,8 @@ class CategoryController extends Controller
      */
     public function export(Request $request)
     {
+        $this->authorize('export', Category::class);
+
         $format     = $request->input('format', 'xlsx');
         $filename   = 'categories-' . date('Y-m-d') . '.' . $format;
 
