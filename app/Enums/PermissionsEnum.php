@@ -151,4 +151,9 @@ enum PermissionsEnum: string {
     case FORCE_DELETE_CUSTOMER = 'force delete customer';
     case EXPORT_CUSTOMER       = 'export customer';
 
+    // Inventory Management
+    case VIEW_INVENTORY           = 'view inventory';
+    case UPDATE_INVENTORY         = 'update inventory';
+    case BULK_UPDATE_INVENTORY    = 'bulk update inventory';
+    case ALERTS_INVENTORY         = 'view inventory alerts';
 }

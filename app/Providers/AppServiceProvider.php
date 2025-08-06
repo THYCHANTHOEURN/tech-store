@@ -21,6 +21,7 @@ use App\Policies\BannerPolicy;
 use App\Policies\BrandPolicy;
 use App\Policies\CategoryPolicy;
 use App\Policies\CustomerPolicy;
+use App\Policies\InventoryPolicy;
 use App\Policies\MessageThreadPolicy;
 use App\Policies\OrderPolicy;
 use App\Policies\ProductPolicy;
@@ -105,6 +106,7 @@ class AppServiceProvider extends ServiceProvider
         Order::class            => OrderPolicy::class,
         MessageThread::class    => MessageThreadPolicy::class,
         User::class             => CustomerPolicy::class,
+        Product::class          => InventoryPolicy::class,
     ];
 
 

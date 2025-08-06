@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Setting;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 
 class InventoryController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display inventory dashboard
      *
@@ -20,6 +23,8 @@ class InventoryController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('view', Product::class);
+
         $settings = Setting::getInventorySettings();
 
         // Get inventory statistics
@@ -81,6 +86,8 @@ class InventoryController extends Controller
      */
     public function updateSettings(Request $request)
     {
+        $this->authorize('update', Product::class);
+
         $validated = $request->validate([
             'low_stock_threshold'       => 'required|integer|min:1',
             'critical_stock_threshold'  => 'required|integer|min:1',
@@ -104,6 +111,8 @@ class InventoryController extends Controller
      */
     public function bulkUpdateStock(Request $request)
     {
+        $this->authorize('bulkUpdate', Product::class);
+
         $validated = $request->validate([
             'updates'               => 'required|array',
             'updates.*.product_id'  => 'required|exists:products,id',
@@ -135,6 +144,8 @@ class InventoryController extends Controller
      */
     public function alerts()
     {
+        $this->authorize('alerts', Product::class);
+
         $settings = Setting::getInventorySettings();
 
         if (!$settings['enable_stock_alerts']) {
