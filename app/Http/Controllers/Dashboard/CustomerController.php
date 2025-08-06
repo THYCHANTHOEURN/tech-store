@@ -6,6 +6,7 @@ use App\Enums\RolesEnum;
 use App\Exports\CustomerExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -15,6 +16,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the customers.
      *
@@ -23,6 +26,8 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', User::class);
+
         $query = User::role(RolesEnum::CUSTOMER->value)->with('roles');
 
         // Handle search
@@ -67,6 +72,8 @@ class CustomerController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', User::class);
+
         return Inertia::render('Dashboard/Customers/Create');
     }
 
@@ -78,6 +85,8 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
+
         $validated = $request->validate([
             'name'      => ['required', 'string', 'max:255'],
             'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -121,6 +130,8 @@ class CustomerController extends Controller
      */
     public function show(User $customer)
     {
+        $this->authorize('view', $customer);
+
         // Check if the user has the customer role
         if (!$customer->hasRole(RolesEnum::CUSTOMER->value)) {
             return redirect()->route('dashboard.customers.index')
@@ -154,6 +165,8 @@ class CustomerController extends Controller
      */
     public function edit(User $customer)
     {
+        $this->authorize('update', $customer);
+
         // Check if the user has the customer role
         if (!$customer->hasRole(RolesEnum::CUSTOMER->value)) {
             return redirect()->route('dashboard.customers.index')
@@ -174,6 +187,8 @@ class CustomerController extends Controller
      */
     public function update(Request $request, User $customer)
     {
+        $this->authorize('update', $customer);
+
         // Check if the user has the customer role
         if (!$customer->hasRole(RolesEnum::CUSTOMER->value)) {
             return redirect()->route('dashboard.customers.index')
@@ -226,6 +241,8 @@ class CustomerController extends Controller
      */
     public function destroy(User $customer)
     {
+        $this->authorize('delete', $customer);
+
         // Check if the user has the customer role
         if (!$customer->hasRole(RolesEnum::CUSTOMER->value)) {
             return redirect()->route('dashboard.customers.index')
@@ -257,6 +274,8 @@ class CustomerController extends Controller
      */
     public function export(Request $request)
     {
+        $this->authorize('export', User::class);
+        
         $format     = $request->input('format', 'xlsx');
         $filename   = 'customers-' . date('Y-m-d') . '.' . $format;
 

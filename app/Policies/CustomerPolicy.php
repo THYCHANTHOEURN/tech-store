@@ -43,4 +43,9 @@ class CustomerPolicy
     {
         return $user->can(PermissionsEnum::FORCE_DELETE_CUSTOMER->value);
     }
+
+    public function export(User $user)
+    {
+        return $user->can(PermissionsEnum::EXPORT_CUSTOMER->value);
+    }
 }

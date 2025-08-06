@@ -104,6 +104,7 @@ class AppServiceProvider extends ServiceProvider
         \Spatie\Permission\Models\Role::class => \App\Policies\RolePolicy::class,
         Order::class            => OrderPolicy::class,
         MessageThread::class    => MessageThreadPolicy::class,
+        User::class             => CustomerPolicy::class,
     ];
 
 
