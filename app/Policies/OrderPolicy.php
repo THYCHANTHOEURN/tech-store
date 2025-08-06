@@ -44,4 +44,14 @@ class OrderPolicy
     {
         return $user->can(PermissionsEnum::FORCE_DELETE_ORDER->value);
     }
+
+    public function export(User $user)
+    {
+        return $user->can(PermissionsEnum::EXPORT_ORDER->value);
+    }
+
+    public function viewInvoice(User $user, Order $order)
+    {
+        return $user->can(PermissionsEnum::VIEW_ORDER_INVOICE->value);
+    }
 }

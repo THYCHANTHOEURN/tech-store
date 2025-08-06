@@ -12,10 +12,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Exports\OrderExport;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the orders.
      *
@@ -24,6 +27,8 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Order::class);
+
         $query = Order::query()->with('user');
 
         // Handle search
@@ -79,6 +84,8 @@ class OrderController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Order::class);
+
         $users      = User::select('id', 'name', 'email')->get();
         $products   = Product::where('status', true)
                         ->where('stock', '>', 0)
@@ -111,6 +118,8 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Order::class);
+
         $validated = $request->validate([
             'user_id'               => 'required|exists:users,id',
             'shipping_address'      => 'required|string',
@@ -202,6 +211,8 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
+        $this->authorize('view', $order);
+
         $order->load(['user', 'orderItems.product.primaryImage']);
 
         $orderStatuses = collect(OrderStatus::cases())->map(fn ($status) => [
@@ -229,6 +240,8 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
+        $this->authorize('update', $order);
+
         $order->load(['user', 'orderItems.product.primaryImage']);
 
         $users      = User::select('id', 'name', 'email')->get();
@@ -264,6 +277,8 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
+        $this->authorize('update', $order);
+
         $validated = $request->validate([
             'shipping_address'      => 'required|string',
             'phone'                 => 'required|string|max:20',
@@ -299,6 +314,8 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
+        $this->authorize('delete', $order);
+
         DB::beginTransaction();
 
         try {
@@ -330,6 +347,8 @@ class OrderController extends Controller
      */
     public function invoice(Order $order)
     {
+        $this->authorize('viewInvoice', $order);
+
         $order->load(['user', 'orderItems.product.primaryImage']);
 
         // Get company information from settings
@@ -359,6 +378,8 @@ class OrderController extends Controller
      */
     public function export(Request $request)
     {
+        $this->authorize('export', Order::class);
+        
         $format     = $request->input('format', 'xlsx');
         $filename   = 'orders-' . date('Y-m-d') . '.' . $format;
 

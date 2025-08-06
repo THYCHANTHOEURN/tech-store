@@ -69,6 +69,8 @@ enum PermissionsEnum: string {
     case DELETE_ORDER       = 'delete order';
     case RESTORE_ORDER      = 'restore order';
     case FORCE_DELETE_ORDER = 'force delete order';
+    case EXPORT_ORDER       = 'export order';
+    case VIEW_ORDER_INVOICE = 'view order invoice';
 
     // Order Item Management
     case VIEW_ANY_ORDER_ITEM     = 'view any order item';
