@@ -55,7 +55,6 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
-        $this->authorize('update', Setting::class);
 
         try {
             DB::beginTransaction();
@@ -66,6 +65,8 @@ class SettingController extends Controller
                 $setting = Setting::where('key', $item['key'])->first();
 
                 if (!$setting) continue;
+
+                $this->authorize('update', $setting);
 
                 // Handle file uploads - special case for images
                 if ($setting->type === 'image' && isset($request->files) && $request->files->has('files.' . $setting->key)) {
@@ -290,7 +291,7 @@ class SettingController extends Controller
      */
     public function ensureBasicSettings()
     {
-        
+
         // Check for site_logo setting
         if (!Setting::where('key', 'site_logo')->exists()) {
             Setting::create([

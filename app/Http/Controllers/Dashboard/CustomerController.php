@@ -26,7 +26,7 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', User::class);
+        $this->authorize('viewAnyCustomer', User::class);
 
         $query = User::role(RolesEnum::CUSTOMER->value)->with('roles');
 
@@ -72,7 +72,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', User::class);
+        $this->authorize('createCustomer', User::class);
 
         return Inertia::render('Dashboard/Customers/Create');
     }
@@ -85,7 +85,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', User::class);
+        $this->authorize('createCustomer', User::class);
 
         $validated = $request->validate([
             'name'      => ['required', 'string', 'max:255'],
@@ -130,7 +130,7 @@ class CustomerController extends Controller
      */
     public function show(User $customer)
     {
-        $this->authorize('view', $customer);
+        $this->authorize('viewCustomer', $customer);
 
         // Check if the user has the customer role
         if (!$customer->hasRole(RolesEnum::CUSTOMER->value)) {
@@ -165,7 +165,7 @@ class CustomerController extends Controller
      */
     public function edit(User $customer)
     {
-        $this->authorize('update', $customer);
+        $this->authorize('updateCustomer', $customer);
 
         // Check if the user has the customer role
         if (!$customer->hasRole(RolesEnum::CUSTOMER->value)) {
@@ -187,7 +187,7 @@ class CustomerController extends Controller
      */
     public function update(Request $request, User $customer)
     {
-        $this->authorize('update', $customer);
+        $this->authorize('updateCustomer', $customer);
 
         // Check if the user has the customer role
         if (!$customer->hasRole(RolesEnum::CUSTOMER->value)) {
@@ -241,7 +241,7 @@ class CustomerController extends Controller
      */
     public function destroy(User $customer)
     {
-        $this->authorize('delete', $customer);
+        $this->authorize('deleteCustomer', $customer);
 
         // Check if the user has the customer role
         if (!$customer->hasRole(RolesEnum::CUSTOMER->value)) {
@@ -274,8 +274,8 @@ class CustomerController extends Controller
      */
     public function export(Request $request)
     {
-        $this->authorize('export', User::class);
-        
+        $this->authorize('exportCustomer', User::class);
+
         $format     = $request->input('format', 'xlsx');
         $filename   = 'customers-' . date('Y-m-d') . '.' . $format;
 

@@ -23,7 +23,7 @@ class InventoryController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view', Product::class);
+        $this->authorize('viewInventory', Product::class);
 
         $settings = Setting::getInventorySettings();
 
@@ -86,7 +86,7 @@ class InventoryController extends Controller
      */
     public function updateSettings(Request $request)
     {
-        $this->authorize('update', Product::class);
+        $this->authorize('updateInventory', Product::class);
 
         $validated = $request->validate([
             'low_stock_threshold'       => 'required|integer|min:1',
@@ -111,7 +111,7 @@ class InventoryController extends Controller
      */
     public function bulkUpdateStock(Request $request)
     {
-        $this->authorize('bulkUpdate', Product::class);
+        $this->authorize('bulkUpdateInventory', Product::class);
 
         $validated = $request->validate([
             'updates'               => 'required|array',
@@ -144,7 +144,7 @@ class InventoryController extends Controller
      */
     public function alerts()
     {
-        $this->authorize('alerts', Product::class);
+        $this->authorize('alertsInventory', Product::class);
 
         $settings = Setting::getInventorySettings();
 

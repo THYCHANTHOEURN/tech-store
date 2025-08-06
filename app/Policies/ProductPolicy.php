@@ -59,4 +59,24 @@ class ProductPolicy
     {
         return $user->can(PermissionsEnum::DOWNLOAD_TEMPLATE_PRODUCT->value);
     }
+
+    public function viewInventory(User $user)
+    {
+        return $user->can(PermissionsEnum::VIEW_INVENTORY->value);
+    }
+
+    public function updateInventory(User $user)
+    {
+        return $user->can(PermissionsEnum::UPDATE_INVENTORY->value);
+    }
+
+    public function bulkUpdateInventory(User $user)
+    {
+        return $user->can(PermissionsEnum::BULK_UPDATE_INVENTORY->value);
+    }
+
+    public function alertsInventory(User $user)
+    {
+        return $user->can(PermissionsEnum::ALERTS_INVENTORY->value);
+    }
 }

@@ -48,4 +48,44 @@ class UserPolicy
     {
         return $user->can(PermissionsEnum::EXPORT_USER->value);
     }
+
+    public function viewAnyCustomer(User $user)
+    {
+        return $user->can(PermissionsEnum::VIEW_ANY_CUSTOMER->value);
+    }
+
+    public function viewCustomer(User $user, User $customer)
+    {
+        return $user->can(PermissionsEnum::VIEW_CUSTOMER->value);
+    }
+
+    public function createCustomer(User $user)
+    {
+        return $user->can(PermissionsEnum::CREATE_CUSTOMER->value);
+    }
+
+    public function updateCustomer(User $user, User $customer)
+    {
+        return $user->can(PermissionsEnum::UPDATE_CUSTOMER->value);
+    }
+
+    public function deleteCustomer(User $user, User $customer)
+    {
+        return $user->can(PermissionsEnum::DELETE_CUSTOMER->value);
+    }
+
+    public function restoreCustomer(User $user, User $customer)
+    {
+        return $user->can(PermissionsEnum::RESTORE_CUSTOMER->value);
+    }
+
+    public function forceDeleteCustomer(User $user, User $customer)
+    {
+        return $user->can(PermissionsEnum::FORCE_DELETE_CUSTOMER->value);
+    }
+
+    public function exportCustomer(User $user)
+    {
+        return $user->can(PermissionsEnum::EXPORT_CUSTOMER->value);
+    }
 }

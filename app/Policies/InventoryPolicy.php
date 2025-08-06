@@ -8,22 +8,22 @@ use App\Models\User;
 
 class InventoryPolicy
 {
-    public function view(User $user)
+    public function viewInventory(User $user)
     {
         return $user->can(PermissionsEnum::VIEW_INVENTORY->value);
     }
 
-    public function update(User $user)
+    public function updateInventory(User $user)
     {
         return $user->can(PermissionsEnum::UPDATE_INVENTORY->value);
     }
 
-    public function bulkUpdate(User $user)
+    public function bulkUpdateInventory(User $user)
     {
         return $user->can(PermissionsEnum::BULK_UPDATE_INVENTORY->value);
     }
 
-    public function alerts(User $user)
+    public function alertsInventory(User $user)
     {
         return $user->can(PermissionsEnum::ALERTS_INVENTORY->value);
     }
