@@ -1,17 +1,19 @@
 <?php
-
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the roles.
      *
@@ -20,9 +22,11 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Role::class);
+
         $query = Role::query()->with('permissions')
-                ->withCount('users')
-                ->withCount('permissions');
+            ->withCount('users')
+            ->withCount('permissions');
 
         // Handle search
         if ($request->filled('search')) {
@@ -38,7 +42,7 @@ class RoleController extends Controller
         $roles = $query->paginate(10)->appends($request->query());
 
         return Inertia::render('Dashboard/Roles/Index', [
-            'roles' => $roles,
+            'roles'   => $roles,
             'filters' => $request->only(['search']),
         ]);
     }
@@ -50,6 +54,8 @@ class RoleController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Role::class);
+
         $permissions = Permission::all();
 
         return Inertia::render('Dashboard/Roles/Create', [
@@ -65,8 +71,10 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Role::class);
+
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:roles'],
+            'name'        => ['required', 'string', 'max:255', 'unique:roles'],
             'permissions' => ['nullable', 'array'],
         ]);
 
@@ -75,12 +83,12 @@ class RoleController extends Controller
         try {
             // Create the role
             $role = Role::create([
-                'name' => $validated['name'],
+                'name'       => $validated['name'],
                 'guard_name' => 'web',
             ]);
 
             // Assign permissions
-            if (!empty($validated['permissions'])) {
+            if (! empty($validated['permissions'])) {
                 $role->syncPermissions($validated['permissions']);
             }
 
@@ -105,11 +113,13 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
+        $this->authorize('view', $role);
+
         $role->load('permissions');
         $users = $role->users()->paginate(10);
 
         return Inertia::render('Dashboard/Roles/Show', [
-            'role' => $role,
+            'role'  => $role,
             'users' => $users,
         ]);
     }
@@ -122,12 +132,14 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+        //$this->authorize('update', $role);
+
         $role->load('permissions');
         $permissions = Permission::all();
 
         return Inertia::render('Dashboard/Roles/Edit', [
-            'role' => $role,
-            'permissions' => $permissions,
+            'role'            => $role,
+            'permissions'     => $permissions,
             'rolePermissions' => $role->permissions->pluck('id')->toArray(),
         ]);
     }
@@ -141,8 +153,10 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
+        $this->authorize('update', $role);
+
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('roles')->ignore($role->id)],
+            'name'        => ['required', 'string', 'max:255', Rule::unique('roles')->ignore($role->id)],
             'permissions' => ['nullable', 'array'],
         ]);
 
@@ -182,6 +196,8 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        $this->authorize('delete', $role);
+
         DB::beginTransaction();
 
         try {
