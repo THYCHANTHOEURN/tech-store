@@ -269,6 +269,17 @@
                 </v-list-item>
                 </Link>
 
+                <!-- Activity Logs Menu Item -->
+                <Link :href="route('dashboard.activity-logs.index')" class="text-decoration-none">
+                <v-list-item :active="route().current('dashboard.activity-logs.*')" rounded="lg" class="mb-1">
+                    <template v-slot:prepend>
+                        <v-icon>mdi-history</v-icon>
+                    </template>
+                    <v-list-item-title>Activity Logs</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">Activity Logs</v-tooltip>
+                </v-list-item>
+                </Link>
+
                 <!-- Settings Menu Item -->
                 <Link :href="route('dashboard.settings.index')" class="text-decoration-none">
                 <v-list-item :active="route().current('dashboard.settings.*')" rounded="lg" class="mb-1">

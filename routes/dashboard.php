@@ -24,6 +24,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->name('das
     // Dashboard home
     Route::get('/', [DashboardController::class, 'index'])->name('index');
 
+    // Activity Log page
+    Route::get('activity-logs', [\App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity-logs.index');
+
     // Product management, including export, import, and template download
     Route::resource('products', ProductController::class);
     Route::get('products-export', [ProductController::class, 'export'])->name('products.export');

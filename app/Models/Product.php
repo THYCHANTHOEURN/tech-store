@@ -16,6 +16,7 @@ class Product extends Model
     use HasFactory;
     use HasUuidTrait;
     use SoftDeletes;
+    use \Spatie\Activitylog\Traits\LogsActivity;
 
     /**
      * The table associated with the model.
@@ -49,6 +50,7 @@ class Product extends Model
     ];
 
     /**
+            use LogsActivity;
      * The attributes that should be cast.
      *
      * @var array
@@ -73,6 +75,19 @@ class Product extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+
+            protected static $logAttributes = ['name', 'slug', 'sku', 'price', 'stock'];
+            protected static $logName = 'product';
+            protected static $logOnlyDirty = true;
+            protected static $submitEmptyLogs = false;
+
+            public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
+            {
+                return \Spatie\Activitylog\LogOptions::defaults()
+                    ->logOnly(self::$logAttributes)
+                    ->logOnlyDirty()
+                    ->dontSubmitEmptyLogs();
+            }
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');

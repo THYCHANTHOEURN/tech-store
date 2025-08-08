@@ -15,6 +15,7 @@ class Order extends Model
     use HasFactory;
     use HasUuidTrait;
     use SoftDeletes;
+    use \Spatie\Activitylog\Traits\LogsActivity;
 
     /**
      * The table associated with the model.
@@ -59,4 +60,17 @@ class Order extends Model
         return $this->hasMany(OrderItem::class, 'order_id');
     }
 
+
+    protected static $logAttributes = ['user_id', 'total_amount', 'status', 'payment_status'];
+    protected static $logName = 'order';
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
+    {
+        return \Spatie\Activitylog\LogOptions::defaults()
+            ->logOnly(self::$logAttributes)
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 }
