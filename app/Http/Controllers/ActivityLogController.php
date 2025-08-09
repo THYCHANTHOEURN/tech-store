@@ -7,6 +7,13 @@ use Spatie\Activitylog\Models\Activity;
 
 class ActivityLogController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Inertia\Response
+     */
     public function index(Request $request)
     {
         $query = Activity::with(['causer', 'subject']);
@@ -46,4 +53,21 @@ class ActivityLogController extends Controller
             'filters'    => $request->only(['causer', 'description', 'date_from', 'date_to', 'sort_field', 'sort_order', 'per_page']),
         ]);
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Inertia\Response
+     */
+    public function show($id)
+    {
+        // Find activity by id and load related causer and subject
+        $activity = Activity::with(['causer', 'subject'])->findOrFail($id);
+        return Inertia::render('Dashboard/ActivityLogs/Show', [
+            'activity' => $activity,
+        ]);
+    }
+
+
 }
