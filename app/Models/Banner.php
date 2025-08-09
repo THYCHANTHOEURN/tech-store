@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use \Spatie\Activitylog\Traits\LogsActivity;
 
 class Banner extends Model
 {
@@ -14,6 +15,7 @@ class Banner extends Model
     use HasFactory;
     use HasUuidTrait;
     use SoftDeletes;
+    use LogsActivity;
 
     /**
      * The table associated with the model.
@@ -54,7 +56,6 @@ class Banner extends Model
         'image_url',
     ];
 
-
     /**
      * Banner position constants
      */
@@ -86,5 +87,18 @@ class Banner extends Model
     public function getImageUrlAttribute(): string
     {
         return $this->image ? Storage::url($this->image) : '';
+    }
+
+    protected static $logAttributes = ['title', 'image', 'link', 'status', 'position'];
+    protected static $logName = 'banner';
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
+    {
+        return \Spatie\Activitylog\LogOptions::defaults()
+            ->logOnly(self::$logAttributes)
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

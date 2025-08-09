@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use \Spatie\Activitylog\Traits\LogsActivity;
 
 class MessageThread extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -81,7 +82,7 @@ class MessageThread extends Model
     {
         return $query->where('status', 'active');
     }
-    
+
     /**
      * Scope a query to only include closed threads.
      *
@@ -91,5 +92,18 @@ class MessageThread extends Model
     public function scopeClosed($query)
     {
         return $query->where('status', 'closed');
+    }
+
+    protected static $logAttributes = ['user_id', 'subject', 'status', 'last_message_at'];
+    protected static $logName = 'message_thread';
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
+    {
+        return \Spatie\Activitylog\LogOptions::defaults()
+            ->logOnly(self::$logAttributes)
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

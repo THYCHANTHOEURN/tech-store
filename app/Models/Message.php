@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use \Spatie\Activitylog\Traits\LogsActivity;
 
 class Message extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -72,5 +73,18 @@ class Message extends Model
     public function thread(): BelongsTo
     {
         return $this->belongsTo(MessageThread::class, 'thread_id');
+    }
+
+    protected static $logAttributes = ['thread_id', 'user_id', 'admin_id', 'content', 'is_read', 'attachment'];
+    protected static $logName = 'message';
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
+    {
+        return \Spatie\Activitylog\LogOptions::defaults()
+            ->logOnly(self::$logAttributes)
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

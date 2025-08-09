@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use \Spatie\Activitylog\Traits\LogsActivity;
 
 class Category extends Model
 {
@@ -16,6 +17,7 @@ class Category extends Model
     use HasFactory;
     use HasUuidTrait;
     use SoftDeletes;
+    use LogsActivity;
 
     /**
      * The table associated with the model.
@@ -37,7 +39,7 @@ class Category extends Model
         'image',
         'status',
         'description',
-        
+
     ];
 
     /**
@@ -96,5 +98,18 @@ class Category extends Model
     public function getImageUrlAttribute(): string
     {
         return $this->image ? Storage::url($this->image) : '';
+    }
+
+    protected static $logAttributes = ['name', 'slug', 'image', 'status', 'description', 'parent_id'];
+    protected static $logName = 'category';
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
+    {
+        return \Spatie\Activitylog\LogOptions::defaults()
+            ->logOnly(self::$logAttributes)
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

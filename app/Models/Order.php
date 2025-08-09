@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Order extends Model
 {
@@ -15,7 +16,7 @@ class Order extends Model
     use HasFactory;
     use HasUuidTrait;
     use SoftDeletes;
-    use \Spatie\Activitylog\Traits\LogsActivity;
+    use LogsActivity;
 
     /**
      * The table associated with the model.
@@ -66,6 +67,11 @@ class Order extends Model
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
 
+    /**
+     * Get the activity log options for the model.
+     *
+     * @return \Spatie\Activitylog\LogOptions
+     */
     public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
     {
         return \Spatie\Activitylog\LogOptions::defaults()

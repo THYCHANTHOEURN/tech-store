@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use \Spatie\Activitylog\Traits\LogsActivity;
 
 class Setting extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -121,5 +122,18 @@ class Setting extends Model
             'overstock_threshold'       => (int) self::get('overstock_threshold', 1000),
             'enable_stock_alerts'       => (bool) self::get('enable_stock_alerts', true),
         ];
+    }
+
+    protected static $logAttributes = ['key', 'value', 'group', 'type', 'options', 'label', 'description'];
+    protected static $logName = 'setting';
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
+    {
+        return \Spatie\Activitylog\LogOptions::defaults()
+            ->logOnly(self::$logAttributes)
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

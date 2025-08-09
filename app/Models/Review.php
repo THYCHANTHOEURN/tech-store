@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use \Spatie\Activitylog\Traits\LogsActivity;
 
 class Review extends Model
 {
@@ -14,6 +15,7 @@ class Review extends Model
     use HasFactory;
     use HasUuidTrait;
     use SoftDeletes;
+    use LogsActivity;
 
     /**
      * The table associated with the model.
@@ -62,5 +64,18 @@ class Review extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    protected static $logAttributes = ['user_id', 'product_id', 'rating', 'comment'];
+    protected static $logName = 'review';
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
+    {
+        return \Spatie\Activitylog\LogOptions::defaults()
+            ->logOnly(self::$logAttributes)
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }
