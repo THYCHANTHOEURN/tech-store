@@ -33,18 +33,18 @@
                         <v-list-item>
                             <v-list-item-title>Causer</v-list-item-title>
                             <v-list-item-subtitle>{{ activity.causer ? activity.causer.name : 'System'
-                                }}</v-list-item-subtitle>
+                            }}</v-list-item-subtitle>
                         </v-list-item>
                         <v-list-item>
                             <v-list-item-title>Subject</v-list-item-title>
                             <v-list-item-subtitle>{{ activity.subject_type ? activity.subject_type.split('\\').pop() :
                                 '-'
-                                }}</v-list-item-subtitle>
+                            }}</v-list-item-subtitle>
                         </v-list-item>
                         <v-list-item>
                             <v-list-item-title>Created At</v-list-item-title>
                             <v-list-item-subtitle>{{ new Date(activity.created_at).toLocaleString()
-                                }}</v-list-item-subtitle>
+                            }}</v-list-item-subtitle>
                         </v-list-item>
                         <v-list-item v-if="activity.properties">
                             <v-list-item-title>Properties</v-list-item-title>

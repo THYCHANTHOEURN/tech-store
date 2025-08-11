@@ -72,8 +72,8 @@
                         <div class="d-flex justify-center py-4">
                             <!-- Row per page -->
                             <span class="mt-4">Rows per page:</span>
-                            <v-select v-model="perPage" :items="perPageOptions" class="ml-4"
-                                style="max-width: 100px;" @update:model-value="changePerPage" hide-details></v-select>
+                            <v-select v-model="perPage" :items="perPageOptions" class="ml-4" style="max-width: 100px;"
+                                @update:model-value="changePerPage" hide-details></v-select>
                             <v-pagination v-if="activities.last_page" v-model="currentPage"
                                 :length="activities.last_page" total-visible="7" @update:model-value="changePage"
                                 rounded></v-pagination>
