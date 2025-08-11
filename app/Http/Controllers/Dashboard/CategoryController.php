@@ -58,14 +58,15 @@ class CategoryController extends Controller
         $sortOrder = $request->input('sort_order', 'desc');
         $query->orderBy($sortField, $sortOrder);
 
-        $categories = $query->paginate(10)->appends($request->query());
+        $perPage = (int) $request->input('per_page', 10);
+        $categories = $query->paginate($perPage)->appends($request->query());
 
         // Get parent categories for filter dropdown
         $parentCategories = Category::whereNull('parent_id')->get();
 
         return Inertia::render('Dashboard/Categories/Index', [
             'categories'        => $categories,
-            'filters'           => $request->only(['search', 'parent', 'status']),
+            'filters'           => $request->only(['search', 'parent', 'status', 'per_page']),
             'parentCategories'  => $parentCategories,
         ]);
     }

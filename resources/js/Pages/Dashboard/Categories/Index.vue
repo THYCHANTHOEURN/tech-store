@@ -72,8 +72,8 @@
 
             <!-- Categories Table -->
             <v-card elevation="2">
-                <v-data-table :headers="headers" :items="categories.data" :loading="loading" class="elevation-0"
-                    hide-default-footer>
+                <v-data-table :headers="headers" :items="categories.data" :items-per-page="categories.per_page"
+                    :loading="loading" class="elevation-0" hide-default-footer>
                     <template v-slot:item.image_url="{ item }">
                         <div class="d-flex align-center py-2">
                             <v-img :src="item.image_url" :alt="item.name" width="50" height="50" class="rounded"
@@ -115,6 +115,9 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
+                    <span class="mt-4">Rows per page:</span>
+                    <v-select v-model="perPage" :items="perPageOptions" class="ml-4"
+                        style="max-width: 100px;" @update:model-value="changePerPage" hide-details />
                     <v-pagination v-if="categories.last_page" v-model="page" :length="categories.last_page"
                         total-visible="7" @update:model-value="changePage" rounded></v-pagination>
                 </div>
@@ -174,6 +177,8 @@
     const selectedParent = ref(props.filters?.parent || null);
     const selectedStatus = ref(props.filters?.status || 'all');
     const page = ref(props.categories.current_page || 1);
+    const perPageOptions = [10, 25, 50, 100];
+    const perPage = ref(Number(props.filters.per_page) || 10);
 
     // Status options
     const statusOptions = [
@@ -219,7 +224,8 @@
             search: search.value || undefined,
             parent: selectedParent.value || undefined,
             status: selectedStatus.value,
-            page: 1, // Reset to first page when filtering
+            page: 1,
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
@@ -263,6 +269,7 @@
             parent: selectedParent.value,
             status: selectedStatus.value,
             page: newPage,
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
@@ -270,6 +277,12 @@
                 loading.value = false;
             }
         });
+    };
+
+    const changePerPage = (newPerPage) => {
+        perPage.value = newPerPage;
+        page.value = 1; // Reset to first page
+        applyFilters();
     };
 
     // Delete category
