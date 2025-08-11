@@ -56,7 +56,8 @@ class OrderController extends Controller
         $sortOrder = $request->input('sort_order', 'desc');
         $query->orderBy($sortField, $sortOrder);
 
-        $orders = $query->paginate(10)->appends($request->query());
+        $perPage = (int) $request->input('per_page', 10);
+        $orders = $query->paginate($perPage)->appends($request->query());
 
         // Convert enum values to arrays for dropdowns
         $orderStatuses = collect(OrderStatus::cases())->map(fn ($status) => [
@@ -71,7 +72,7 @@ class OrderController extends Controller
 
         return Inertia::render('Dashboard/Orders/Index', [
             'orders'            => $orders,
-            'filters'           => $request->only(['search', 'order_status', 'payment_status']),
+            'filters'           => $request->only(['search', 'order_status', 'payment_status', 'per_page']),
             'orderStatuses'     => $orderStatuses,
             'paymentStatuses'   => $paymentStatuses,
         ]);
@@ -379,7 +380,7 @@ class OrderController extends Controller
     public function export(Request $request)
     {
         $this->authorize('export', Order::class);
-        
+
         $format     = $request->input('format', 'xlsx');
         $filename   = 'orders-' . date('Y-m-d') . '.' . $format;
 

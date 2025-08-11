@@ -65,8 +65,8 @@
 
             <!-- Orders Table -->
             <v-card elevation="2">
-                <v-data-table :headers="headers" :items="orders.data" :loading="loading" class="elevation-0"
-                    hide-default-footer>
+                <v-data-table :headers="headers" :items="orders.data" :items-per-page="orders.per_page"
+                    :loading="loading" class="elevation-0" hide-default-footer>
                     <template v-slot:item.order_id="{ item }">
                         <span class="font-weight-medium text-primary">#{{ item.uuid.slice(-8).toUpperCase()
                             }}</span>
@@ -125,6 +125,9 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
+                    <span class="mt-4">Rows per page:</span>
+                    <v-select v-model="perPage" :items="perPageOptions" class="ml-4"
+                        style="max-width: 100px;" @update:model-value="changePerPage" hide-details />
                     <v-pagination v-if="orders.last_page" v-model="currentPage" :length="orders.last_page"
                         total-visible="7" @update:model-value="changePage" rounded></v-pagination>
                 </div>
@@ -230,6 +233,9 @@
         }
     }));
 
+    const perPageOptions = [10, 25, 50, 100];
+    const perPage = ref(Number(props.filters.per_page) || 10);
+
     // Apply filters
     const applyFilters = () => {
         loading.value = true;
@@ -238,6 +244,7 @@
             order_status: selectedOrderStatus.value,
             payment_status: selectedPaymentStatus.value,
             page: 1, // Reset to first page on filter change
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
@@ -284,6 +291,7 @@
             order_status: selectedOrderStatus.value,
             payment_status: selectedPaymentStatus.value,
             page: newPage,
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
@@ -291,6 +299,12 @@
                 loading.value = false;
             }
         });
+    };
+
+    const changePerPage = (newPerPage) => {
+        perPage.value = newPerPage;
+        currentPage.value = 1; // Reset to first page
+        applyFilters();
     };
 
     // Helper functions for formatting and order status/payment status display
