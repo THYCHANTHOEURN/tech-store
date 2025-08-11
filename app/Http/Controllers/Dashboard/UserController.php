@@ -70,13 +70,14 @@ class UserController extends Controller
         $sortOrder = $request->input('sort_order', 'desc');
         $query->orderBy($sortField, $sortOrder);
 
-        $users = $query->paginate(10)->appends($request->query());
+        $perPage = (int) $request->input('per_page', 10);
+        $users = $query->paginate($perPage)->appends($request->query());
         $roles = Role::where('name', '!=', RolesEnum::CUSTOMER->value)->get();
 
         return Inertia::render('Dashboard/Users/Index', [
             'users'     => $users,
             'roles'     => $roles,
-            'filters'   => $request->only(['search', 'role', 'status']),
+            'filters'   => $request->only(['search', 'role', 'status', 'per_page']),
         ]);
     }
 
