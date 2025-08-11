@@ -45,7 +45,7 @@
 
                     <v-col cols="12" md="4">
                         <v-select v-model="selectedPosition" :items="positionOptions" label="Position" hide-details
-                            clearable @update:model-value="applyFilters" variant="outlined" density="comfortable">
+                            clearable @update:model-value="applyFilters" variant="outlined" density="comfortable" item-title="label" item-value="value">
                             <template v-slot:prepend-inner>
                                 <v-icon color="primary" size="small">mdi-map-marker</v-icon>
                             </template>
@@ -169,7 +169,10 @@
     const deleting = ref(false);
 
     // Position options from props
-    const positionOptions = props.positions || [];
+    const positionOptions = props.positions.map(position => ({
+        label: position.label,
+        value: position.value
+    })) || [];
 
     // Status options
     const statusOptions = [
