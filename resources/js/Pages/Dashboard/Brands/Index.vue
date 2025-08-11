@@ -58,8 +58,8 @@
             <v-row>
                 <v-col cols="12">
                     <v-card>
-                        <v-data-table :headers="headers" :items="brands.data" :loading="loading" class="elevation-0"
-                            hide-default-footer>
+                        <v-data-table :headers="headers" :items="brands.data" :items-per-page="brands.per_page"
+                            :loading="loading" class="elevation-0" hide-default-footer>
                             <template v-slot:item.logo="{ item }">
                                 <div class="d-flex align-center py-2">
                                     <v-img :src="item.logo_url" width="50" height="50" cover class="rounded"></v-img>
@@ -98,6 +98,9 @@
 
                         <!-- Pagination -->
                         <div class="d-flex justify-center py-4">
+                            <span class="mt-4">Rows per page:</span>
+                            <v-select v-model="perPage" :items="perPageOptions" class="ml-4"
+                                style="max-width: 100px;" @update:model-value="changePerPage" hide-details />
                             <v-pagination v-if="brands.last_page" v-model="currentPage" :length="brands.last_page"
                                 total-visible="7" @update:model-value="changePage" rounded></v-pagination>
                         </div>
@@ -165,6 +168,9 @@
         { title: 'Inactive', value: 'inactive' },
     ];
 
+    const perPageOptions = [10, 25, 50, 100];
+    const perPage = ref(Number(props.filters.per_page) || 10);
+
     // Computed property for active filters
     const activeFilters = computed(() => ({
         search: {
@@ -188,6 +194,7 @@
             search: search.value,
             status: selectedStatus.value,
             page: 1, // Reset to first page on filter change
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
@@ -229,6 +236,7 @@
             search: search.value,
             status: selectedStatus.value,
             page: newPage,
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
@@ -236,6 +244,12 @@
                 loading.value = false;
             }
         });
+    };
+
+    const changePerPage = (newPerPage) => {
+        perPage.value = newPerPage;
+        currentPage.value = 1; // Reset to first page
+        applyFilters();
     };
 
     // Delete brand methods

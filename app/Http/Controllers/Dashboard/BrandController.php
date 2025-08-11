@@ -55,11 +55,12 @@ class BrandController extends Controller
         $sortOrder = $request->input('sort_order', 'desc');
         $query->orderBy($sortField, $sortOrder);
 
-        $brands = $query->paginate(10)->appends($request->query());
+        $perPage = (int) $request->input('per_page', 10);
+        $brands = $query->paginate($perPage)->appends($request->query());
 
         return Inertia::render('Dashboard/Brands/Index', [
             'brands'    => $brands,
-            'filters'   => $request->only(['search', 'status']),
+            'filters'   => $request->only(['search', 'status', 'per_page']),
         ]);
     }
 
