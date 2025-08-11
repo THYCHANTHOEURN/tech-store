@@ -56,16 +56,17 @@ class BannerController extends Controller
         $sortOrder = $request->input('sort_order', 'desc');
         $query->orderBy($sortField, $sortOrder);
 
-        $banners = $query->paginate(10)->appends($request->query());
+        $perPage = (int) $request->input('per_page', 10);
+        $banners = $query->paginate($perPage)->appends($request->query());
 
         return Inertia::render('Dashboard/Banners/Index', [
-            'banners' => $banners,
-            'filters' => $request->only(['search', 'position', 'status']),
+            'banners'   => $banners,
+            'filters'   => $request->only(['search', 'position', 'status', 'per_page']),
             'positions' => [
-                ['label' => 'Slider', 'value'   => Banner::POSITION_SLIDER],
-                ['label' => 'Side', 'value'     => Banner::POSITION_SIDE],
-                ['label' => 'Promo', 'value'    => Banner::POSITION_PROMO],
-            ]
+                ['label' => 'Slider', 'value' => Banner::POSITION_SLIDER],
+                ['label' => 'Side', 'value' => Banner::POSITION_SIDE],
+                ['label' => 'Promo', 'value' => Banner::POSITION_PROMO],
+            ],
         ]);
     }
 
