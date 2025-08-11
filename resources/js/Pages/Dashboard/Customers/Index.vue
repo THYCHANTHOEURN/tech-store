@@ -56,9 +56,9 @@
 
             <!-- Customers Table -->
             <v-card elevation="2">
-                <v-data-table :headers="headers" :items="customers.data" :loading="loading" item-value="id"
-                    :sort-by="[{ key: sortBy, order: sortOrder }]" @update:sort-by="updateSort" class="elevation-0"
-                    hide-default-footer>
+                <v-data-table :headers="headers" :items="customers.data" :items-per-page="customers.per_page"
+                    :loading="loading" item-value="id" :sort-by="[{ key: sortBy, order: sortOrder }]" @update:sort-by="updateSort"
+                    class="elevation-0" hide-default-footer>
                     <template v-slot:item.email_verified_at="{ item }">
                         <v-chip :color="item.email_verified_at ? 'success' : 'error'" size="small"
                             class="text-uppercase">
@@ -92,6 +92,9 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
+                    <span class="mt-4">Rows per page:</span>
+                    <v-select v-model="perPage" :items="perPageOptions" class="ml-4" style="max-width: 100px;"
+                        @update:model-value="changePerPage" hide-details />
                     <v-pagination v-if="customers.last_page" v-model="page" :length="customers.last_page"
                         total-visible="7" @update:model-value="changePage" rounded></v-pagination>
                 </div>
@@ -196,6 +199,7 @@
             status: selectedStatus.value,
             sort_field: sortBy.value,
             sort_order: sortOrder.value,
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
@@ -250,6 +254,9 @@
     };
 
     // Pagination
+    const perPageOptions = [10, 25, 50, 100];
+    const perPage = ref(Number(props.filters.per_page) || 10);
+
     const changePage = (newPage) => {
         loading.value = true;
         router.get(route('dashboard.customers.index'), {
@@ -258,6 +265,7 @@
             sort_field: sortBy.value,
             sort_order: sortOrder.value,
             page: newPage,
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
@@ -265,6 +273,12 @@
                 loading.value = false;
             }
         });
+    };
+
+    const changePerPage = (newPerPage) => {
+        perPage.value = newPerPage;
+        page.value = 1; // Reset to first page
+        filterCustomers();
     };
 
     // Delete customer

@@ -57,11 +57,12 @@ class CustomerController extends Controller
         $sortOrder = $request->input('sort_order', 'desc');
         $query->orderBy($sortField, $sortOrder);
 
-        $customers = $query->paginate(10)->appends($request->query());
+        $perPage = (int) $request->input('per_page', 10);
+        $customers = $query->paginate($perPage)->appends($request->query());
 
         return Inertia::render('Dashboard/Customers/Index', [
             'customers' => $customers,
-            'filters'   => $request->only(['search', 'status']),
+            'filters'   => $request->only(['search', 'status', 'per_page']),
         ]);
     }
 
