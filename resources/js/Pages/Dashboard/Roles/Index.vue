@@ -31,8 +31,14 @@
 
             <!-- Roles Table -->
             <v-card elevation="2">
-                <v-data-table :headers="headers" :items="roles.data" :loading="loading" class="elevation-0"
-                    hide-default-footer>
+                <v-data-table
+                    :headers="headers"
+                    :items="roles.data"
+                    :items-per-page="roles.per_page"
+                    :loading="loading"
+                    class="elevation-0"
+                    hide-default-footer
+                >
                     <template v-slot:item.users_count="{ item }">
                         <v-chip color="primary" size="small">
                             {{ item.users_count }}
@@ -70,8 +76,23 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
-                    <v-pagination v-if="roles.last_page" v-model="page" :length="roles.last_page" total-visible="7"
-                        @update:model-value="changePage" rounded></v-pagination>
+                    <span class="mt-4">Rows per page:</span>
+                    <v-select
+                        v-model="perPage"
+                        :items="perPageOptions"
+                        class="ml-4"
+                        style="max-width: 100px;"
+                        @update:model-value="changePerPage"
+                        hide-details
+                    />
+                    <v-pagination
+                        v-if="roles.last_page"
+                        v-model="page"
+                        :length="roles.last_page"
+                        total-visible="7"
+                        @update:model-value="changePage"
+                        rounded
+                    />
                 </div>
             </v-card>
         </v-container>
@@ -130,6 +151,8 @@
     const deleteDialog = ref(false);
     const roleToDelete = ref(null);
     const deleting = ref(false);
+    const perPageOptions = [10, 25, 50, 100];
+    const perPage = ref(Number(props.filters.per_page) || 10);
 
     // Computed property for active filters
     const activeFilters = computed(() => ({
@@ -147,6 +170,7 @@
         router.get(route('dashboard.roles.index'), {
             search: search.value,
             page: 1, // Reset to first page when filtering
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
@@ -181,6 +205,7 @@
         router.get(route('dashboard.roles.index'), {
             search: search.value,
             page: newPage,
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
@@ -188,6 +213,12 @@
                 loading.value = false;
             }
         });
+    };
+
+    const changePerPage = (newPerPage) => {
+        perPage.value = newPerPage;
+        page.value = 1; // Reset to first page
+        applyFilters();
     };
 
     // Delete role methods

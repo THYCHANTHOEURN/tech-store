@@ -39,11 +39,12 @@ class RoleController extends Controller
         $sortOrder = $request->input('sort_order', 'desc');
         $query->orderBy($sortField, $sortOrder);
 
-        $roles = $query->paginate(10)->appends($request->query());
+        $perPage = (int) $request->input('per_page', 10);
+        $roles = $query->paginate($perPage)->appends($request->query());
 
         return Inertia::render('Dashboard/Roles/Index', [
             'roles'   => $roles,
-            'filters' => $request->only(['search']),
+            'filters' => $request->only(['search', 'per_page']),
         ]);
     }
 
