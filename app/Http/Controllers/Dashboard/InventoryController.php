@@ -67,13 +67,14 @@ class InventoryController extends Controller
             });
         }
 
-        $products = $query->orderBy('stock', 'asc')->paginate(15)->appends($request->query());
+        $perPage = (int) $request->input('per_page', 10);
+        $products = $query->orderBy('stock', 'asc')->paginate($perPage)->appends($request->query());
 
         return Inertia::render('Dashboard/Inventory/Index', [
             'stats'     => $stats,
             'products'  => $products,
             'settings'  => $settings,
-            'filters'   => $request->only(['filter', 'search']),
+            'filters'   => $request->only(['filter', 'search', 'per_page']),
         ]);
     }
 

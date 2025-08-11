@@ -107,8 +107,14 @@
 
             <!-- Products Table -->
             <v-card>
-                <v-data-table :headers="headers" :items="products.data" :loading="loading" class="elevation-0"
-                    hide-default-footer>
+                <v-data-table
+                    :headers="headers"
+                    :items="products.data"
+                    :items-per-page="products.per_page"
+                    :loading="loading"
+                    class="elevation-0"
+                    hide-default-footer
+                >
                     <template v-slot:item.primary_image_url="{ item }">
                         <v-img :src="item.primary_image_url" width="50" height="50" class="rounded" cover />
                     </template>
@@ -163,8 +169,23 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
-                    <v-pagination v-if="products.last_page > 1" v-model="page" :length="products.last_page"
-                        total-visible="7" @update:model-value="changePage" rounded />
+                    <span class="mt-4">Rows per page:</span>
+                    <v-select
+                        v-model="perPage"
+                        :items="perPageOptions"
+                        class="ml-4"
+                        style="max-width: 100px;"
+                        @update:model-value="changePerPage"
+                        hide-details
+                    />
+                    <v-pagination
+                        v-if="products.last_page > 1"
+                        v-model="page"
+                        :length="products.last_page"
+                        total-visible="7"
+                        @update:model-value="changePage"
+                        rounded
+                    />
                 </div>
             </v-card>
 
@@ -316,6 +337,9 @@
         { title: 'Overstock', value: 'overstock' },
     ]
 
+    const perPageOptions = [10, 25, 50, 100];
+    const perPage = ref(Number(props.filters.per_page) || 10);
+
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('en-US', {
             minimumFractionDigits: 2,
@@ -359,17 +383,25 @@
             search: search.value || undefined,
             filter: selectedFilter.value,
             page: 1,
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
-            onFinish: () => loading.value = false
+            onFinish: () => loading.value = false,
         })
     }
 
     const resetFilters = () => {
         search.value = ''
         selectedFilter.value = 'all'
-        applyFilters()
+        page.value = 1 // Reset page
+        loading.value = true
+        router.get(route('dashboard.inventory.index'), {
+            per_page: perPage.value, // Include per_page parameter
+            page: page.value,
+        }, {
+            onFinish: () => loading.value = false,
+        })
     }
 
     const changePage = (newPage) => {
@@ -378,12 +410,19 @@
             search: search.value,
             filter: selectedFilter.value,
             page: newPage,
+            per_page: perPage.value, // Include per_page parameter
         }, {
             preserveState: true,
             replace: true,
             onFinish: () => loading.value = false
         })
     }
+
+    const changePerPage = (newPerPage) => {
+        perPage.value = newPerPage;
+        page.value = 1; // Reset to first page
+        applyFilters();
+    };
 
     const updateSettings = () => {
         savingSettings.value = true
