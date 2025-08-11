@@ -38,8 +38,8 @@
             <v-row>
                 <v-col cols="12">
                     <v-card>
-                        <v-data-table :headers="headers" :items="activities.data" :loading="loading" class="elevation-0"
-                            hide-default-footer>
+                        <v-data-table :headers="headers" :items="activities.data" :items-per-page="activities.per_page"
+                            :loading="loading" class="elevation-0" hide-default-footer>
                             <template v-slot:item.causer="{ item }">
                                 {{ item.causer ? item.causer.name : 'System' }}
                             </template>
@@ -70,7 +70,6 @@
                         </v-data-table>
                         <!-- Custom Pagination -->
                         <div class="d-flex justify-center py-4">
-                            <!-- Row per page -->
                             <span class="mt-4">Rows per page:</span>
                             <v-select v-model="perPage" :items="perPageOptions" class="ml-4" style="max-width: 100px;"
                                 @update:model-value="changePerPage" hide-details></v-select>

@@ -80,7 +80,9 @@ class ProductController extends Controller
         $sortOrder  = $request->input('sort_order', 'desc');
         $query->orderBy($sortField, $sortOrder);
 
-        $products   = $query->paginate(10)->appends($request->query());
+        // Handle custom pagination size
+        $perPage = (int) $request->input('per_page', 10);
+        $products   = $query->paginate($perPage)->appends($request->query());
 
         // Get all categories and brands for filters
         $categories = Category::all();
@@ -88,7 +90,7 @@ class ProductController extends Controller
 
         return Inertia::render('Dashboard/Products/Index', [
             'products'      => $products,
-            'filters'       => $request->only(['search', 'category', 'brand', 'status', 'featured']),
+            'filters'       => $request->only(['search', 'category', 'brand', 'status', 'featured', 'per_page']),
             'categories'    => $categories,
             'brands'        => $brands,
         ]);
@@ -403,7 +405,7 @@ class ProductController extends Controller
     public function export(Request $request)
     {
         $this->authorize('export', Product::class);
-        
+
         $format     = $request->input('format', 'xlsx');
         $filename   = 'products-' . date('Y-m-d') . '.' . $format;
 

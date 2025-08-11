@@ -108,8 +108,8 @@
 
             <!-- Products Table -->
             <v-card elevation="2">
-                <v-data-table :headers="headers" :items="products.data" :loading="loading" class="elevation-0"
-                    hide-default-footer>
+                <v-data-table :headers="headers" :items="products.data" :items-per-page="products.per_page"
+                    :loading="loading" class="elevation-0" hide-default-footer>
                     <template v-slot:item.primary_image_url="{ item }">
                         <div class="d-flex align-center py-2">
                             <v-img :src="item.primary_image_url" :alt="item.name" width="50" height="50" class="rounded"
@@ -171,6 +171,9 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
+                    <span class="mt-4">Rows per page:</span>
+                    <v-select v-model="perPage" :items="perPageOptions" class="ml-4" style="max-width: 100px;"
+                        @update:model-value="changePerPage" hide-details></v-select>
                     <v-pagination v-if="products.last_page" v-model="page" :length="products.last_page"
                         total-visible="7" @update:model-value="changePage" rounded></v-pagination>
                 </div>
@@ -287,6 +290,10 @@
     const selectedFeatured = ref(props.filters.featured || 'all');
     const page = ref(props.products.current_page || 1);
 
+    // Add perPage state and options
+    const perPageOptions = [10, 25, 50, 100];
+    const perPage = ref(Number(props.filters.per_page) || 10);
+
     // Options for dropdowns
     const statusOptions = [
         { title: 'All', value: 'all' },
@@ -379,17 +386,21 @@
     // Filter methods
     const applyFilters = () => {
         loading.value = true;
+        page.value = 1; // Always reset to first page when filtering
         router.get(route('dashboard.products.index'), {
             search: search.value || undefined,
             category: selectedCategory.value || undefined,
             brand: selectedBrand.value || undefined,
             status: selectedStatus.value,
             featured: selectedFeatured.value,
-            page: 1, // Reset to first page when filtering
+            page: page.value,
+            per_page: perPage.value,
         }, {
             preserveState: true,
             replace: true,
             onFinish: () => {
+                // Sync page value with backend after navigation
+                page.value = usePage().props.products.current_page;
                 loading.value = false;
             }
         });
@@ -422,14 +433,20 @@
         selectedBrand.value = null;
         selectedStatus.value = 'all';
         selectedFeatured.value = 'all';
+        page.value = 1; // Reset page
         loading.value = true;
-        router.get(route('dashboard.products.index'), {}, {
+        router.get(route('dashboard.products.index'), {
+            per_page: perPage.value,
+            page: page.value,
+        }, {
             onFinish: () => {
+                page.value = usePage().props.products.current_page;
                 loading.value = false;
             }
         });
     };
 
+    // Pagination handler
     const changePage = (newPage) => {
         loading.value = true;
         router.get(route('dashboard.products.index'), {
@@ -439,13 +456,22 @@
             status: selectedStatus.value,
             featured: selectedFeatured.value,
             page: newPage,
+            per_page: perPage.value,
         }, {
             preserveState: true,
             replace: true,
             onFinish: () => {
+                page.value = usePage().props.products.current_page;
                 loading.value = false;
             }
         });
+    };
+
+    // Change per page handler
+    const changePerPage = (newPerPage) => {
+        perPage.value = newPerPage;
+        page.value = 1; // Reset to first page
+        applyFilters();
     };
 
     // Delete product
