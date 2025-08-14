@@ -6,11 +6,11 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Inventory Management
+                    {{ $t("Inventory Management") }}
                 </h2>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click="showSettingsDialog = true" prepend-icon="mdi-cog">
-                    Settings
+                    {{ $t("Settings") }}
                 </v-btn>
             </div>
         </template>
@@ -23,7 +23,7 @@
                         <v-card-text class="text-center">
                             <v-icon size="large" class="mb-2">mdi-package-variant</v-icon>
                             <div class="text-h4">{{ stats.total_products }}</div>
-                            <div class="text-caption">Total Products</div>
+                            <div class="text-caption">{{ $t("Total Products") }}</div>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -32,7 +32,7 @@
                         <v-card-text class="text-center">
                             <v-icon size="large" class="mb-2">mdi-alert-circle</v-icon>
                             <div class="text-h4">{{ stats.out_of_stock }}</div>
-                            <div class="text-caption">Out of Stock</div>
+                            <div class="text-caption">{{ $t("Out of Stock") }}</div>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -41,7 +41,7 @@
                         <v-card-text class="text-center">
                             <v-icon size="large" class="mb-2">mdi-alert</v-icon>
                             <div class="text-h4">{{ stats.critical_stock }}</div>
-                            <div class="text-caption">Critical Stock</div>
+                            <div class="text-caption">{{ $t("Critical Stock") }}</div>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -50,7 +50,7 @@
                         <v-card-text class="text-center">
                             <v-icon size="large" class="mb-2">mdi-trending-down</v-icon>
                             <div class="text-h4">{{ stats.low_stock }}</div>
-                            <div class="text-caption">Low Stock</div>
+                            <div class="text-caption">{{ $t("Low Stock") }}</div>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -59,7 +59,7 @@
                         <v-card-text class="text-center">
                             <v-icon size="large" class="mb-2">mdi-trending-up</v-icon>
                             <div class="text-h4">{{ stats.overstock }}</div>
-                            <div class="text-caption">Overstock</div>
+                            <div class="text-caption">{{ $t("OverStock") }}</div>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -68,7 +68,7 @@
                         <v-card-text class="text-center">
                             <v-icon size="large" class="mb-2">mdi-currency-usd</v-icon>
                             <div class="text-h4">${{ formatCurrency(stats.total_stock_value) }}</div>
-                            <div class="text-caption">Stock Value</div>
+                            <div class="text-caption">{{ $t("Stock Value") }}</div>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -79,26 +79,26 @@
                 <v-card-text>
                     <v-row align="center">
                         <v-col cols="12" md="4">
-                            <v-text-field v-model="search" label="Search products..." prepend-inner-icon="mdi-magnify"
+                            <v-text-field v-model="search" :label="$t('Search products')+'...'" prepend-inner-icon="mdi-magnify"
                                 variant="outlined" density="comfortable" hide-details @keyup.enter="applyFilters"
                                 clearable />
                         </v-col>
                         <v-col cols="12" md="3">
-                            <v-select v-model="selectedFilter" :items="filterOptions" label="Filter by status"
+                            <v-select v-model="selectedFilter" :items="filterOptions" :label="$t('Filter by status')"
                                 variant="outlined" density="comfortable" hide-details
                                 @update:model-value="applyFilters" clearable/>
                         </v-col>
                         <v-col cols="12" md="3">
                             <v-btn color="primary" @click="applyFilters" prepend-icon="mdi-filter">
-                                Apply Filters
+                                {{ $t('Apply Filters') }}
                             </v-btn>
                             <v-btn variant="text" @click="resetFilters" class="ml-2">
-                                Reset
+                                {{ $t('Reset') }}
                             </v-btn>
                         </v-col>
                         <v-col cols="12" md="2" class="text-right">
                             <v-btn color="success" @click="showBulkUpdateDialog = true" prepend-icon="mdi-update">
-                                Bulk Update
+                                {{ $t('Bulk Update') }}
                             </v-btn>
                         </v-col>
                     </v-row>
@@ -169,7 +169,7 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
-                    <span class="mt-4">Rows per page:</span>
+                    <span class="mt-4">{{ $t('Rows per page') }}:</span>
                     <v-select
                         v-model="perPage"
                         :items="perPageOptions"
@@ -220,8 +220,8 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer />
-                        <v-btn variant="text" @click="showSettingsDialog = false">Cancel</v-btn>
-                        <v-btn color="primary" @click="updateSettings" :loading="savingSettings">Save</v-btn>
+                        <v-btn variant="text" @click="showSettingsDialog = false">{{ $t('Cancel') }}</v-btn>
+                        <v-btn color="primary" @click="updateSettings" :loading="savingSettings">{{ $t('Save') }}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -229,18 +229,18 @@
             <!-- Quick Stock Edit Dialog -->
             <v-dialog v-model="showStockEditDialog" max-width="400px">
                 <v-card v-if="editingProduct">
-                    <v-card-title>Update Stock: {{ editingProduct.name }}</v-card-title>
+                    <v-card-title>{{ $t('Update Stock') }}: {{ editingProduct.name }}</v-card-title>
                     <v-card-text>
-                        <v-text-field v-model.number="stockEditForm.stock" label="Stock Quantity" type="number" min="0"
+                        <v-text-field v-model.number="stockEditForm.stock" :label="$t('Stock Quantity')" type="number" min="0"
                             variant="outlined" prepend-icon="mdi-package-variant" />
                         <div class="text-caption mt-2">
-                            Current stock: {{ editingProduct.stock }}
+                            {{ $t('Current stock') }}: {{ editingProduct.stock }}
                         </div>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer />
-                        <v-btn variant="text" @click="showStockEditDialog = false">Cancel</v-btn>
-                        <v-btn color="primary" @click="updateSingleStock" :loading="updatingStock">Update</v-btn>
+                        <v-btn variant="text" @click="showStockEditDialog = false">{{ $t('Cancel') }}</v-btn>
+                        <v-btn color="primary" @click="updateSingleStock" :loading="updatingStock">{{ $t('Update') }}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -248,11 +248,9 @@
             <!-- Bulk Update Dialog -->
             <v-dialog v-model="showBulkUpdateDialog" max-width="800px">
                 <v-card>
-                    <v-card-title>Bulk Stock Update</v-card-title>
+                    <v-card-title>{{ $t('Bulk Stock Update') }}</v-card-title>
                     <v-card-text>
-                        <p class="mb-4">Update stock for multiple products at once. Only products with changes will be
-                            updated.
-                        </p>
+                        <p class="mb-4">{{ $t('Update stock for multiple products at once. Only products with changes will be updated.') }}</p>
                         <div class="bulk-update-list" style="max-height: 400px; overflow-y: auto;">
                             <v-row v-for="product in bulkUpdateProducts" :key="product.id" class="mb-2">
                                 <v-col cols="6">
@@ -274,8 +272,8 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer />
-                        <v-btn variant="text" @click="showBulkUpdateDialog = false">Cancel</v-btn>
-                        <v-btn color="primary" @click="bulkUpdateStock" :loading="bulkUpdating">Update All</v-btn>
+                        <v-btn variant="text" @click="showBulkUpdateDialog = false">{{ $t('Cancel') }}</v-btn>
+                        <v-btn color="primary" @click="bulkUpdateStock" :loading="bulkUpdating">{{ $t('Update All') }}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
