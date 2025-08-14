@@ -6,7 +6,7 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Brands Management
+                    {{ $t('Brands Management') }}
                 </h2>
                 <v-spacer></v-spacer>
 
@@ -14,7 +14,7 @@
                 <v-menu location="bottom">
                     <template v-slot:activator="{ props }">
                         <v-btn color="secondary" class="mr-2" v-bind="props" prepend-icon="mdi-database-export-outline">
-                            Export
+                            {{ $t('Export') }}
                         </v-btn>
                     </template>
                     <v-list>
@@ -27,7 +27,7 @@
 
                 <Link :href="route('dashboard.brands.create')" class="text-decoration-none">
                 <v-btn color="primary" prepend-icon="mdi-plus">
-                    Add Brand
+                    {{ $t('Add Brand') }}
                 </v-btn>
                 </Link>
             </div>
@@ -39,12 +39,12 @@
                 :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
                 <template #filters>
                     <v-col cols="12" md="6">
-                        <SearchField v-model="search" label="Search Brands" :loading="loading" @search="applyFilters"
+                        <SearchField v-model="search" :label="$t('Search Brands')" :loading="loading" @search="applyFilters"
                             @clear="applyFilters" />
                     </v-col>
 
                     <v-col cols="12" md="6">
-                        <v-select v-model="selectedStatus" :items="statusOptions" label="Status" hide-details clearable
+                        <v-select v-model="selectedStatus" :items="statusOptions" :label="$t('Status')" hide-details clearable
                             @update:model-value="applyFilters" variant="outlined" density="comfortable">
                             <template v-slot:prepend-inner>
                                 <v-icon color="primary" size="small">mdi-check-circle</v-icon>
@@ -98,7 +98,7 @@
 
                         <!-- Pagination -->
                         <div class="d-flex justify-center py-4">
-                            <span class="mt-4">Rows per page:</span>
+                            <span class="mt-4">{{ $t('Rows per page') }}:</span>
                             <v-select v-model="perPage" :items="perPageOptions" class="ml-4"
                                 style="max-width: 100px;" @update:model-value="changePerPage" hide-details />
                             <v-pagination v-if="brands.last_page" v-model="currentPage" :length="brands.last_page"
@@ -112,18 +112,18 @@
         <!-- Delete Confirmation Dialog -->
         <v-dialog v-model="deleteDialog" max-width="500px">
             <v-card>
-                <v-card-title class="text-h5">Delete Brand</v-card-title>
+                <v-card-title class="text-h5">{{ $t('Delete Brand') }}</v-card-title>
                 <v-card-text>
-                    Are you sure you want to delete this brand? This action cannot be undone.
+                    {{ $t('Are you sure you want to delete this brand? This action cannot be undone.') }}
                     <p class="mt-4 font-weight-bold" v-if="brandToDelete">{{ brandToDelete.name }}</p>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">
-                        Cancel
+                        {{ $t('Cancel') }}
                     </v-btn>
                     <v-btn color="error" variant="flat" @click="deleteBrand" :loading="deleting">
-                        Delete
+                        {{ $t('Delete') }}
                     </v-btn>
                 </v-card-actions>
             </v-card>

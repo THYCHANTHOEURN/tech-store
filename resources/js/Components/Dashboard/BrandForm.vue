@@ -6,20 +6,20 @@
                 <v-card>
                     <v-card-title>
                         <v-icon class="mr-2">mdi-tag-outline</v-icon>
-                        Brand Information
+                        {{ $t('Brand Information') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Brand Name -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Brand Name*</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Brand Name') }}*</label>
                             <v-text-field v-model="form.name" :error-messages="errors?.name" hide-details="auto"
                                 placeholder="Enter brand name" variant="outlined" density="comfortable"></v-text-field>
                         </div>
 
                         <!-- Description -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Description</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Description') }}</label>
                             <v-textarea v-model="form.description" :error-messages="errors?.description"
                                 hide-details="auto" placeholder="Enter brand description" variant="outlined"
                                 density="comfortable" rows="6"></v-textarea>
@@ -27,7 +27,7 @@
 
                         <!-- Logo -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Logo Image {{ brand ? '' : '*' }}</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Logo Image') }}{{ brand ? '' : '*' }}</label>
                             <v-file-input v-model="form.logo" :error-messages="errors?.logo" hide-details="auto"
                                 placeholder="Select logo image" variant="outlined" density="comfortable"
                                 accept="image/*" prepend-icon="" prepend-inner-icon="mdi-image"
@@ -37,7 +37,7 @@
 
                         <!-- Logo Preview -->
                         <div v-if="imagePreview || form.logo_url" class="mb-4">
-                            <p class="text-subtitle-1 mb-2">Preview:</p>
+                            <p class="text-subtitle-1 mb-2">{{ $t('Preview') }}:</p>
                             <v-img :src="imagePreview || form.logo_url" max-width="300" max-height="200" contain
                                 class="bg-grey-lighten-2 rounded"></v-img>
                         </div>
@@ -50,14 +50,14 @@
                 <v-card class="sticky-card">
                     <v-card-title>
                         <v-icon class="mr-2">mdi-cog-outline</v-icon>
-                        Brand Settings
+                        {{ $t('Brand Settings') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Status -->
                         <div class="mb-4">
-                            <v-switch v-model="form.status" color="success" label="Active"
-                                hint="Toggle to publish or unpublish the brand"
+                            <v-switch v-model="form.status" color="success" :label="$t('Active')"
+                                :hint="$t('Toggle to publish or unpublish the brand')"
                                 :error-messages="errors?.status"></v-switch>
                         </div>
 
@@ -65,13 +65,13 @@
 
                         <!-- Save Button -->
                         <v-btn color="primary" type="submit" block size="large" :loading="processing">
-                            {{ brand ? 'Update Brand' : 'Create Brand' }}
+                            {{ brand ? $t('Update Brand') : $t('Create Brand') }}
                         </v-btn>
 
                         <!-- Cancel Button -->
                         <Link :href="route('dashboard.brands.index')"
                             class="v-btn v-btn--block v-btn--text v-btn--secondary mt-3">
-                        Cancel
+                            {{ $t('Cancel') }}
                         </Link>
                     </v-card-text>
                 </v-card>
