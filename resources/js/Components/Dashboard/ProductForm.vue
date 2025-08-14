@@ -6,16 +6,16 @@
                 <v-card class="mb-4">
                     <v-card-title>
                         <v-icon class="mr-2">mdi-information-outline</v-icon>
-                        Basic Information
+                        {{ $t('Basic Information') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Product Name -->
-                        <v-text-field v-model="form.name" label="Product Name*" :error-messages="errors?.name"
+                        <v-text-field v-model="form.name" :label="$t('Product Name') + '*'" :error-messages="errors?.name"
                             variant="outlined" density="comfortable" required></v-text-field>
 
                         <!-- Description -->
-                        <RichTextEditor v-model="form.description" label="Product Description"
+                        <RichTextEditor v-model="form.description" :label="$t('Product Description')"
                             :error="errors?.description" required placeholder="Enter product description here..."
                             :min-height="300" variant="outlined" density="comfortable" />
 
@@ -24,12 +24,12 @@
                         <v-row>
                             <v-col cols="12" md="6">
                                 <v-select v-model="form.category_id" :items="categories" item-title="name"
-                                    item-value="id" label="Category*" :error-messages="errors?.category_id"
+                                    item-value="id" :label="$t('Category') + '*'" :error-messages="errors?.category_id"
                                     variant="outlined" density="comfortable" required></v-select>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-select v-model="form.brand_id" :items="brands" item-title="name" item-value="id"
-                                    label="Brand*" :error-messages="errors?.brand_id" variant="outlined"
+                                    :label="$t('Brand') + '*'" :error-messages="errors?.brand_id" variant="outlined"
                                     density="comfortable" required></v-select>
                             </v-col>
                         </v-row>
@@ -51,12 +51,12 @@
                     <v-card-text>
                         <v-row>
                             <v-col cols="12" md="6">
-                                <v-text-field v-model.number="form.price" label="Regular Price*" prefix="$"
+                                <v-text-field v-model.number="form.price" :label="$t('Regular Price') + '*'" prefix="$"
                                     type="number" step="0.01" min="0" :error-messages="errors?.price" required
                                     variant="outlined" density="comfortable"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-text-field v-model.number="form.sale_price" label="Sale Price" prefix="$"
+                                <v-text-field v-model.number="form.sale_price" :label="$t('Sale Price')" prefix="$"
                                     type="number" step="0.01" min="0" :error-messages="errors?.sale_price"
                                     hint="Leave empty for no sale price" variant="outlined"
                                     density="comfortable"></v-text-field>
@@ -64,7 +64,7 @@
                         </v-row>
 
                         <!-- Stock -->
-                        <v-text-field v-model.number="form.stock" label="Stock Quantity*" type="number" min="0"
+                        <v-text-field v-model.number="form.stock" :label="$t('Stock Quantity') + '*'" type="number" min="0"
                             :error-messages="errors?.stock" variant="outlined" density="comfortable"
                             required></v-text-field>
                     </v-card-text>
@@ -74,12 +74,12 @@
                 <v-card>
                     <v-card-title>
                         <v-icon class="mr-2">mdi-image-multiple</v-icon>
-                        Product Images
+                        {{ $t('Product Images') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Image Upload -->
-                        <v-file-input v-model="form.images" label="Upload Images"
+                        <v-file-input v-model="form.images" :label="$t('Upload Images')"
                             accept="image/png, image/jpeg, image/jpg" :error-messages="errors?.images" multiple
                             show-size prepend-icon="" prepend-inner-icon="mdi-camera" variant="outlined"
                             density="comfortable" @update:model-value="previewImages">
@@ -93,7 +93,7 @@
 
                         <!-- New Images Preview -->
                         <div v-if="imagePreview.length > 0" class="mt-4">
-                            <h3 class="text-subtitle-1 mb-2">New Images Preview:</h3>
+                            <h3 class="text-subtitle-1 mb-2">{{ $t('New Images Preview') }}:</h3>
                             <div class="d-flex flex-wrap gap-3">
                                 <div v-for="(preview, index) in imagePreview" :key="index"
                                     class="image-container position-relative">
@@ -104,7 +104,7 @@
 
                         <!-- Existing Images (Edit Mode) -->
                         <div v-if="product && filteredProductImages.length > 0" class="mt-4">
-                            <h3 class="text-subtitle-1 mb-2">Existing Images</h3>
+                            <h3 class="text-subtitle-1 mb-2">{{ $t('Existing Images') }}</h3>
                             <div class="d-flex flex-wrap gap-3">
                                 <div v-for="image in filteredProductImages" :key="image.id"
                                     class="image-container position-relative"
@@ -145,21 +145,21 @@
                 <v-card class="sticky-card">
                     <v-card-title>
                         <v-icon class="mr-2">mdi-cog-outline</v-icon>
-                        Product Settings
+                        {{ $t('Product Settings') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Status -->
                         <div class="mb-4">
-                            <v-switch v-model="form.status" color="success" label="Published"
-                                hint="Toggle to publish or unpublish the product"
+                            <v-switch v-model="form.status" color="success" :label="$t('Published')"
+                                :hint="$t('Toggle to publish or unpublish the product')"
                                 :error-messages="errors?.status"></v-switch>
                         </div>
 
                         <!-- Featured -->
                         <div class="mb-4">
-                            <v-switch v-model="form.featured" color="primary" label="Featured"
-                                hint="Featured products appear on the homepage"
+                            <v-switch v-model="form.featured" color="primary" :label="$t('Featured')"
+                                :hint="$t('Featured products appear on the homepage')"
                                 :error-messages="errors?.featured"></v-switch>
                         </div>
 
@@ -167,13 +167,13 @@
 
                         <!-- Save Button -->
                         <v-btn color="primary" type="submit" block size="large" :loading="processing">
-                            {{ product ? 'Update Product' : 'Create Product' }}
+                            {{ product ? $t('Update Product') : $t('Create Product') }}
                         </v-btn>
 
                         <!-- Cancel Button -->
                         <Link :href="route('dashboard.products.index')"
                             class="v-btn v-btn--block v-btn--text v-btn--secondary mt-3">
-                        Cancel
+                        {{ $t('Cancel') }}
                         </Link>
                     </v-card-text>
                 </v-card>

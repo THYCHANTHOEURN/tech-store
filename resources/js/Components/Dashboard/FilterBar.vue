@@ -2,7 +2,7 @@
     <v-card class="mb-6 filter-card">
         <v-card-title>
             <v-icon class="mr-2">mdi-filter-variant</v-icon>
-            Filters
+            {{ t('Filters') }}
             <v-spacer></v-spacer>
             <v-chip v-if="activeFiltersCount > 0" color="primary" size="small">
                 {{ activeFiltersCount }} active {{ activeFiltersCount === 1 ? 'filter' : 'filters' }}
@@ -34,7 +34,7 @@
                 <v-btn color="error" variant="outlined" size="small" :disabled="!hasActiveFilters || loading"
                     @click="$emit('reset-filters')" class="reset-btn">
                     <v-icon start>mdi-refresh</v-icon>
-                    Reset Filters
+                    {{ t('Reset Filters') }}
                 </v-btn>
             </div>
         </v-card-text>
@@ -47,6 +47,9 @@
 
 <script setup>
     import { computed } from 'vue';
+    import { useI18n } from 'vue-i18n';
+
+    const { t, locale } = useI18n();
 
     const props = defineProps({
         loading: {

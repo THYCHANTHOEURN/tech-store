@@ -6,17 +6,17 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Product Details: {{ product.name }}
+                    {{ $t('Product Details') }}: {{ product.name }}
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.products.edit', product.uuid)">
                 <v-btn color="warning" prepend-icon="mdi-pencil" class="mr-2">
-                    Edit
+                    {{ $t('Edit') }}
                 </v-btn>
                 </Link>
                 <Link :href="route('dashboard.products.index')">
                 <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
-                    Back to Products
+                    {{ $t('Back to Products') }}
                 </v-btn>
                 </Link>
             </div>
@@ -29,7 +29,7 @@
                     <v-card>
                         <v-card-title>
                             <div class="d-flex align-center">
-                                <span>Product Images</span>
+                                <span>{{ $t('Product Images') }}</span>
                                 <v-chip v-if="product.stock <= 5 && product.stock > 0" color="warning" class="ml-2"
                                     size="small">
                                     Low Stock
@@ -61,13 +61,13 @@
                 <v-col cols="12" md="7">
                     <v-card>
                         <v-card-title class="d-flex justify-space-between align-center">
-                            <span>Product Information</span>
+                            <span>{{ $t('Product Information') }}</span>
                             <div>
                                 <v-chip :color="product.status ? 'success' : 'error'" size="small" class="mr-2">
                                     {{ product.status ? 'Active' : 'Inactive' }}
                                 </v-chip>
                                 <v-chip v-if="product.featured" color="primary" size="small">
-                                    Featured
+                                    {{ $t('Featured') }}
                                 </v-chip>
                             </div>
                         </v-card-title>
@@ -82,13 +82,13 @@
                                         </v-list-item>
 
                                         <v-list-item>
-                                            <v-list-item-title>Category</v-list-item-title>
+                                            <v-list-item-title>{{ $t('Category') }}</v-list-item-title>
                                             <v-list-item-subtitle>{{ product.category?.name || 'N/A'
                                                 }}</v-list-item-subtitle>
                                         </v-list-item>
 
                                         <v-list-item>
-                                            <v-list-item-title>Brand</v-list-item-title>
+                                            <v-list-item-title>{{ $t('Brand') }}</v-list-item-title>
                                             <v-list-item-subtitle>{{ product.brand?.name || 'N/A'
                                                 }}</v-list-item-subtitle>
                                         </v-list-item>
@@ -97,18 +97,18 @@
                                 <v-col cols="12" md="6">
                                     <v-list>
                                         <v-list-item>
-                                            <v-list-item-title>Regular Price</v-list-item-title>
+                                            <v-list-item-title>{{ $t('Regular Price') }}</v-list-item-title>
                                             <v-list-item-subtitle>${{ product.price }}</v-list-item-subtitle>
                                         </v-list-item>
 
                                         <v-list-item v-if="product.sale_price">
-                                            <v-list-item-title>Sale Price</v-list-item-title>
+                                            <v-list-item-title>{{ $t('Sale Price') }}</v-list-item-title>
                                             <v-list-item-subtitle class="text-error">${{ product.sale_price
                                                 }}</v-list-item-subtitle>
                                         </v-list-item>
 
                                         <v-list-item>
-                                            <v-list-item-title>Stock</v-list-item-title>
+                                            <v-list-item-title>{{ $t('Stock') }}</v-list-item-title>
                                             <v-list-item-subtitle>{{ product.stock }} units</v-list-item-subtitle>
                                         </v-list-item>
                                     </v-list>
@@ -118,7 +118,7 @@
                             <v-divider class="my-4"></v-divider>
 
                             <div>
-                                <h3 class="text-h6 mb-2">Description</h3>
+                                <h3 class="text-h6 mb-2">{{ $t('Description') }}</h3>
                                 <div v-if="product.description" class="product-description">
                                     <p>{{ product.description }}</p>
                                 </div>
@@ -151,7 +151,7 @@
 
                     <v-card class="mt-4" v-else>
                         <v-card-text class="text-center text-grey">
-                            No reviews yet
+                            {{ $t('No reviews yet') }}
                         </v-card-text>
                     </v-card>
                 </v-col>

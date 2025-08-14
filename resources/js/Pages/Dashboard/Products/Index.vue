@@ -6,7 +6,7 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Products Management
+                    {{ t('Product Management') }}
                 </h2>
                 <v-spacer></v-spacer>
 
@@ -14,11 +14,11 @@
                 <v-menu location="bottom">
                     <template v-slot:activator="{ props }">
                         <v-btn color="secondary" class="mr-2" v-bind="props" prepend-icon="mdi-database-import-outline">
-                            Import/Export
+                            {{ t('Import/Export') }}
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-list-subheader>Export Products</v-list-subheader>
+                        <v-list-subheader>{{ t('Export Products') }}</v-list-subheader>
                         <v-list-item :href="route('dashboard.products.export', { format: 'xlsx' })"
                             prepend-icon="mdi-microsoft-excel" title="Export to Excel" />
                         <v-list-item :href="route('dashboard.products.export', { format: 'csv' })"
@@ -41,7 +41,7 @@
 
                 <Link :href="route('dashboard.products.create')" class="text-decoration-none">
                 <v-btn color="primary" prepend-icon="mdi-plus">
-                    Add Product
+                    {{ t('Add Product') }}
                 </v-btn>
                 </Link>
             </div>
@@ -62,12 +62,12 @@
                 :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
                 <template #filters>
                     <v-col cols="12" md="6" lg="4">
-                        <SearchField v-model="search" label="Search Products" :loading="loading" @search="applyFilters"
+                        <SearchField v-model="search" :label="t('Search Product')" :loading="loading" @search="applyFilters"
                             @clear="applyFilters" />
                     </v-col>
 
                     <v-col cols="12" sm="6" md="3" lg="2">
-                        <v-select v-model="selectedCategory" label="Category" :items="categories" item-title="name"
+                        <v-select v-model="selectedCategory" :label="t('Category')" :items="categories" item-title="name"
                             item-value="id" hide-details clearable @update:model-value="applyFilters" variant="outlined"
                             density="comfortable">
                             <template v-slot:prepend-inner>
@@ -77,7 +77,7 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" md="3" lg="2">
-                        <v-select v-model="selectedBrand" label="Brand" :items="brands" item-title="name"
+                        <v-select v-model="selectedBrand" :label="t('Brand')" :items="brands" item-title="name"
                             item-value="id" hide-details clearable @update:model-value="applyFilters" variant="outlined"
                             density="comfortable">
                             <template v-slot:prepend-inner>
@@ -87,7 +87,7 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" md="3" lg="2">
-                        <v-select v-model="selectedStatus" label="Status" :items="statusOptions" hide-details clearable
+                        <v-select v-model="selectedStatus" :label="t('Status')" :items="statusOptions" hide-details clearable
                             @update:model-value="applyFilters" variant="outlined" density="comfortable">
                             <template v-slot:prepend-inner>
                                 <v-icon color="primary" size="small">mdi-eye</v-icon>
@@ -96,7 +96,7 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" md="3" lg="2">
-                        <v-select v-model="selectedFeatured" label="Featured" :items="featuredOptions" hide-details
+                        <v-select v-model="selectedFeatured" :label="t('Featured')" :items="featuredOptions" hide-details
                             clearable @update:model-value="applyFilters" variant="outlined" density="comfortable">
                             <template v-slot:prepend-inner>
                                 <v-icon color="primary" size="small">mdi-star</v-icon>
@@ -171,7 +171,7 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
-                    <span class="mt-4">Rows per page:</span>
+                    <span class="mt-4">{{ t('Rows per page:') }}</span>
                     <v-select v-model="perPage" :items="perPageOptions" class="ml-4" style="max-width: 100px;"
                         @update:model-value="changePerPage" hide-details></v-select>
                     <v-pagination v-if="products.last_page" v-model="page" :length="products.last_page"
@@ -231,19 +231,18 @@
             <v-dialog v-model="deleteDialog" max-width="500">
                 <v-card>
                     <v-card-title class="text-h5">
-                        Confirm Delete
+                        {{ $t('Confirm Delete') }}
                     </v-card-title>
                     <v-card-text>
-                        Are you sure you want to delete the product "{{ productToDelete?.name }}"? This action cannot be
-                        undone.
+                        {{ $t('Are you sure you want to delete the product') }} "{{ productToDelete?.name }}"? {{ $t('This action cannot be undone.') }}
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">
-                            Cancel
+                            {{ $t('Cancel') }}
                         </v-btn>
                         <v-btn color="error" variant="flat" @click="deleteProduct" :loading="deleting">
-                            Delete
+                            {{ $t('Delete') }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -258,6 +257,9 @@
     import { ref, computed } from 'vue';
     import FilterBar from '@/Components/Dashboard/FilterBar.vue';
     import SearchField from '@/Components/Dashboard/SearchField.vue';
+    import { useI18n } from 'vue-i18n';
+
+    const { t, locale } = useI18n();
 
     const props = defineProps({
         products: Object,
