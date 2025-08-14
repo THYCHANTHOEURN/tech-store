@@ -6,6 +6,9 @@
     import NotificationDropdown from '@/Components/Dashboard/NotificationDropdown.vue';
     import ThemeToggle from '@/Components/Dashboard/ThemeToggle.vue';
     import { useMessages } from '@/Composables/useMessages';
+    import { useI18n } from 'vue-i18n';
+
+    const { t, locale } = useI18n();
 
     const rail = ref(false);
     const drawer = ref(true);
@@ -98,6 +101,21 @@
                 <!-- Notification Dropdown -->
                 <NotificationDropdown :initial-notifications="$page.props.notifications"
                     :initial-unread-count="$page.props.unreadNotificationsCount" />
+
+                                    <!-- Language Switcher -->
+                                    <v-select
+                                        v-model="locale"
+                                        :items="[
+                                            { value: 'en', title: 'English' },
+                                            { value: 'km', title: 'ភាសាខ្មែរ' }
+                                        ]"
+                                        item-title="title"
+                                        item-value="value"
+                                        variant="outlined"
+                                        density="compact"
+                                        hide-details
+                                        style="max-width: 120px; margin-left: 12px;"
+                                    />
             </div>
 
             <!-- User Menu - Enhanced -->
@@ -117,7 +135,7 @@
                         <template v-slot:prepend>
                             <v-icon>mdi-account-circle</v-icon>
                         </template>
-                        <v-list-item-title>Profile</v-list-item-title>
+                        <v-list-item-title>{{ t('Profile') }}</v-list-item-title>
                     </v-list-item>
                     </Link>
                     <Link :href="route('index')" class="text-decoration-none" target="_blank">
@@ -125,7 +143,7 @@
                         <template v-slot:prepend>
                             <v-icon>mdi-web</v-icon>
                         </template>
-                        <v-list-item-title>Visit Site</v-list-item-title>
+                        <v-list-item-title>{{ t('Visit Site') }}</v-list-item-title>
                     </v-list-item>
                     </Link>
                     <v-divider class="my-1"></v-divider>
@@ -133,7 +151,7 @@
                         <template v-slot:prepend>
                             <v-icon>mdi-logout</v-icon>
                         </template>
-                        <v-list-item-title>Log Out</v-list-item-title>
+                        <v-list-item-title>{{ t('Logout') }}</v-list-item-title>
                     </v-list-item>
                 </v-list>
             </v-menu>
@@ -149,7 +167,7 @@
                 </v-list-item>
                 <v-list-item v-else>
                     <v-list-item-title class="text-center text-subtitle-2 font-weight-bold">
-                        Dashboard Menu
+                        {{ t('Dasboard Menu') }}
                     </v-list-item-title>
                     <template v-slot:append>
                         <v-btn size="small" icon variant="text" @click.stop="rail = true">
@@ -165,8 +183,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-view-dashboard</v-icon>
                     </template>
-                    <v-list-item-title>Dashboard</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Dashboard</v-tooltip>
+                    <v-list-item-title>{{ t('Dashboard') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Dashboard') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -176,8 +194,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-package-variant-closed</v-icon>
                     </template>
-                    <v-list-item-title>Products</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Products</v-tooltip>
+                    <v-list-item-title>{{ t('Products') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Products') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -187,8 +205,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-package-variant</v-icon>
                     </template>
-                    <v-list-item-title>Inventory</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Inventory</v-tooltip>
+                    <v-list-item-title>{{ t('Inventory') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Inventory') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -198,8 +216,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-format-list-bulleted</v-icon>
                     </template>
-                    <v-list-item-title>Categories</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Categories</v-tooltip>
+                    <v-list-item-title>{{ t('Categories') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Categories') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -209,8 +227,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-label</v-icon>
                     </template>
-                    <v-list-item-title>Brands</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Brands</v-tooltip>
+                    <v-list-item-title>{{ t('Brands') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Brands') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -220,8 +238,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-image-multiple</v-icon>
                     </template>
-                    <v-list-item-title>Banners</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Banners</v-tooltip>
+                    <v-list-item-title>{{ t('Banners') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Banners') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -231,8 +249,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-cart</v-icon>
                     </template>
-                    <v-list-item-title>Orders</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Orders</v-tooltip>
+                    <v-list-item-title>{{ t('Orders') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Orders') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -242,8 +260,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-account-group</v-icon>
                     </template>
-                    <v-list-item-title>Customers</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Customers</v-tooltip>
+                    <v-list-item-title>{{ t('Customers') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Customers') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -253,8 +271,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-account-multiple</v-icon>
                     </template>
-                    <v-list-item-title>Users</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Users</v-tooltip>
+                    <v-list-item-title>{{ t('Users') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Users') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -264,8 +282,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-shield-account</v-icon>
                     </template>
-                    <v-list-item-title>Roles & Permissions</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Roles & Permissions</v-tooltip>
+                    <v-list-item-title>{{ t('Roles & Permissions') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Roles & Permissions') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -275,8 +293,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-history</v-icon>
                     </template>
-                    <v-list-item-title>Activity Logs</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Activity Logs</v-tooltip>
+                    <v-list-item-title>{{ t('Activity Logs') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Activity Logs') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -286,8 +304,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-cog</v-icon>
                     </template>
-                    <v-list-item-title>Settings</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Settings</v-tooltip>
+                    <v-list-item-title>{{ t('Settings') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Settings') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -297,8 +315,8 @@
                     <template v-slot:prepend>
                         <v-icon>mdi-email-multiple-outline</v-icon>
                     </template>
-                    <v-list-item-title>Messages</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">Messages</v-tooltip>
+                    <v-list-item-title>{{ t('Messages') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('Messages') }}</v-tooltip>
                 </v-list-item>
                 </Link>
 
@@ -309,8 +327,8 @@
                 <v-list-item :active="route().current('profile.edit')" rounded="lg" class="mb-1">
                     <template v-slot:prepend>
                         <v-icon>mdi-account-circle</v-icon>
-                    </template> <v-list-item-title>My Profile</v-list-item-title>
-                    <v-tooltip v-if="rail" activator="parent" location="right">My Profile</v-tooltip>
+                    </template> <v-list-item-title>{{ t('My Profile') }}</v-list-item-title>
+                    <v-tooltip v-if="rail" activator="parent" location="right">{{ t('My Profile') }}</v-tooltip>
                 </v-list-item>
                 </Link>
             </v-list>

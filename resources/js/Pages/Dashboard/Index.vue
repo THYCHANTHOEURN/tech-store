@@ -5,7 +5,7 @@
     <DashboardLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Dashboard
+                {{ t('Dashboard') }}
             </h2>
         </template>
 
@@ -20,9 +20,9 @@
                                     <span class="text-h5 white--text">{{ userInitials }}</span>
                                 </v-avatar>
                                 <div>
-                                    <h3 class="text-h5">Welcome back, {{ userName }}!</h3>
+                                    <h3 class="text-h5">{{ t('Welcome back,') }} {{ userName }}!</h3>
                                     <p class="text-body-1 text-medium-emphasis">
-                                        Here's what's happening in your store today.
+                                        {{ t("Here's what's happening in your store today.") }}
                                     </p>
                                 </div>
                                 <v-spacer></v-spacer>
@@ -42,7 +42,7 @@
                             <v-card-text>
                                 <div class="d-flex justify-space-between align-center">
                                     <div>
-                                        <div class="text-h6 white--text">Products</div>
+                                        <div class="text-h6 white--text">{{ t('Products') }}</div>
                                         <div class="text-h4 white--text">{{ stats.products || 0 }}</div>
                                     </div>
                                     <v-icon x-large color="white" class="stats-icon">mdi-package-variant-closed</v-icon>
@@ -61,7 +61,7 @@
                             <v-card-text>
                                 <div class="d-flex justify-space-between align-center">
                                     <div>
-                                        <div class="text-h6 white--text">Orders</div>
+                                        <div class="text-h6 white--text">{{ t('Orders') }}</div>
                                         <div class="text-h4 white--text">{{ stats.orders || 0 }}</div>
                                     </div>
                                     <v-icon x-large color="white" class="stats-icon">mdi-cart</v-icon>
@@ -80,7 +80,7 @@
                             <v-card-text>
                                 <div class="d-flex justify-space-between align-center">
                                     <div>
-                                        <div class="text-h6 white--text">Customers</div>
+                                        <div class="text-h6 white--text">{{ t('Customers') }}</div>
                                         <div class="text-h4 white--text">{{ stats.customers || 0 }}</div>
                                     </div>
                                     <v-icon x-large color="white" class="stats-icon">mdi-account-group</v-icon>
@@ -99,7 +99,7 @@
                             <v-card-text>
                                 <div class="d-flex justify-space-between align-center">
                                     <div>
-                                        <div class="text-h6 white--text">Revenue</div>
+                                        <div class="text-h6 white--text">{{ t('Revenue') }}</div>
                                         <div class="text-h4 white--text">${{ formatCurrency(stats.revenue || 0) }}</div>
                                     </div>
                                     <v-icon x-large color="white" class="stats-icon">mdi-currency-usd</v-icon>
@@ -127,7 +127,7 @@
                                     <v-hover v-slot="{ isHovering, props }">
                                         <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
                                             <v-icon size="32" color="primary">mdi-plus-box</v-icon>
-                                            <div class="text-body-2 mt-2">Add Product</div>
+                                            <div class="text-body-2 mt-2">{{ t('Add Product') }}</div>
                                         </v-card>
                                     </v-hover>
                                     </Link>
@@ -137,7 +137,7 @@
                                     <v-hover v-slot="{ isHovering, props }">
                                         <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
                                             <v-icon size="32" color="success">mdi-receipt</v-icon>
-                                            <div class="text-body-2 mt-2">View Orders</div>
+                                            <div class="text-body-2 mt-2">{{ t('View Orders') }}</div>
                                         </v-card>
                                     </v-hover>
                                     </Link>
@@ -147,7 +147,7 @@
                                     <v-hover v-slot="{ isHovering, props }">
                                         <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
                                             <v-icon size="32" color="warning">mdi-account-multiple</v-icon>
-                                            <div class="text-body-2 mt-2">Customers</div>
+                                            <div class="text-body-2 mt-2">{{ t('Customers') }}</div>
                                         </v-card>
                                     </v-hover>
                                     </Link>
@@ -157,7 +157,7 @@
                                     <v-hover v-slot="{ isHovering, props }">
                                         <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
                                             <v-icon size="32" color="deep-purple">mdi-format-list-bulleted</v-icon>
-                                            <div class="text-body-2 mt-2">Categories</div>
+                                            <div class="text-body-2 mt-2">{{ t('Categories') }}</div>
                                         </v-card>
                                     </v-hover>
                                     </Link>
@@ -167,7 +167,7 @@
                                     <v-hover v-slot="{ isHovering, props }">
                                         <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
                                             <v-icon size="32" color="pink">mdi-image-multiple</v-icon>
-                                            <div class="text-body-2 mt-2">Banners</div>
+                                            <div class="text-body-2 mt-2">{{ t('Banners') }}</div>
                                         </v-card>
                                     </v-hover>
                                     </Link>
@@ -177,7 +177,7 @@
                                     <v-hover v-slot="{ isHovering, props }">
                                         <v-card v-bind="props" :elevation="isHovering ? 3 : 1" class="text-center pa-3">
                                             <v-icon size="32" color="blue">mdi-web</v-icon>
-                                            <div class="text-body-2 mt-2">View Store</div>
+                                            <div class="text-body-2 mt-2">{{ t('View Store') }}</div>
                                         </v-card>
                                     </v-hover>
                                     </Link>
@@ -195,7 +195,7 @@
                     <v-card elevation="1" class="mb-6">
                         <v-card-title class="d-flex align-center">
                             <v-icon left color="primary" class="mr-2">mdi-chart-line</v-icon>
-                            Sales Overview
+                            {{ t('Sales Overview') }}
                             <v-spacer></v-spacer>
                             <div class="d-flex align-center">
                                 <v-menu v-model="dateMenu" :close-on-content-click="false" transition="scale-transition"
@@ -209,33 +209,30 @@
 
                                     <v-card min-width="300">
                                         <v-card-text>
-                                            <div class="mb-4 text-subtitle-1">Select Date Range</div>
+                                            <div class="mb-4 text-subtitle-1">{{ t('Select Date Range') }}</div>
                                             <v-row>
                                                 <v-col cols="12">
-                                                    <v-text-field v-model="dateRange.start" label="Start Date"
+                                                    <v-text-field v-model="dateRange.start" :label="t('Start Date')"
                                                         type="date" variant="outlined" density="compact" />
                                                 </v-col>
                                                 <v-col cols="12">
-                                                    <v-text-field v-model="dateRange.end" label="End Date" type="date"
+                                                    <v-text-field v-model="dateRange.end" :label="t('End Date')" type="date"
                                                         variant="outlined" density="compact" />
                                                 </v-col>
                                             </v-row>
                                             <div class="d-flex mt-2">
                                                 <!-- Preset date ranges -->
                                                 <v-chip-group>
-                                                    <v-chip size="small" @click="selectDateRange('last7')">Last 7
-                                                        days</v-chip>
-                                                    <v-chip size="small" @click="selectDateRange('last30')">Last 30
-                                                        days</v-chip>
-                                                    <v-chip size="small" @click="selectDateRange('thisMonth')">This
-                                                        Month</v-chip>
+                                                    <v-chip size="small" @click="selectDateRange('last7')">{{ t('Last 7 Days') }}</v-chip>
+                                                    <v-chip size="small" @click="selectDateRange('last30')">{{ t('Last 30 Days') }}</v-chip>
+                                                    <v-chip size="small" @click="selectDateRange('thisMonth')">{{ t('This Month') }}</v-chip>
                                                 </v-chip-group>
                                             </div>
                                         </v-card-text>
                                         <v-card-actions>
                                             <v-spacer></v-spacer>
-                                            <v-btn color="grey" variant="text" @click="dateMenu = false">Cancel</v-btn>
-                                            <v-btn color="primary" variant="text" @click="applyDateRange">Apply</v-btn>
+                                            <v-btn color="grey" variant="text" @click="dateMenu = false">{{ t('Cancel') }}</v-btn>
+                                            <v-btn color="primary" variant="text" @click="applyDateRange">{{ t('Apply') }}</v-btn>
                                         </v-card-actions>
                                     </v-card>
                                 </v-menu>
@@ -260,11 +257,11 @@
                     <v-card elevation="1">
                         <v-card-title class="d-flex align-center">
                             <v-icon left color="primary" class="mr-2">mdi-cart-outline</v-icon>
-                            Recent Orders
+                            {{ t('Recent Orders') }}
                             <v-spacer></v-spacer>
                             <Link :href="route('dashboard.orders.index')">
                             <v-btn color="primary" text variant="plain" size="small" class="text-none">
-                                View All
+                                {{ t('View All') }}
                                 <v-icon small class="ml-1">mdi-arrow-right</v-icon>
                             </v-btn>
                             </Link>
@@ -303,11 +300,11 @@
                     <v-card elevation="1" height="100%">
                         <v-card-title class="d-flex align-center">
                             <v-icon left color="primary" class="mr-2">mdi-star-outline</v-icon>
-                            Popular Products
+                            {{ t('Popular Products') }}
                             <v-spacer></v-spacer>
                             <Link :href="route('dashboard.products.index')">
                             <v-btn color="primary" text variant="plain" size="small" class="text-none">
-                                View All
+                                {{ t('View All') }}
                                 <v-icon small class="ml-1">mdi-arrow-right</v-icon>
                             </v-btn>
                             </Link>
@@ -361,6 +358,9 @@
     import { Head, Link, usePage } from '@inertiajs/vue3';
     import { ref, computed, onMounted, watch } from 'vue';
     import { router } from '@inertiajs/vue3';
+    import { useI18n } from 'vue-i18n';
+
+    const { t, locale } = useI18n();
 
     const loading = ref(true);
     const chartOptions = ref({});
