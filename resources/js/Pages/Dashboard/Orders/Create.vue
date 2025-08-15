@@ -6,12 +6,12 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Create New Order
+                    {{ $t('Create New Order') }}
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.orders.index')">
                 <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
-                    Back to Orders
+                    {{ $t('Back to Orders') }}
                 </v-btn>
                 </Link>
             </div>

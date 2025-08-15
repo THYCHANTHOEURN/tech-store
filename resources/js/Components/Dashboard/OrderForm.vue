@@ -6,13 +6,13 @@
                 <v-card class="mb-4">
                     <v-card-title>
                         <v-icon class="mr-2">mdi-account-outline</v-icon>
-                        Customer Information
+                        {{ $t('Customer Information') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Customer Selector -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Customer*</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Customer') }}*</label>
                             <v-select v-model="form.user_id" :items="users" item-title="name" item-value="id"
                                 :error-messages="errors?.user_id" hide-details="auto" variant="outlined"
                                 density="comfortable" :disabled="!!order" :readonly="!!order">
@@ -26,7 +26,7 @@
 
                         <!-- Shipping Address -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Shipping Address*</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Shipping Address') }}*</label>
                             <v-textarea v-model="form.shipping_address" :error-messages="errors?.shipping_address"
                                 hide-details="auto" placeholder="Enter shipping address" variant="outlined"
                                 density="comfortable" rows="3"></v-textarea>
@@ -34,7 +34,7 @@
 
                         <!-- Phone Number -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Phone Number*</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Phone Number') }}*</label>
                             <v-text-field v-model="form.phone" :error-messages="errors?.phone" hide-details="auto"
                                 placeholder="Enter phone number" variant="outlined" density="comfortable"
                                 prepend-inner-icon="mdi-phone"></v-text-field>
@@ -46,10 +46,10 @@
                     <v-card class="mb-4">
                         <v-card-title class="d-flex align-center">
                             <v-icon class="mr-2">mdi-cart-outline</v-icon>
-                            Order Items
+                            {{ $t('Order Items') }}
                             <v-spacer></v-spacer>
                             <v-btn color="primary" size="small" @click="addItem" prepend-icon="mdi-plus">
-                                Add Item
+                                {{ $t('Add Item') }}
                             </v-btn>
                         </v-card-title>
                         <v-divider></v-divider>
@@ -63,7 +63,7 @@
                                 <div class="d-flex align-center item-row mb-4">
                                     <div class="flex-grow-1">
                                         <v-select v-model="item.product_id" :items="availableProducts" item-title="name"
-                                            item-value="id" label="Product" variant="outlined" density="comfortable"
+                                            item-value="id" :label="$t('Product')" variant="outlined" density="comfortable"
                                             @update:model-value="updateItemPrice(index)">
                                             <template v-slot:item="{ props, item }">
                                                 <v-list-item v-bind="props" :title="item.raw.name">
@@ -123,7 +123,7 @@
                     <v-card class="mb-4">
                         <v-card-title>
                             <v-icon class="mr-2">mdi-cart-outline</v-icon>
-                            Order Items ({{ order.order_items?.length || 0 }})
+                            {{ $t('Order Items') }} ({{ order.order_items?.length || 0 }})
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-card-text>
@@ -169,13 +169,13 @@
                 <v-card class="sticky-card">
                     <v-card-title>
                         <v-icon class="mr-2">mdi-cog-outline</v-icon>
-                        Order Settings
+                        {{ $t('Order Settings') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Payment Method -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Payment Method*</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Payment Method') }}*</label>
                             <v-select v-model="form.payment_method" :items="paymentMethods" item-title="title"
                                 item-value="value" :error-messages="errors?.payment_method" hide-details="auto"
                                 variant="outlined" density="comfortable"></v-select>
@@ -183,7 +183,7 @@
 
                         <!-- Order Status -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Order Status*</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Order Status') }}*</label>
                             <v-select v-model="form.status" :items="orderStatuses" item-title="label" item-value="value"
                                 :error-messages="errors?.status" hide-details="auto" variant="outlined"
                                 density="comfortable"></v-select>
@@ -191,7 +191,7 @@
 
                         <!-- Payment Status -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Payment Status*</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Payment Status') }}*</label>
                             <v-select v-model="form.payment_status" :items="paymentStatuses" item-title="label"
                                 item-value="value" :error-messages="errors?.payment_status" hide-details="auto"
                                 variant="outlined" density="comfortable"></v-select>
@@ -201,13 +201,13 @@
 
                         <!-- Save Button -->
                         <v-btn color="primary" type="submit" block size="large" :loading="processing">
-                            {{ order ? 'Update Order' : 'Create Order' }}
+                            {{ order ? $t('Update Order') : $t('Create Order') }}
                         </v-btn>
 
                         <!-- Cancel Button -->
                         <Link :href="route('dashboard.orders.index')"
                             class="v-btn v-btn--block v-btn--text v-btn--secondary mt-3">
-                        Cancel
+                        {{ $t('Cancel') }}
                         </Link>
                     </v-card-text>
                 </v-card>

@@ -5,14 +5,14 @@
     <DashboardLayout>
         <template #header>
             <div class="d-flex align-center">
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">Orders</h2>
+                <h2 class="text-xl font-semibold leading-tight text-gray-800">{{ $t('Orders') }}</h2>
                 <v-spacer></v-spacer>
 
                 <!-- Export Menu -->
                 <v-menu location="bottom">
                     <template v-slot:activator="{ props }">
                         <v-btn color="secondary" class="mr-2" v-bind="props" prepend-icon="mdi-database-export-outline">
-                            Export
+                            {{ $t('Export') }}
                         </v-btn>
                     </template>
                     <v-list>
@@ -25,7 +25,7 @@
 
                 <Link :href="route('dashboard.orders.create')">
                 <v-btn color="primary" prepend-icon="mdi-plus" class="ml-2">
-                    Create New Order
+                    {{ $t('Create New Order') }}
                 </v-btn>
                 </Link>
             </div>
@@ -37,12 +37,12 @@
                 :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
                 <template #filters>
                     <v-col cols="12" md="4">
-                        <SearchField v-model="search" label="Search Orders" :loading="loading" @search="applyFilters"
+                        <SearchField v-model="search" :label="$t('Search Orders')" :loading="loading" @search="applyFilters"
                             @clear="applyFilters" />
                     </v-col>
 
                     <v-col cols="12" md="4">
-                        <v-select v-model="selectedOrderStatus" :items="orderStatusOptions" label="Order Status"
+                        <v-select v-model="selectedOrderStatus" :items="orderStatusOptions" :label="$t('Order Status')"
                             hide-details clearable variant="outlined" density="comfortable"
                             @update:model-value="applyFilters">
                             <template v-slot:prepend-inner>
@@ -52,7 +52,7 @@
                     </v-col>
 
                     <v-col cols="12" md="4">
-                        <v-select v-model="selectedPaymentStatus" :items="paymentStatusOptions" label="Payment Status"
+                        <v-select v-model="selectedPaymentStatus" :items="paymentStatusOptions" :label="$t('Payment Status')"
                             hide-details clearable variant="outlined" density="comfortable"
                             @update:model-value="applyFilters">
                             <template v-slot:prepend-inner>
@@ -125,7 +125,7 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
-                    <span class="mt-4">Rows per page:</span>
+                    <span class="mt-4">{{ $t('Rows per page') }}:</span>
                     <v-select v-model="perPage" :items="perPageOptions" class="ml-4"
                         style="max-width: 100px;" @update:model-value="changePerPage" hide-details />
                     <v-pagination v-if="orders.last_page" v-model="currentPage" :length="orders.last_page"
@@ -137,18 +137,18 @@
         <!-- Delete Confirmation Dialog -->
         <v-dialog v-model="deleteDialog" max-width="500px">
             <v-card>
-                <v-card-title class="text-h5">Delete Order</v-card-title>
+                <v-card-title class="text-h5">{{ $t('Delete Order') }}</v-card-title>
                 <v-card-text>
-                    Are you sure you want to delete this order? This action cannot be undone.
+                    {{ $t('Are you sure you want to delete this order? This action cannot be undone.') }}
                     <p class="mt-4 font-weight-bold" v-if="orderToDelete">
-                        Order #{{ orderToDelete.uuid.slice(-8).toUpperCase() }} - ${{
+                        {{ $t('Order') }} #{{ orderToDelete.uuid.slice(-8).toUpperCase() }} - ${{
                             formatCurrency(orderToDelete.total_amount) }}
                     </p>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">Cancel</v-btn>
-                    <v-btn color="error" :loading="deleting" @click="deleteOrder">Delete</v-btn>
+                    <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">{{ $t('Cancel') }}</v-btn>
+                    <v-btn color="error" :loading="deleting" @click="deleteOrder">{{ $t('Delete') }}</v-btn>
                     <v-spacer></v-spacer>
                 </v-card-actions>
             </v-card>
