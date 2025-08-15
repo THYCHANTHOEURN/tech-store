@@ -6,7 +6,7 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Users
+                    {{ $t('Users') }}
                 </h2>
                 <v-spacer></v-spacer>
 
@@ -14,7 +14,7 @@
                 <v-menu location="bottom">
                     <template v-slot:activator="{ props }">
                         <v-btn color="secondary" class="mr-2" v-bind="props" prepend-icon="mdi-database-export-outline">
-                            Export
+                                {{ $t('Export') }}
                         </v-btn>
                     </template>
                     <v-list>
@@ -27,7 +27,7 @@
 
                 <Link :href="route('dashboard.users.create')">
                 <v-btn color="primary" prepend-icon="mdi-plus" variant="flat">
-                    Create User
+                    {{ $t('Create User') }}
                 </v-btn>
                 </Link>
             </div>
@@ -39,12 +39,12 @@
                 @reset-filters="resetFilters" @clear-filter="clearFilter">
                 <template #filters>
                     <v-col cols="12" md="4">
-                        <SearchField v-model="search" label="Search Users" :loading="loading" @search="applyFilters"
+                        <SearchField v-model="search" :label="$t('Search Users')" :loading="loading" @search="applyFilters"
                             @clear="applyFilters" />
                     </v-col>
 
                     <v-col cols="12" md="4">
-                        <v-select v-model="filters.role" label="Role" :items="roleOptions" item-title="title"
+                        <v-select v-model="filters.role" :label="$t('Role')" :items="roleOptions" item-title="title"
                             item-value="value" hide-details clearable @update:model-value="applyFilters"
                             variant="outlined" density="comfortable">
                             <template v-slot:prepend-inner>
@@ -54,7 +54,7 @@
                     </v-col>
 
                     <v-col cols="12" md="4">
-                        <v-select v-model="filters.status" label="Status" :items="statusOptions" item-title="title"
+                        <v-select v-model="filters.status" :label="$t('Status')" :items="statusOptions" item-title="title"
                             item-value="value" hide-details clearable @update:model-value="applyFilters"
                             variant="outlined" density="comfortable">
                             <template v-slot:prepend-inner>
@@ -104,7 +104,7 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
-                    <span class="mt-4">Rows per page:</span>
+                    <span class="mt-4">{{ $t('Rows per page') }}:</span>
                     <v-select v-model="perPage" :items="perPageOptions" class="ml-4" style="max-width: 100px;"
                         @update:model-value="changePerPage" hide-details />
                     <v-pagination v-if="users.last_page" v-model="page" :length="users.last_page" total-visible="7"
@@ -117,19 +117,18 @@
         <v-dialog v-model="deleteDialog" max-width="500px">
             <v-card>
                 <v-card-title class="text-h6">
-                    Delete User
+                  {{ $t('Delete User') }}
                 </v-card-title>
                 <v-card-text>
-                    Are you sure you want to delete the user "{{ userToDelete?.name }}"? This action cannot be
-                    undone.
+                    {{ $t('Are you sure you want to delete the user') }} "{{ userToDelete?.name }}"? {{ $t('This action cannot be undone.') }}.
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">
-                        Cancel
+                        {{ $t('Cancel') }}
                     </v-btn>
                     <v-btn color="error" variant="flat" @click="deleteUser" :loading="deleting">
-                        Delete
+                        {{ $t('Delete') }}
                     </v-btn>
                 </v-card-actions>
             </v-card>

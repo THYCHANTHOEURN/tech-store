@@ -184,5 +184,21 @@
   "Update Customer": "Update Customer",
   "Create Customer": "Create Customer",
   "Create New Customer": "Create New Customer",
-  "Are you sure you want to delete the customer": "Are you sure you want to delete the customer"
+  "Are you sure you want to delete the customer": "Are you sure you want to delete the customer",
+  "Create User": "Create User",
+  "Search Users": "Search Users",
+  "Role": "Role",
+  "User Information": "User Information",
+  "Created At": "Created At",
+  "User Actions": "User Actions",
+  "Edit User": "Edit User",
+  "Delete User": "Delete User",
+  "Back to Users": "Back to Users",
+  "User Details": "User Details",
+  "Create New User": "Create New User",
+  "User Settings": "User Settings",
+  "User permissions are determined by their role": "User permissions are determined by their role",
+  "Update User": "Update User",
+  "Are you sure you want to delete the user": "Are you sure you want to delete the user"
 }
+    

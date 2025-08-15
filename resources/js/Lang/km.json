@@ -183,5 +183,20 @@
   "Update Customer": "ធ្វើបច្ចុប្បន្នភាពអតិថិជន",
   "Create Customer": "បង្កើតអតិថិជន",
   "Create New Customer": "បង្កើតអតិថិជនថ្មី",
-  "Are you sure you want to delete the customer": "តើអ្នកប្រាកដជាចង់លុបអតិថិជននេះទេ?"
+  "Are you sure you want to delete the customer": "តើអ្នកប្រាកដជាចង់លុបអតិថិជននេះទេ?",
+  "Create User": "បង្កើតអ្នកប្រើ",
+  "Search Users": "ស្វែងរកអ្នកប្រើ",
+  "Role": "តួនាទី",
+  "User Information": "ព័ត៌មានអ្នកប្រើ",
+  "Created At": "បានបង្កើតនៅ",
+  "User Actions": "សកម្មភាពអ្នកប្រើ",
+  "Edit User": "កែប្រែអ្នកប្រើ",
+  "Delete User": "លុបអ្នកប្រើ",
+  "Back to Users": "ត្រឡប់ទៅអ្នកប្រើ",
+  "User Details": "ព័ត៌មានលម្អិតអំពីអ្នកប្រើ",
+  "Create New User": "បង្កើតអ្នកប្រើថ្មី",
+  "User Settings": "ការកំណត់អ្នកប្រើ",
+  "User permissions are determined by their role": "សិទ្ធិរបស់អ្នកប្រើត្រូវបានកំណត់ដោយតួនាទីរបស់ពួកគេ",
+  "Update User": "ធ្វើបច្ចុប្បន្នភាពអ្នកប្រើ",
+  "Are you sure you want to delete the user": "តើអ្នកប្រាកដជាចង់លុបអ្នកប្រើនេះទេ?"
 }

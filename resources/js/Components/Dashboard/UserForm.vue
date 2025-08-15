@@ -6,7 +6,7 @@
                 <v-card class="mb-4">
                     <v-card-title>
                         <v-icon class="mr-2">mdi-account-outline</v-icon>
-                        User Information
+                        {{ $t('User Information') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
@@ -14,7 +14,7 @@
                         <v-row>
                             <v-col cols="12" md="6">
                                 <div class="mb-4">
-                                    <label class="text-subtitle-1 d-block mb-1">Name*</label>
+                                    <label class="text-subtitle-1 d-block mb-1">{{ $t('Name') }}*</label>
                                     <v-text-field v-model="form.name" :error-messages="errors.name" hide-details="auto"
                                         placeholder="Enter user name" variant="outlined"
                                         density="comfortable"></v-text-field>
@@ -22,7 +22,7 @@
                             </v-col>
                             <v-col cols="12" md="6">
                                 <div class="mb-4">
-                                    <label class="text-subtitle-1 d-block mb-1">Email Address*</label>
+                                    <label class="text-subtitle-1 d-block mb-1">{{ $t('Email Address') }}*</label>
                                     <v-text-field v-model="form.email" type="email" :error-messages="errors.email"
                                         hide-details="auto" placeholder="Enter email address" variant="outlined"
                                         density="comfortable"></v-text-field>
@@ -32,7 +32,7 @@
 
                         <!-- Password -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Password {{ user ? '' : '*' }}</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Password') }} {{ user ? '' : '*' }}</label>
                             <v-text-field v-model="form.password" type="password" :error-messages="errors.password"
                                 hide-details="auto"
                                 :placeholder="user ? 'Leave blank to keep current password' : 'Enter password'"
@@ -42,7 +42,7 @@
 
                         <!-- Phone -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Phone Number</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Phone Number') }}</label>
                             <v-text-field v-model="form.phone" :error-messages="errors.phone" hide-details="auto"
                                 placeholder="Enter phone number" variant="outlined"
                                 density="comfortable"></v-text-field>
@@ -50,7 +50,7 @@
 
                         <!-- Address -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Address</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Address') }}</label>
                             <v-textarea v-model="form.address" :error-messages="errors.address" hide-details="auto"
                                 placeholder="Enter address" variant="outlined" density="comfortable"
                                 rows="3"></v-textarea>
@@ -64,30 +64,30 @@
                 <v-card class="sticky-card">
                     <v-card-title>
                         <v-icon class="mr-2">mdi-cog-outline</v-icon>
-                        User Settings
+                        {{ $t('User Settings') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Role -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Role*</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Role') }}*</label>
                             <v-select v-model="form.role" :items="roles" item-title="name" item-value="name"
                                 :error-messages="errors.role" hide-details="auto" variant="outlined"
                                 density="comfortable">
                             </v-select>
-                            <p class="text-caption mt-1">User permissions are determined by their role</p>
+                            <p class="text-caption mt-1">{{ $t('User permissions are determined by their role') }}</p>
                         </div>
 
                         <v-divider class="my-4"></v-divider>
 
                         <!-- Save Button -->
                         <v-btn color="primary" type="submit" block size="large" :loading="processing">
-                            {{ user ? 'Update User' : 'Create User' }}
+                            {{ user ? $t('Update User') : $t('Create User') }}
                         </v-btn>
 
                         <!-- Cancel Button -->
                         <v-btn variant="text" block class="mt-3">
-                            Cancel
+                            {{ $t('Cancel') }}
                         </v-btn>
                     </v-card-text>
                 </v-card>
