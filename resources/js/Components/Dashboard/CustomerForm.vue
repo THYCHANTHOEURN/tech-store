@@ -6,30 +6,29 @@
                 <v-card class="mb-4">
                     <v-card-title>
                         <v-icon class="mr-2">mdi-account-outline</v-icon>
-                        Customer Information
+                        {{ $t('Customer Information') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Customer Name -->
-                        <v-text-field v-model="form.name" label="Full Name*" :error-messages="errors?.name" required
+                        <v-text-field v-model="form.name" :label="$t('Full Name') + '*'" :error-messages="errors?.name" required
                             variant="outlined" density="comfortable"></v-text-field>
 
                         <!-- Email -->
-                        <v-text-field v-model="form.email" label="Email Address*" :error-messages="errors?.email"
+                        <v-text-field v-model="form.email" :label="$t('Email Address') + '*'" :error-messages="errors?.email"
                             type="email" required variant="outlined" density="comfortable"></v-text-field>
 
                         <!-- Password -->
-                        <v-text-field v-model="form.password" label="Password"
-                            :placeholder="customer ? 'Leave blank to keep current password' : 'Password for the customer'"
+                        <v-text-field v-model="form.password" :label="$t('Password')" :placeholder="customer ? $t('Leave blank to keep current password') : $t('Password for the customer')"
                             :error-messages="errors?.password" :required="!customer" type="password" variant="outlined"
                             density="comfortable"></v-text-field>
 
                         <!-- Phone -->
-                        <v-text-field v-model="form.phone" label="Phone Number" :error-messages="errors?.phone"
+                        <v-text-field v-model="form.phone" :label="$t('Phone Number')" :error-messages="errors?.phone"
                             variant="outlined" density="comfortable"></v-text-field>
 
                         <!-- Address -->
-                        <v-textarea v-model="form.address" label="Address" :error-messages="errors?.address" auto-grow
+                        <v-textarea v-model="form.address" :label="$t('Address')" :error-messages="errors?.address" auto-grow
                             rows="3" variant="outlined" density="comfortable"></v-textarea>
                     </v-card-text>
                 </v-card>
@@ -40,18 +39,18 @@
                 <v-card>
                     <v-card-title>
                         <v-icon class="mr-2">mdi-cog-outline</v-icon>
-                        Actions
+                        {{ $t('Actions') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <v-btn block color="primary" type="submit" :loading="processing" :disabled="processing">
-                            {{ customer ? 'Update Customer' : 'Create Customer' }}
+                            {{ customer ? $t('Update Customer') : $t('Create Customer') }}
                         </v-btn>
 
                         <!-- Cancel Button -->
                         <Link :href="route('dashboard.customers.index')"
                             class="v-btn v-btn--block v-btn--text v-btn--secondary mt-3">
-                        Cancel
+                        {{ $t('Cancel') }}
                         </Link>
                     </v-card-text>
                 </v-card>

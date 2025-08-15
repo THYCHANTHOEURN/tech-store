@@ -6,12 +6,12 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Edit Customer: {{ customer.name }}
+                    {{ $t('Edit Customer') }}: {{ customer.name }}
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.customers.index')">
                 <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
-                    Back to Customers
+                    {{ $t('Back to Customers') }}
                 </v-btn>
                 </Link>
             </div>

@@ -6,17 +6,17 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Customer Details: {{ customer.name }}
+                    {{ $t('Customer Details') }}: {{ customer.name }}
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.customers.edit', customer.uuid)">
                 <v-btn color="warning" prepend-icon="mdi-pencil" class="mr-2">
-                    Edit
+                    {{ $t('Edit') }}
                 </v-btn>
                 </Link>
                 <Link :href="route('dashboard.customers.index')">
                 <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
-                    Back to Customers
+                    {{ $t('Back to Customers') }}
                 </v-btn>
                 </Link>
             </div>
@@ -29,7 +29,7 @@
                     <v-card class="mb-4">
                         <v-card-title class="d-flex align-center">
                             <v-icon class="mr-2">mdi-account</v-icon>
-                            Customer Information
+                            {{ $t('Customer Information') }}
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-card-text>
@@ -38,7 +38,7 @@
                                     <template v-slot:prepend>
                                         <v-icon color="primary" class="mr-2">mdi-badge-account</v-icon>
                                     </template>
-                                    <v-list-item-title>Name</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Name') }}</v-list-item-title>
                                     <v-list-item-subtitle>{{ customer.name }}</v-list-item-subtitle>
                                 </v-list-item>
 
@@ -46,7 +46,7 @@
                                     <template v-slot:prepend>
                                         <v-icon color="primary" class="mr-2">mdi-email</v-icon>
                                     </template>
-                                    <v-list-item-title>Email</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Email') }}</v-list-item-title>
                                     <v-list-item-subtitle>{{ customer.email }}</v-list-item-subtitle>
                                 </v-list-item>
 
@@ -54,7 +54,7 @@
                                     <template v-slot:prepend>
                                         <v-icon color="primary" class="mr-2">mdi-check-decagram</v-icon>
                                     </template>
-                                    <v-list-item-title>Email Verification</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Email Verification') }}</v-list-item-title>
                                     <v-list-item-subtitle>
                                         <v-chip :color="customer.email_verified_at ? 'success' : 'error'" size="small"
                                             class="text-uppercase">
@@ -67,7 +67,7 @@
                                     <template v-slot:prepend>
                                         <v-icon color="primary" class="mr-2">mdi-phone</v-icon>
                                     </template>
-                                    <v-list-item-title>Phone</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Phone') }}</v-list-item-title>
                                     <v-list-item-subtitle>{{ customer.phone }}</v-list-item-subtitle>
                                 </v-list-item>
 
@@ -75,7 +75,7 @@
                                     <template v-slot:prepend>
                                         <v-icon color="primary" class="mr-2">mdi-map-marker</v-icon>
                                     </template>
-                                    <v-list-item-title>Address</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Address') }}</v-list-item-title>
                                     <v-list-item-subtitle style="white-space: pre-line">{{ customer.address
                                         }}</v-list-item-subtitle>
                                 </v-list-item>
@@ -84,7 +84,7 @@
                                     <template v-slot:prepend>
                                         <v-icon color="primary" class="mr-2">mdi-calendar</v-icon>
                                     </template>
-                                    <v-list-item-title>Registration Date</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Registration Date') }}</v-list-item-title>
                                     <v-list-item-subtitle>{{ formatDate(customer.created_at) }}</v-list-item-subtitle>
                                 </v-list-item>
                             </v-list>
@@ -97,7 +97,7 @@
                     <v-card class="mb-4">
                         <v-card-title class="d-flex align-center">
                             <v-icon class="mr-2">mdi-chart-box</v-icon>
-                            Customer Stats
+                            {{ $t('Customer Stats') }}
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-card-text>
@@ -106,7 +106,7 @@
                                     <v-card class="pa-3" color="blue-lighten-5">
                                         <div class="text-center">
                                             <div class="text-h6 font-weight-bold">{{ stats.total_orders }}</div>
-                                            <div class="text-subtitle-2">Total Orders</div>
+                                            <div class="text-subtitle-2">{{ $t('Total Orders') }}</div>
                                         </div>
                                     </v-card>
                                 </v-col>
@@ -116,7 +116,7 @@
                                         <div class="text-center">
                                             <div class="text-h6 font-weight-bold">${{ formatCurrency(stats.total_spent)
                                                 }}</div>
-                                            <div class="text-subtitle-2">Total Spent</div>
+                                            <div class="text-subtitle-2">{{ $t('Total Spent') }}</div>
                                         </div>
                                     </v-card>
                                 </v-col>
@@ -125,7 +125,7 @@
                                     <v-card class="pa-3" color="purple-lighten-5">
                                         <div class="text-center">
                                             <div class="text-h6 font-weight-bold">{{ stats.wishlist_items }}</div>
-                                            <div class="text-subtitle-2">Wishlist Items</div>
+                                            <div class="text-subtitle-2">{{ $t('Wishlist Items') }}</div>
                                         </div>
                                     </v-card>
                                 </v-col>
@@ -134,7 +134,7 @@
                                     <v-card class="pa-3" color="amber-lighten-5">
                                         <div class="text-center">
                                             <div class="text-h6 font-weight-bold">{{ stats.cart_items }}</div>
-                                            <div class="text-subtitle-2">Cart Items</div>
+                                            <div class="text-subtitle-2">{{ $t('Cart Items') }}</div>
                                         </div>
                                     </v-card>
                                 </v-col>
@@ -145,12 +145,12 @@
                             <div class="d-flex justify-space-between">
                                 <Link :href="route('dashboard.customers.edit', customer.uuid)">
                                 <v-btn color="primary" variant="outlined" prepend-icon="mdi-pencil" class="mr-2">
-                                    Edit Customer
+                                    {{ $t('Edit Customer') }}
                                 </v-btn>
                                 </Link>
                                 <v-btn color="error" variant="outlined" prepend-icon="mdi-delete"
                                     @click="confirmDelete">
-                                    Delete Customer
+                                    {{ $t('Delete Customer') }}
                                 </v-btn>
                             </div>
                         </v-card-text>
@@ -162,7 +162,7 @@
                     <v-card>
                         <v-card-title class="d-flex align-center">
                             <v-icon class="mr-2">mdi-shopping</v-icon>
-                            Recent Orders
+                            {{ $t('Recent Orders') }}
                             <v-spacer></v-spacer>
                             <Link v-if="customer.orders.length"
                                 :href="route('dashboard.orders.create', { user_id: customer.id })">

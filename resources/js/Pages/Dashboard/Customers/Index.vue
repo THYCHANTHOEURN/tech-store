@@ -6,7 +6,7 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Customers
+                    {{ $t('Customers') }}
                 </h2>
                 <v-spacer></v-spacer>
 
@@ -14,7 +14,7 @@
                 <v-menu location="bottom">
                     <template v-slot:activator="{ props }">
                         <v-btn color="secondary" class="mr-2" v-bind="props" prepend-icon="mdi-database-export-outline">
-                            Export
+                            {{ $t('Export') }}
                         </v-btn>
                     </template>
                     <v-list>
@@ -27,7 +27,7 @@
 
                 <Link :href="route('dashboard.customers.create')">
                 <v-btn color="primary" prepend-icon="mdi-plus">
-                    Add Customer
+                    {{ $t('Add Customer') }}
                 </v-btn>
                 </Link>
             </div>
@@ -39,12 +39,12 @@
                 :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
                 <template #filters>
                     <v-col cols="12" md="6">
-                        <SearchField v-model="search" label="Search Customers" :loading="loading"
+                        <SearchField v-model="search" :label="$t('Search Customers')" :loading="loading"
                             @search="filterCustomers" @clear="filterCustomers" />
                     </v-col>
 
                     <v-col cols="12" sm="6" md="6">
-                        <v-select v-model="selectedStatus" :items="statusOptions" label="Email Status" hide-details
+                        <v-select v-model="selectedStatus" :items="statusOptions" :label="$t('Email Status')" hide-details
                             clearable @update:model-value="filterCustomers" variant="outlined" density="comfortable">
                             <template v-slot:prepend-inner>
                                 <v-icon color="primary" size="small">mdi-email-check</v-icon>
@@ -105,19 +105,18 @@
         <v-dialog v-model="deleteDialog" max-width="500">
             <v-card>
                 <v-card-title class="text-h5">
-                    Confirm Delete
+                    {{ $t('Confirm Delete') }}
                 </v-card-title>
                 <v-card-text>
-                    Are you sure you want to delete the customer "{{ customerToDelete?.name }}"? This action cannot be
-                    undone.
+                    {{ $t('Are you sure you want to delete the customer') }} "{{ customerToDelete?.name }}"? {{ $t('This action cannot be undone.') }}
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">
-                        Cancel
+                        {{ $t('Cancel') }}
                     </v-btn>
                     <v-btn color="error" variant="flat" @click="deleteCustomer" :loading="deleting">
-                        Delete
+                        {{ $t('Delete') }}
                     </v-btn>
                 </v-card-actions>
             </v-card>
