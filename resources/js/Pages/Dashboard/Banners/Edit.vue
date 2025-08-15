@@ -5,12 +5,12 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Edit Banner: {{ banner.title }}
+                    {{ $t('Edit Banner') }}: {{ banner.title }}
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.banners.index')">
                 <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
-                    Back to Banners
+                    {{ $t('Back to Banners') }}
                 </v-btn>
                 </Link>
             </div>

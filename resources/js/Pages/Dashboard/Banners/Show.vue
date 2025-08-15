@@ -6,17 +6,17 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Banner Details: {{ banner.title }}
+                    {{ $t('Banner Details') }}: {{ banner.title }}
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.banners.edit', banner.uuid)" class="text-decoration-none">
                 <v-btn color="warning" prepend-icon="mdi-pencil" class="mx-2">
-                    Edit
+                    {{ $t('Edit') }}
                 </v-btn>
                 </Link>
                 <Link :href="route('dashboard.banners.index')">
                 <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
-                    Back to Banners
+                    {{ $t('Back to Banners') }}
                 </v-btn>
                 </Link>
             </div>
@@ -26,7 +26,7 @@
             <v-row>
                 <v-col cols="12" md="6">
                     <v-card class="mb-4">
-                        <v-card-title>Banner Image</v-card-title>
+                        <v-card-title>{{ $t('Banner Image') }}</v-card-title>
                         <v-card-text>
                             <v-img :src="banner.image_url" max-height="400" contain
                                 class="bg-grey-lighten-2 rounded"></v-img>
@@ -36,17 +36,17 @@
 
                 <v-col cols="12" md="6">
                     <v-card class="mb-4">
-                        <v-card-title>Banner Information</v-card-title>
+                        <v-card-title>{{ $t('Banner Information') }}</v-card-title>
                         <v-divider></v-divider>
                         <v-card-text>
                             <v-list>
                                 <v-list-item>
-                                    <v-list-item-title>Title</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Title') }}</v-list-item-title>
                                     <v-list-item-subtitle>{{ banner.title }}</v-list-item-subtitle>
                                 </v-list-item>
 
                                 <v-list-item>
-                                    <v-list-item-title>Link URL</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Link URL') }}</v-list-item-title>
                                     <v-list-item-subtitle>
                                         <a :href="banner.link" target="_blank" class="text-decoration-none">
                                             {{ banner.link }}
@@ -56,7 +56,7 @@
                                 </v-list-item>
 
                                 <v-list-item>
-                                    <v-list-item-title>Position</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Position') }}</v-list-item-title>
                                     <v-list-item-subtitle>
                                         <v-chip :color="positionColor(banner.position)" size="small">
                                             {{ formatPosition(banner.position) }}
@@ -65,7 +65,7 @@
                                 </v-list-item>
 
                                 <v-list-item>
-                                    <v-list-item-title>Status</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Status') }}</v-list-item-title>
                                     <v-list-item-subtitle>
                                         <v-chip :color="banner.status ? 'success' : 'error'" size="small">
                                             {{ banner.status ? 'Active' : 'Inactive' }}
@@ -74,12 +74,12 @@
                                 </v-list-item>
 
                                 <v-list-item>
-                                    <v-list-item-title>Created Date</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Created Date') }}</v-list-item-title>
                                     <v-list-item-subtitle>{{ banner.created_at }}</v-list-item-subtitle>
                                 </v-list-item>
 
                                 <v-list-item>
-                                    <v-list-item-title>Last Updated</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Last Updated') }}</v-list-item-title>
                                     <v-list-item-subtitle>{{ banner.updated_at }}</v-list-item-subtitle>
                                 </v-list-item>
                             </v-list>
@@ -88,7 +88,7 @@
 
                             <!-- Banner Preview Card -->
                             <div>
-                                <h3 class="text-subtitle-1 mb-2">Preview:</h3>
+                                <h3 class="text-subtitle-1 mb-2">{{ $t('Preview') }}:</h3>
                                 <v-card variant="outlined">
                                     <v-card-title class="text-subtitle-1">How it will appear on the
                                         website:</v-card-title>
@@ -133,11 +133,10 @@
 
                     <!-- Delete Section -->
                     <v-card color="error" variant="outlined">
-                        <v-card-title class="text-warning">Danger Zone</v-card-title>
+                        <v-card-title class="text-warning">{{ $t('Danger Zone') }}</v-card-title>
                         <v-card-text>
-                            <p class="text-warning">Once you delete this banner, there is no going back.</p>
-                            <v-btn color="white" variant="outlined" class="mt-2" @click="confirmDelete">Delete
-                                Banner</v-btn>
+                            <p class="text-warning">{{ $t('Once you delete this banner, there is no going back.') }}</p>
+                            <v-btn color="white" variant="outlined" class="mt-2" @click="confirmDelete">{{ $t('Delete Banner') }}</v-btn>
                         </v-card-text>
                     </v-card>
                 </v-col>

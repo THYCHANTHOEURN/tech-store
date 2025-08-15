@@ -6,20 +6,20 @@
                 <v-card>
                     <v-card-title>
                         <v-icon class="mr-2">mdi-image-multiple</v-icon>
-                        Banner Information
+                        {{ $t('Banner Information') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Banner Title -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Banner Title*</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Banner Title') }}*</label>
                             <v-text-field v-model="form.title" :error-messages="errors?.title" hide-details="auto"
                                 placeholder="Enter banner title" variant="outlined" density="comfortable"></v-text-field>
                         </div>
 
                         <!-- Link -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Link URL*</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Link URL') }}*</label>
                             <v-text-field v-model="form.link" :error-messages="errors?.link" hide-details="auto"
                                 placeholder="Enter link URL (e.g., /products/gaming-laptop)" variant="outlined" density="comfortable"></v-text-field>
                             <p class="text-caption mt-1">The URL that users will be redirected to when they click the banner.</p>
@@ -27,7 +27,7 @@
 
                         <!-- Banner Image -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Banner Image {{ banner ? '' : '*' }}</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Banner Image') }} {{ banner ? '' : '*' }}</label>
                             <v-file-input v-model="form.image" :error-messages="errors?.image" hide-details="auto"
                                 placeholder="Select banner image" variant="outlined" density="comfortable"
                                 accept="image/*" prepend-icon="" prepend-inner-icon="mdi-image"
@@ -42,7 +42,7 @@
 
                         <!-- Image Preview -->
                         <div v-if="imagePreview || form.image_url" class="mb-4">
-                            <p class="text-subtitle-1 mb-2">Preview:</p>
+                            <p class="text-subtitle-1 mb-2">{{ $t('Preview') }}:</p>
                             <v-img :src="imagePreview || form.image_url" max-width="400" max-height="200" contain
                                 class="bg-grey-lighten-2 rounded"></v-img>
                         </div>
@@ -55,13 +55,13 @@
                 <v-card class="sticky-card">
                     <v-card-title>
                         <v-icon class="mr-2">mdi-cog-outline</v-icon>
-                        Banner Settings
+                        {{ $t('Banner Settings') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Position -->
                         <div class="mb-4">
-                            <label class="text-subtitle-1 d-block mb-1">Position*</label>
+                            <label class="text-subtitle-1 d-block mb-1">{{ $t('Position') }}*</label>
                             <v-select v-model="form.position" :items="positions" item-title="label" item-value="value"
                                 :error-messages="errors?.position" hide-details="auto" variant="outlined" density="comfortable">
                             </v-select>
@@ -72,7 +72,7 @@
 
                         <!-- Status -->
                         <div class="mb-4">
-                            <v-switch v-model="form.status" color="success" label="Active"
+                            <v-switch v-model="form.status" color="success" :label="$t('Active')"
                                 hint="Toggle to publish or unpublish the banner"
                                 :error-messages="errors?.status"></v-switch>
                         </div>
@@ -81,13 +81,13 @@
 
                         <!-- Save Button -->
                         <v-btn color="primary" type="submit" block size="large" :loading="processing">
-                            {{ banner ? 'Update Banner' : 'Create Banner' }}
+                            {{ banner ? $t('Update Banner') : $t('Create Banner') }}
                         </v-btn>
 
                         <!-- Cancel Button -->
                         <Link :href="route('dashboard.banners.index')"
                             class="v-btn v-btn--block v-btn--text v-btn--secondary mt-3">
-                            Cancel
+                            {{ $t('Cancel') }}
                         </Link>
                     </v-card-text>
                 </v-card>
