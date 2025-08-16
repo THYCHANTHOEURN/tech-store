@@ -6,7 +6,7 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Activity Logs
+                    {{ $t('Activity Logs') }}
                 </h2>
             </div>
         </template>
@@ -17,19 +17,19 @@
                 :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
                 <template #filters>
                     <v-col cols="12" md="3">
-                        <SearchField v-model="causer" label="Causer Name" :loading="loading" @search="applyFilters"
+                        <SearchField v-model="causer" :label="$t('Causer Name')" :loading="loading" @search="applyFilters"
                             @clear="applyFilters" />
                     </v-col>
                     <v-col cols="12" md="3">
-                        <SearchField v-model="description" label="Description" :loading="loading" @search="applyFilters"
+                        <SearchField v-model="description" :label="$t('Description')" :loading="loading" @search="applyFilters"
                             @clear="applyFilters" />
                     </v-col>
                     <v-col cols="12" md="3">
-                        <v-text-field v-model="dateFrom" label="Date From" type="date" variant="outlined"
+                        <v-text-field v-model="dateFrom" :label="$t('Date From')" type="date" variant="outlined"
                             density="comfortable" @change="applyFilters" />
                     </v-col>
                     <v-col cols="12" md="3">
-                        <v-text-field v-model="dateTo" label="Date To" type="date" variant="outlined"
+                        <v-text-field v-model="dateTo" :label="$t('Date To')" type="date" variant="outlined"
                             density="comfortable" @change="applyFilters" />
                     </v-col>
                 </template>

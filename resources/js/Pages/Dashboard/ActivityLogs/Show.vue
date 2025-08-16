@@ -10,7 +10,7 @@
                 </v-btn>
                 </Link>
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Activity Log Details
+                    {{ $t('Activity Log Details') }}
                 </h2>
             </div>
         </template>
@@ -27,27 +27,27 @@
                 <v-card-text>
                     <v-list>
                         <v-list-item>
-                            <v-list-item-title>ID</v-list-item-title>
+                            <v-list-item-title>{{ $t('ID') }}</v-list-item-title>
                             <v-list-item-subtitle>{{ activity.id }}</v-list-item-subtitle>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-item-title>Causer</v-list-item-title>
+                            <v-list-item-title>{{ $t('Causer') }}</v-list-item-title>
                             <v-list-item-subtitle>{{ activity.causer ? activity.causer.name : 'System'
                             }}</v-list-item-subtitle>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-item-title>Subject</v-list-item-title>
+                            <v-list-item-title>{{ $t('Subject') }}</v-list-item-title>
                             <v-list-item-subtitle>{{ activity.subject_type ? activity.subject_type.split('\\').pop() :
                                 '-'
                             }}</v-list-item-subtitle>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-item-title>Created At</v-list-item-title>
+                            <v-list-item-title>{{ $t('Created At') }}</v-list-item-title>
                             <v-list-item-subtitle>{{ new Date(activity.created_at).toLocaleString()
                             }}</v-list-item-subtitle>
                         </v-list-item>
                         <v-list-item v-if="activity.properties">
-                            <v-list-item-title>Properties</v-list-item-title>
+                            <v-list-item-title>{{ $t('Properties') }}</v-list-item-title>
                             <v-list-item-subtitle>
                                 <v-textarea :model-value="JSON.stringify(activity.properties, null, 2)" readonly
                                     rows="8" auto-grow

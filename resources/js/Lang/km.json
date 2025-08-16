@@ -218,5 +218,11 @@
   "Roles control what users can do in the system. Select permissions to define what actions users with this role can perform.": "តួនាទីគ្រប់គ្រងអ្វីដែលអ្នកប្រើអាចធ្វើបានក្នុងប្រព័ន្ធ។ ជ្រើសរើសសិទ្ធិដើម្បីកំណត់អ្វីដែលអ្នកប្រើដែលមានតួនាទីនេះអាចអនុវត្តបាន។",
   "Delete Role": "លុបតួនាទី",
   "Are you sure you want to delete this role? This action cannot be undone.": "តើអ្នកប្រាកដជាចង់លុបតួនាទីនេះទេ? សកម្មភាពនេះមិនអាចត្រឡប់មកវិញបានទេ។",
-  "Edit Role": "កែប្រែតួនាទី"
+  "Edit Role": "កែប្រែតួនាទី",
+  "Causer Name": "ឈ្មោះអ្នកបង្កើត",
+  "Date From": "កាលបរិច្ឆេទពី",
+  "Date To": "កាលបរិច្ឆេទទៅ",
+  "Activity Log Details": "ព័ត៌មានលម្អិតកំណត់ហេតុ",
+  "Causer": "អ្នកបង្កើត",
+  "Properties": "លក្ខណៈ"
 }
