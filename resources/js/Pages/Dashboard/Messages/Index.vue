@@ -6,7 +6,7 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Customer Messages
+                    {{ $t('Customer Messages') }}
                 </h2>
             </div>
         </template>
@@ -17,12 +17,12 @@
                 :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
                 <template #filters>
                     <v-col cols="12" md="4">
-                        <SearchField v-model="search" label="Search Messages" :loading="loading"
+                        <SearchField v-model="search" :label="$t('Search Messages')" :loading="loading"
                             @search="filterMessages" @clear="filterMessages" />
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
-                        <v-select v-model="selectedStatus" :items="statusOptions" label="Status" hide-details clearable
+                        <v-select v-model="selectedStatus" :items="statusOptions" :label="$t('Status')" hide-details clearable
                             @update:model-value="filterMessages" variant="outlined" density="comfortable">
                             <template v-slot:prepend-inner>
                                 <v-icon color="primary" size="small">mdi-filter-variant</v-icon>

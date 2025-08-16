@@ -6,12 +6,12 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Message Thread: {{ thread.subject }}
+                    {{ $t('Message Thread') }}: {{ thread.subject }}
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.messages.index')">
                 <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
-                    Back to Messages
+                    {{ $t('Back to Messages') }}
                 </v-btn>
                 </Link>
             </div>
@@ -69,7 +69,7 @@
 
                     <!-- Reply Form -->
                     <v-card v-if="thread.status === 'active'">
-                        <v-card-title>Reply to Customer</v-card-title>
+                        <v-card-title>{{ $t('Reply to Customer') }}</v-card-title>
                         <v-card-text>
                             <v-form @submit.prevent="submitReply">
                                 <v-textarea v-model="form.message" label="Your reply" :error-messages="errors?.message"
@@ -82,7 +82,7 @@
 
                                 <div class="d-flex justify-end mt-4">
                                     <v-btn color="primary" type="submit" :loading="submitting" :disabled="submitting">
-                                        Send Reply
+                                        {{ $t('Send Reply') }}
                                     </v-btn>
                                 </div>
                             </v-form>
@@ -90,8 +90,8 @@
                     </v-card>
 
                     <div v-else class="text-center pa-4">
-                        <p class="mb-4">This message thread has been closed.</p>
-                        <v-btn color="primary" @click="reopenThread">Reopen Thread</v-btn>
+                        <p class="mb-4">{{ $t('This message thread has been closed.') }}</p>
+                        <v-btn color="primary" @click="reopenThread">{{ $t('Reopen Thread') }}</v-btn>
                     </div>
                 </v-col>
 
@@ -100,7 +100,7 @@
                     <v-card class="mb-4">
                         <v-card-title class="text-h6">
                             <v-icon class="mr-2">mdi-account</v-icon>
-                            Customer Info
+                            {{ $t('Customer Info') }}
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-card-text>
@@ -109,7 +109,7 @@
                                     <template v-slot:prepend>
                                         <v-icon color="primary" class="mr-2">mdi-account</v-icon>
                                     </template>
-                                    <v-list-item-title>Name</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Name') }}</v-list-item-title>
                                     <v-list-item-subtitle>{{ thread.user?.name }}</v-list-item-subtitle>
                                 </v-list-item>
 
@@ -117,14 +117,14 @@
                                     <template v-slot:prepend>
                                         <v-icon color="primary" class="mr-2">mdi-email</v-icon>
                                     </template>
-                                    <v-list-item-title>Email</v-list-item-title>
+                                    <v-list-item-title>{{ $t('Email') }}</v-list-item-title>
                                     <v-list-item-subtitle>{{ thread.user?.email }}</v-list-item-subtitle>
                                 </v-list-item>
                             </v-list>
 
                             <div class="d-flex justify-center mt-4">
                                 <Link v-if="thread.user" :href="route('dashboard.customers.show', thread.user.uuid)">
-                                <v-btn color="primary" variant="outlined">View Customer Profile</v-btn>
+                                <v-btn color="primary" variant="outlined">{{ $t('View Customer Profile') }}</v-btn>
                                 </Link>
                             </div>
                         </v-card-text>
@@ -133,14 +133,14 @@
                     <v-card>
                         <v-card-title class="text-h6">
                             <v-icon class="mr-2">mdi-cog</v-icon>
-                            Actions
+                            {{ $t('Actions') }}
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-card-text>
                             <v-btn block :color="thread.status === 'active' ? 'warning' : 'success'"
                                 :prepend-icon="thread.status === 'active' ? 'mdi-close-circle' : 'mdi-refresh'"
                                 class="mb-3" @click="toggleStatus">
-                                {{ thread.status === 'active' ? 'Close Thread' : 'Reopen Thread' }}
+                                {{ thread.status === 'active' ? $t('Close Thread') : $t('Reopen Thread') }}
                             </v-btn>
                         </v-card-text>
                     </v-card>

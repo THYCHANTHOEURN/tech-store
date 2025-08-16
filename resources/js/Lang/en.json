@@ -225,5 +225,16 @@
   "Date To": "Date To",
   "Activity Log Details": "Activity Log Details",
   "Causer": "Causer",
-  "Properties": "Properties"
+  "Properties": "Properties",
+  "Customer Messages": "Customer Messages",
+  "Search Messages": "Search Messages",
+  "Message Thread": "Message Thread",
+  "Customer Info": "Customer Info",
+  "View Customer Profile": "View Customer Profile",
+  "Close Thread": "Close Thread",
+  "Back to Messages": "Back to Messages",
+  "Reply to Customer": "Reply to Customer",
+  "Send Reply": "Send Reply",
+  "This message thread has been closed.": "This message thread has been closed.",
+  "Reopen Thread": "Reopen Thread"
 }

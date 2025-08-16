@@ -224,5 +224,17 @@
   "Date To": "កាលបរិច្ឆេទទៅ",
   "Activity Log Details": "ព័ត៌មានលម្អិតកំណត់ហេតុ",
   "Causer": "អ្នកបង្កើត",
-  "Properties": "លក្ខណៈ"
+  "Properties": "លក្ខណៈ",
+  "Customer Messages": "សារអតិថិជន",
+  "Search Messages": "ស្វែងរកសារ",
+  "Message Thread": "ខ្សែសារពីអតិថិជន",
+  "Customer Info": "ព័ត៌មានអតិថិជន",
+  "View Customer Profile": "មើលប្រវត្តិរូបអតិថិជន",
+  "Close Thread": "បិទខ្សែសារ",
+  "Back to Messages": "ត្រឡប់ទៅសារ",
+  "Reply to Customer": "ឆ្លើយតបអតិថិជន",
+  "Send Reply": "ផ្ញើឆ្លើយតប",
+  "This message thread has been closed.": "ខ្សែសារនេះត្រូវបានបិទ។",
+  "Reopen Thread": "បើកខ្សែសារ"
 }
+
