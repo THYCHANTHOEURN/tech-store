@@ -1,12 +1,12 @@
 <template>
 
-    <Head title="Settings" />
+    <Head :title="t('Settings')" />
 
     <DashboardLayout>
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Settings
+                    {{ t('Settings') }}
                 </h2>
                 <v-spacer></v-spacer>
             </div>
@@ -29,14 +29,14 @@
                         <template v-if="settings.length === 0">
                             <div class="text-center py-8">
                                 <v-icon size="large" color="grey" class="mb-4">mdi-alert-circle-outline</v-icon>
-                                <p class="text-body-1 text-grey">No settings found for this group.</p>
+                                <p class="text-body-1 text-grey">{{ t('No settings found for this group.') }}</p>
                             </div>
                         </template>
 
                         <div v-else>
                             <!-- Image Settings -->
                             <div v-if="hasImageSettings" class="mb-6">
-                                <h3 class="text-h6 mb-4">Images</h3>
+                                <h3 class="text-h6 mb-4">{{ t('Images') }}</h3>
                                 <v-row>
                                     <v-col v-for="setting in imageSettings" :key="setting.id" cols="12" md="4">
                                         <v-card outlined class="mb-4">
@@ -47,7 +47,7 @@
                                                     <v-img :src="getImageUrl(setting.key)" max-height="200" contain
                                                         class="bg-grey-lighten-3 rounded"></v-img>
                                                 </div>
-                                                <v-file-input :label="`Change ${setting.label}`"
+                                                <v-file-input :label="`${t('Change')} ${setting.label}`"
                                                     v-model="files[setting.key]" accept="image/*" show-size
                                                     prepend-icon="" prepend-inner-icon="mdi-camera" variant="outlined"
                                                     @update:model-value="(file) => previewImage(file, setting.key)"></v-file-input>
@@ -60,7 +60,7 @@
 
                             <!-- Text Settings -->
                             <div v-if="hasTextSettings" class="mb-6">
-                                <h3 class="text-h6 mb-4">Text Settings</h3>
+                                <h3 class="text-h6 mb-4">{{ t('Text Settings') }}</h3>
                                 <v-row>
                                     <v-col v-for="setting in textSettings" :key="setting.id" cols="12" md="6">
                                         <v-card outlined class="mb-4">
@@ -77,16 +77,16 @@
 
                             <!-- Theme Settings -->
                             <div v-if="activeTab === 'appearance'" class="mb-6">
-                                <h3 class="text-h6 mb-4">Theme Options</h3>
+                                <h3 class="text-h6 mb-4">{{ t('Theme Options') }}</h3>
                                 <v-row>
                                     <!-- Theme Mode Selection -->
                                     <v-col cols="12" md="6">
                                         <v-card outlined class="mb-4">
-                                            <v-card-title class="text-subtitle-1">Theme Mode</v-card-title>
+                                            <v-card-title class="text-subtitle-1">{{ t('Theme Mode') }}</v-card-title>
                                             <v-card-text>
                                                 <v-select :items="['light', 'dark', 'system']"
                                                     v-model="getSettingByKey('default_theme_mode').value"
-                                                    label="Default Theme Mode" variant="outlined" density="comfortable">
+                                                    :label="t('Default Theme Mode')" variant="outlined" density="comfortable">
                                                     <template v-slot:prepend-inner>
                                                         <v-icon>{{ getSettingByKey('default_theme_mode').value ===
                                                             'dark' ? 'mdi-weather-night' : 'mdi-weather-sunny'
@@ -94,10 +94,10 @@
                                                     </template>
                                                 </v-select>
                                                 <p class="text-caption text-grey mt-2">
-                                                    System will use your device theme preference if selected
+                                                    {{ t('System will use your device theme preference if selected') || 'System will use your device theme preference if selected' }}
                                                 </p>
 
-                                                <v-switch label="Allow users to override theme" color="primary"
+                                                <v-switch :label="t('Allow users to override theme')" color="primary"
                                                     class="mt-3" v-model="allowUserThemeOverride"></v-switch>
                                             </v-card-text>
                                         </v-card>
@@ -106,21 +106,17 @@
                                     <!-- UI Density -->
                                     <v-col cols="12" md="6">
                                         <v-card outlined class="mb-4">
-                                            <v-card-title class="text-subtitle-1">Interface Density</v-card-title>
+                                            <v-card-title class="text-subtitle-1">{{ t('Interface Density') }}</v-card-title>
                                             <v-card-text>
-                                                <v-select :items="[
-                                                        {title: 'Comfortable', value: 'comfortable'},
-                                                        {title: 'Compact', value: 'compact'},
-                                                        {title: 'Default', value: 'default'}
-                                                    ]" v-model="getSettingByKey('density').value" label="UI Density"
-                                                    item-title="title" item-value="value" variant="outlined"
-                                                    density="comfortable">
+                                                <v-select :items="densityItems" v-model="getSettingByKey('density').value"
+                                                    :label="t('UI Density')" item-title="title" item-value="value"
+                                                    variant="outlined" density="comfortable">
                                                     <template v-slot:prepend-inner>
                                                         <v-icon>mdi-format-line-spacing</v-icon>
                                                     </template>
                                                 </v-select>
                                                 <p class="text-caption text-grey mt-2">
-                                                    Controls the spacing of UI elements throughout the dashboard
+                                                    {{ t('Controls the spacing of UI elements throughout the dashboard') }}
                                                 </p>
                                             </v-card-text>
                                         </v-card>
@@ -129,7 +125,7 @@
                                     <!-- Color Picker for Primary Color -->
                                     <v-col cols="12" md="4">
                                         <v-card outlined class="mb-4">
-                                            <v-card-title class="text-subtitle-1">Primary Color</v-card-title>
+                                            <v-card-title class="text-subtitle-1">{{ t('Primary Color') }}</v-card-title>
                                             <v-card-text>
                                                 <div class="d-flex align-center">
                                                     <v-color-picker v-model="getSettingByKey('primary_color').value"
@@ -137,7 +133,7 @@
                                                         class="ma-2"></v-color-picker>
                                                 </div>
                                                 <p class="text-caption text-grey mt-2">
-                                                    The main color used throughout the dashboard
+                                                    {{ t('The main color used throughout the dashboard') }}
                                                 </p>
                                             </v-card-text>
                                         </v-card>
@@ -146,7 +142,7 @@
                                     <!-- Color Picker for Secondary Color -->
                                     <v-col cols="12" md="4">
                                         <v-card outlined class="mb-4">
-                                            <v-card-title class="text-subtitle-1">Secondary Color</v-card-title>
+                                            <v-card-title class="text-subtitle-1">{{ t('Secondary Color') }}</v-card-title>
                                             <v-card-text>
                                                 <div class="d-flex align-center">
                                                     <v-color-picker v-model="getSettingByKey('secondary_color').value"
@@ -154,7 +150,7 @@
                                                         class="ma-2"></v-color-picker>
                                                 </div>
                                                 <p class="text-caption text-grey mt-2">
-                                                    The secondary color used throughout the dashboard
+                                                    {{ t('The secondary color used throughout the dashboard') }}
                                                 </p>
                                             </v-card-text>
                                         </v-card>
@@ -163,7 +159,7 @@
                                     <!-- Color Picker for Accent Color -->
                                     <v-col cols="12" md="4">
                                         <v-card outlined class="mb-4">
-                                            <v-card-title class="text-subtitle-1">Accent Color</v-card-title>
+                                            <v-card-title class="text-subtitle-1">{{ t('Accent Color') }}</v-card-title>
                                             <v-card-text>
                                                 <div class="d-flex align-center">
                                                     <v-color-picker v-model="getSettingByKey('accent_color').value"
@@ -171,7 +167,7 @@
                                                         class="ma-2"></v-color-picker>
                                                 </div>
                                                 <p class="text-caption text-grey mt-2">
-                                                    The accent color used for highlights and emphasis
+                                                    {{ t('The accent color used for highlights and emphasis') }}
                                                 </p>
                                             </v-card-text>
                                         </v-card>
@@ -180,41 +176,37 @@
                                     <!-- Theme Preview -->
                                     <v-col cols="12">
                                         <v-card outlined class="mb-4">
-                                            <v-card-title class="text-subtitle-1">Preview</v-card-title>
+                                            <v-card-title class="text-subtitle-1">{{ t('Preview') }}</v-card-title>
                                             <v-card-text>
                                                 <v-sheet
-                                                    :color="getSettingByKey('default_theme_mode').value === 'dark' ? '#121212' : '#FFFFFF'"
-                                                    :dark="getSettingByKey('default_theme_mode').value === 'dark'"
-                                                    class="pa-6 rounded" border>
-                                                    <div class="d-flex align-center justify-space-between mb-6">
-                                                        <h3 class="text-h6">Theme Preview</h3>
+                                                     :color="getSettingByKey('default_theme_mode').value === 'dark' ? '#121212' : '#FFFFFF'"
+                                                     :dark="getSettingByKey('default_theme_mode').value === 'dark'"
+                                                     class="pa-6 rounded" border>
+                                                     <div class="d-flex align-center justify-space-between mb-6">
+                                                        <h3 class="text-h6">{{ t('Theme Preview') }}</h3>
                                                         <div>
-                                                            <v-btn :color="getSettingByKey('primary_color').value"
-                                                                class="mr-2" size="small">
-                                                                Primary
+                                                            <v-btn :color="getSettingByKey('primary_color').value" class="mr-2" size="small">
+                                                                {{ t('Primary Color') }}
                                                             </v-btn>
-                                                            <v-btn :color="getSettingByKey('secondary_color').value"
-                                                                size="small" variant="outlined">
-                                                                Secondary
+                                                            <v-btn :color="getSettingByKey('secondary_color').value" size="small" variant="outlined">
+                                                                {{ t('Secondary Color') }}
                                                             </v-btn>
                                                         </div>
-                                                    </div>
+                                                     </div>
 
                                                     <v-row>
                                                         <v-col cols="12" md="6">
-                                                            <v-text-field label="Sample Text Field" variant="outlined"
+                                                            <v-text-field :label="t('Sample Text Field')" variant="outlined"
                                                                 :density="getSettingByKey('density').value"></v-text-field>
-                                                            <v-switch label="Sample Switch"
+                                                            <v-switch :label="t('Sample Switch')"
                                                                 :color="getSettingByKey('primary_color').value"></v-switch>
                                                         </v-col>
                                                         <v-col cols="12" md="6">
                                                             <v-card>
                                                                 <v-card-text>
-                                                                    <p>This is how your cards will look.</p>
-                                                                    <v-chip
-                                                                        :color="getSettingByKey('accent_color').value"
-                                                                        class="mt-2">
-                                                                        Accent Color
+                                                                    <p>{{ t('This is how your cards will look.') }}</p>
+                                                                    <v-chip :color="getSettingByKey('accent_color').value" class="mt-2">
+                                                                        {{ t('Accent Color') }}
                                                                     </v-chip>
                                                                 </v-card-text>
                                                             </v-card>
@@ -232,7 +224,7 @@
 
                         <div class="d-flex justify-end">
                             <v-btn color="primary" type="submit" :loading="processing">
-                                Save Settings
+                                {{ t('Save Settings') }}
                             </v-btn>
                         </div>
                     </v-form>
@@ -244,8 +236,11 @@
 
 <script setup>
     import { ref, computed, watch } from 'vue';
+    import { useI18n } from 'vue-i18n';
     import { Head, router } from '@inertiajs/vue3';
     import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+
+    const { t } = useI18n();
 
     const props = defineProps({
         settings: Array,
@@ -419,4 +414,11 @@
             forceFormData: true
         });
     }
+
+    // localized density option titles
+    const densityItems = [
+        { title: t('Comfortable'), value: 'comfortable' },
+        { title: t('Compact'), value: 'compact' },
+        { title: t('Default'), value: 'default' },
+    ];
 </script>
