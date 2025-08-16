@@ -6,12 +6,12 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Edit Role: {{ role.name }}
+                    {{ $t('Edit Role') }}: {{ role.name }}
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.roles.index')">
                 <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
-                    Back to Roles
+                    {{ $t('Back to Roles') }}
                 </v-btn>
                 </Link>
             </div>

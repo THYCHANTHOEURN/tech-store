@@ -199,6 +199,25 @@
   "User Settings": "User Settings",
   "User permissions are determined by their role": "User permissions are determined by their role",
   "Update User": "Update User",
-  "Are you sure you want to delete the user": "Are you sure you want to delete the user"
+  "Are you sure you want to delete the user": "Are you sure you want to delete the user?",
+  "Roles Management": "Roles Management",
+  "Create Role": "Create Role",
+  "Update Role": "Update Role",
+  "Search Roles": "Search Roles",
+  "Role Details": "Role Details",
+  "Role Information": "Role Information",
+  "Permissions": "Permissions",
+  "Users with this Role": "Users with this Role",
+  "Once you delete this role, there is no going back. Please be sure.": "Once you delete this role, there is no going back. Please be sure.",
+  "Create New Role": "Create New Role",
+  "Back to Roles": "Back to Roles",
+  "Role Name": "Role Name",
+  "Click on cards to select permissions for this role. Use the toggle above to switch between tab and list view.": "Click on cards to select permissions for this role. Use the toggle above to switch between tab and list view.",
+  "Manage banner permissions": "Manage banner permissions",
+  "Back to Roles List": "Back to Roles List",
+  "Role Permissions": "Role Permissions",
+  "Roles control what users can do in the system. Select permissions to define what actions users with this role can perform.": "Roles control what users can do in the system. Select permissions to define what actions users with this role can perform.",
+  "Delete Role": "Delete Role",
+  "Are you sure you want to delete this role? This action cannot be undone.": "Are you sure you want to delete this role? This action cannot be undone.",
+  "Edit Role": "Edit Role"
 }
-    

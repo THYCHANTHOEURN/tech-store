@@ -6,18 +6,18 @@
                 <v-card>
                     <v-card-title class="d-flex align-center bg-primary text-white">
                         <v-icon class="mr-2" color="white">mdi-shield-account</v-icon>
-                        Role Information
+                        {{ $t('Role Information') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text class="pt-4">
                         <!-- Role Name -->
                         <div class="mb-6">
-                            <label class="text-subtitle-1 font-weight-bold d-block mb-2">Role Name*</label>
+                            <label class="text-subtitle-1 font-weight-bold d-block mb-2">{{ $t('Role Name') }}*</label>
                             <v-text-field
                                 v-model="form.name"
                                 :error-messages="errors?.name"
                                 hide-details="auto"
-                                placeholder="Enter role name"
+                                :placeholder="$t('Enter role name')"
                                 variant="outlined"
                                 density="comfortable"
                                 class="rounded-lg"
@@ -28,7 +28,7 @@
                         <!-- Permissions Section -->
                         <div class="mt-8">
                             <div class="d-flex align-center mb-4">
-                                <h3 class="text-h6 font-weight-bold">Permissions</h3>
+                                <h3 class="text-h6 font-weight-bold">{{ $t('Permissions') }}</h3>
                                 <v-spacer></v-spacer>
 
                                 <!-- View Mode Toggle -->
@@ -214,8 +214,7 @@
                             </div>
 
                             <p class="text-caption mt-3 text-grey-darken-1">
-                                Click on cards to select permissions for this role.
-                                Use the toggle above to switch between tab and list view.
+                                    {{ $t('Click on cards to select permissions for this role. Use the toggle above to switch between tab and list view.') }}
                             </p>
                         </div>
                     </v-card-text>
@@ -227,28 +226,27 @@
                 <v-card class="sticky-card">
                     <v-card-title class="bg-grey-lighten-3">
                         <v-icon class="mr-2">mdi-cog-outline</v-icon>
-                        Actions
+                        {{ $t('Actions') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text class="pt-4">
                         <!-- Save Button -->
                         <v-btn color="primary" type="submit" block size="large" :loading="processing" variant="elevated"
                             class="mb-3">
-                            {{ role ? 'Update Role' : 'Create Role' }}
+                            {{ role ? $t('Update Role') : $t('Create Role') }}
                         </v-btn>
 
                         <!-- Cancel Button -->
                         <Link :href="route('dashboard.roles.index')">
                         <v-btn block variant="outlined" color="grey" class="mt-3" prepend-icon="mdi-arrow-left">
-                            Back to Roles List
+                            {{ $t('Back to Roles List') }}
                         </v-btn>
                         </Link>
 
                         <div class="mt-6 pa-3 bg-grey-lighten-4 rounded">
-                            <h4 class="text-subtitle-2 font-weight-bold mb-2">Role Permissions</h4>
+                            <h4 class="text-subtitle-2 font-weight-bold mb-2">{{ $t('Role Permissions') }}</h4>
                             <p class="text-caption">
-                                Roles control what users can do in the system. Select permissions to define what actions
-                                users with this role can perform.
+                                {{ $t('Roles control what users can do in the system. Select permissions to define what actions users with this role can perform.') }}
                             </p>
                         </div>
                     </v-card-text>

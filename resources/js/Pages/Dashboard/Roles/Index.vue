@@ -6,12 +6,12 @@
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Roles Management
+                    {{ $t('Roles Management') }}
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.roles.create')" class="text-decoration-none">
                 <v-btn color="primary" prepend-icon="mdi-plus">
-                    Create Role
+                    {{ $t('Create Role') }}
                 </v-btn>
                 </Link>
             </div>
@@ -23,7 +23,7 @@
                 @reset-filters="resetFilters" @clear-filter="clearFilter">
                 <template #filters>
                     <v-col cols="12">
-                        <SearchField v-model="search" label="Search Roles" :loading="loading" @search="applyFilters"
+                        <SearchField v-model="search" :label="$t('Search Roles')" :loading="loading" @search="applyFilters"
                             @clear="applyFilters" />
                     </v-col>
                 </template>
@@ -76,7 +76,7 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-center py-4">
-                    <span class="mt-4">Rows per page:</span>
+                    <span class="mt-4">{{ $t('Rows per page') }}:</span>
                     <v-select
                         v-model="perPage"
                         :items="perPageOptions"
@@ -100,9 +100,9 @@
         <!-- Delete Confirmation Dialog -->
         <v-dialog v-model="deleteDialog" max-width="500px">
             <v-card>
-                <v-card-title class="text-h5">Delete Role</v-card-title>
+                <v-card-title class="text-h5">{{ $t('Delete Role') }}</v-card-title>
                 <v-card-text>
-                    Are you sure you want to delete this role? This action cannot be undone.
+                    {{ $t('Are you sure you want to delete this role? This action cannot be undone.') }}
                     <p class="mt-4 font-weight-bold" v-if="roleToDelete">{{ roleToDelete.name }}</p>
                     <p class="text-red" v-if="roleToDelete && roleToDelete.users_count > 0">
                         Warning: This role is assigned to {{ roleToDelete.users_count }} user(s).
@@ -111,10 +111,10 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">
-                        Cancel
+                        {{ $t('Cancel') }}
                     </v-btn>
                     <v-btn color="error" variant="flat" @click="deleteRole" :loading="deleting">
-                        Delete
+                        {{ $t('Delete') }}
                     </v-btn>
                 </v-card-actions>
             </v-card>
