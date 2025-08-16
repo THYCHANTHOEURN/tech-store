@@ -4,15 +4,15 @@
             <v-col cols="12" sm="8" md="6">
                 <v-card flat>
                     <v-card-title class="text-lg font-medium text-gray-900">
-                        Update Password
+                        {{ $t('Update Password') }}
                     </v-card-title>
                     <v-card-text>
                         <p class="mt-1 text-sm text-gray-600">
-                            Ensure your account is using a long, random password to stay secure.
+                            {{ $t('Ensure your account is using a long, random password to stay secure.') }}
                         </p>
                         <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
                             <div>
-                                <v-text-field label="Current Password" ref="currentPasswordInput"
+                                <v-text-field :label="$t('Current Password')" ref="currentPasswordInput"
                                     v-model="form.current_password" :type="currentPasswordVisible ? 'text' : 'password'"
                                     :error-messages="form.errors.current_password" prepend-inner-icon="mdi-lock-outline"
                                     :append-inner-icon="currentPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
@@ -20,14 +20,14 @@
                                     variant="solo" />
                             </div>
                             <div>
-                                <v-text-field label="New Password" ref="passwordInput" v-model="form.password"
+                                <v-text-field :label="$t('New Password')" ref="passwordInput" v-model="form.password"
                                     :type="passwordVisible ? 'text' : 'password'" :error-messages="form.errors.password"
                                     prepend-inner-icon="mdi-lock-plus-outline"
                                     :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
                                     @click:append-inner="passwordVisible = !passwordVisible" variant="solo" />
                             </div>
                             <div>
-                                <v-text-field label="Confirm Password" v-model="form.password_confirmation"
+                                <v-text-field :label="$t('Confirm Password')" v-model="form.password_confirmation"
                                     :type="confirmPasswordVisible ? 'text' : 'password'"
                                     :error-messages="form.errors.password_confirmation"
                                     prepend-inner-icon="mdi-lock-check-outline"
@@ -37,7 +37,7 @@
                             </div>
                             <div class="flex items-center gap-4">
                                 <v-btn :loading="form.processing" type="submit" color="primary"
-                                    prepend-icon="mdi-content-save">Save</v-btn>
+                                    prepend-icon="mdi-content-save">{{ $t('Save') }}</v-btn>
                                 <transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0"
                                     leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
                                     <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">

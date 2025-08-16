@@ -235,6 +235,17 @@
   "Reply to Customer": "ឆ្លើយតបអតិថិជន",
   "Send Reply": "ផ្ញើឆ្លើយតប",
   "This message thread has been closed.": "ខ្សែសារនេះត្រូវបានបិទ។",
-  "Reopen Thread": "បើកខ្សែសារ"
+  "Reopen Thread": "បើកខ្សែសារ",
+  "Profile Information": "ព័ត៌មានប្រវត្តិរូប",
+  "Update your account's profile information and email address.": "ធ្វើបច្ចុប្បន្នភាពព័ត៌មានប្រវត្តិរូប និងអាសយដ្ឋានអ៊ីមែលរបស់អ្នក។",
+  "Update Password": "ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់",
+  "Ensure your account is using a long, random password to stay secure.": "ប្រាកដថាអ្នកប្រើពាក្យសម្ងាត់យូរ និងចៃដន្យដើម្បីរក្សាសុវត្ថិភាព។",
+  "Current Password": "ពាក្យសម្ងាត់បច្ចុប្បន្ន",
+  "New Password": "ពាក្យសម្ងាត់ថ្មី",
+  "Confirm Password": "បញ្ជាក់ពាក្យសម្ងាត់",
+  "Delete Account": "លុបគណនី",
+  "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "មួយដងដែលអ្នកលុបគណនីនេះហើយ គ្មានការត្រឡប់មកវិញទេ។ សូមប្រាកដថាអ្នកបានទាញយកទិន្នន័យ ឬព័ត៌មានណាមួយដែលអ្នកចង់រក្សាទុក។",
+  "Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.": "មួយដងដែលអ្នកលុបគណនីនេះហើយ គ្មានការត្រឡប់មកវិញទេ។ សូមបញ្ចូលពាក្យសម្ងាត់របស់អ្នកដើម្បីបញ្ជាក់ថាអ្នកចង់លុបគណនីនេះយ៉ាងស្ថាពរ។",
+  "Are you sure you want to delete your account?": "តើអ្នកប្រាកដជាចង់លុបគណនីរបស់អ្នកទេ?"
 }
 

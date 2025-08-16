@@ -15,7 +15,7 @@
                     <v-card class="mb-6">
                         <v-card-title class="bg-light-blue-lighten-5">
                             <v-icon class="mr-2">mdi-account-edit</v-icon>
-                            Profile Information
+                            {{ $t('Profile Information') }}
                         </v-card-title>
                         <v-card-text class="pt-4">
                             <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status" />
@@ -25,7 +25,7 @@
                     <v-card class="mb-6">
                         <v-card-title class="bg-light-blue-lighten-5">
                             <v-icon class="mr-2">mdi-lock-reset</v-icon>
-                            Update Password
+                            {{ $t('Update Password') }}
                         </v-card-title>
                         <v-card-text class="pt-4">
                             <UpdatePasswordForm />
@@ -35,7 +35,7 @@
                     <v-card>
                         <v-card-title class="bg-red-lighten-5">
                             <v-icon class="mr-2" color="error">mdi-delete-alert</v-icon>
-                            Delete Account
+                            {{ $t('Delete Account') }}
                         </v-card-title>
                         <v-card-text class="pt-4">
                             <DeleteUserForm />

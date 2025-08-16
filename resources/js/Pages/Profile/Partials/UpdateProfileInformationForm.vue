@@ -4,11 +4,11 @@
             <v-col cols="12" sm="8" md="6">
                 <v-card flat>
                     <v-card-title class="text-lg font-medium text-gray-900">
-                        Profile Information
+                        {{ $t('Profile Information') }}
                     </v-card-title>
                     <v-card-text>
                         <p class="mt-1 text-sm text-gray-600">
-                            Update your account's profile information and email address.
+                            {{ $t("Update your account's profile information and email address.") }}
                         </p>
                         <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
                             <div>
