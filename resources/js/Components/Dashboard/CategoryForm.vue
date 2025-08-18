@@ -6,22 +6,22 @@
                 <v-card class="mb-4">
                     <v-card-title>
                         <v-icon class="mr-2">mdi-information-outline</v-icon>
-                        Basic Information
+                        {{ $t('Basic Information') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Category Name -->
-                        <v-text-field v-model="form.name" label="Category Name*" :error-messages="errors?.name" required
+                        <v-text-field v-model="form.name" :label="$t('Category Name') + '*'" :error-messages="errors?.name" required
                             variant="outlined" density="comfortable"></v-text-field>
 
                         <!-- Description -->
-                        <v-textarea v-model="form.description" label="Category Description" :error="errors?.description"
+                        <v-textarea v-model="form.description" :label="$t('Category Description')" :error="errors?.description"
                             required placeholder="Enter category description here..." :min-height="300"
                             variant="outlined" density="comfortable"></v-textarea>
 
                         <!-- Parent Category -->
                         <v-select v-model="form.parent_id" :items="parentCategories || []" item-title="name"
-                            item-value="id" label="Parent Category" :error-messages="errors?.parent_id" clearable
+                            item-value="id" :label="$t('Parent Category')" :error-messages="errors?.parent_id" clearable
                             variant="outlined" density="comfortable" hint="Leave empty for top-level category"
                             persistent-hint></v-select>
                     </v-card-text>
@@ -31,26 +31,26 @@
                 <v-card>
                     <v-card-title>
                         <v-icon class="mr-2">mdi-image</v-icon>
-                        Category Image
+                        {{ $t('Category Image') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Current Image Preview -->
                         <div v-if="category && category.image_url" class="mb-4">
-                            <p class="text-subtitle-1 mb-2">Current Image:</p>
+                            <p class="text-subtitle-1 mb-2">{{ $t('Current Image') }}:</p>
                             <v-img :src="category.image_url" max-width="300" max-height="200" contain
                                 class="bg-grey-lighten-2 rounded"></v-img>
                         </div>
 
                         <!-- Image Upload Field -->
-                        <v-file-input v-model="form.image" accept="image/*" label="Upload Category Image*"
+                        <v-file-input v-model="form.image" accept="image/*" :label="$t('Upload Category Image') + '*'"
                             :error-messages="errors?.image" prepend-icon="" prepend-inner-icon="mdi-camera" show-size
                             :required="!category" @update:model-value="previewImage" variant="outlined"
                             density="comfortable"></v-file-input>
 
                         <!-- Image Preview -->
                         <div v-if="imagePreview || form.image_url" class="mt-4">
-                            <p class="text-subtitle-1 mb-2">Preview:</p>
+                            <p class="text-subtitle-1 mb-2">{{ $t('Preview') }}:</p>
                             <v-img :src="imagePreview || form.image_url" max-width="300" max-height="200" contain
                                 class="bg-grey-lighten-2 rounded"></v-img>
                         </div>
@@ -63,14 +63,14 @@
                 <v-card class="sticky-card">
                     <v-card-title>
                         <v-icon class="mr-2">mdi-cog-outline</v-icon>
-                        Category Settings
+                        {{ $t('Category Settings') }}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                         <!-- Status -->
                         <div class="mb-4">
-                            <v-switch v-model="form.status" color="success" label="Active"
-                                hint="Toggle to publish or unpublish the category"
+                            <v-switch v-model="form.status" color="success" :label="$t('Active')"
+                                :hint="$t('Toggle to publish or unpublish the category')"
                                 :error-messages="errors?.status"></v-switch>
                         </div>
 
@@ -78,13 +78,13 @@
 
                         <!-- Save Button -->
                         <v-btn color="primary" type="submit" block size="large" :loading="processing">
-                            {{ category ? 'Update Category' : 'Create Category' }}
+                            {{ category ? $t('Update Category') : $t('Create Category') }}
                         </v-btn>
 
                         <!-- Cancel Button -->
                         <Link :href="route('dashboard.categories.index')"
                             class="v-btn v-btn--block v-btn--text v-btn--secondary mt-3">
-                        Cancel
+                            {{ $t('Cancel') }}
                         </Link>
                     </v-card-text>
                 </v-card>

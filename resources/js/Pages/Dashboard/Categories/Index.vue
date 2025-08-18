@@ -1,12 +1,12 @@
 <template>
 
-    <Head title="Categories Management" />
+    <Head :title="$t('Categories Management')" />
 
     <DashboardLayout>
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Categories Management
+                    {{ $t('Categories Management') }}
                 </h2>
                 <v-spacer></v-spacer>
 
@@ -14,7 +14,7 @@
                 <v-menu location="bottom">
                     <template v-slot:activator="{ props }">
                         <v-btn color="secondary" class="mr-2" v-bind="props" prepend-icon="mdi-database-export-outline">
-                            Export
+                            {{ $t('Export') }}
                         </v-btn>
                     </template>
                     <v-list>
@@ -27,7 +27,7 @@
 
                 <Link :href="route('dashboard.categories.create')" class="text-decoration-none">
                 <v-btn color="primary" prepend-icon="mdi-plus">
-                    Add Category
+                    {{ $t('Add Category') }}
                 </v-btn>
                 </Link>
             </div>
@@ -39,19 +39,19 @@
                 :active-filters="activeFilters" @reset-filters="resetFilters" @clear-filter="clearFilter">
                 <template #filters>
                     <v-col cols="12" md="6" lg="4">
-                        <SearchField v-model="search" label="Search Categories" :loading="loading"
+                        <SearchField v-model="search" :label="$t('Search Categories')" :loading="loading"
                             @search="applyFilters" @clear="applyFilters" />
                     </v-col>
 
                     <v-col cols="12" sm="6" md="3">
-                        <v-select v-model="selectedParent" label="Parent Category" :items="parentCategories"
+                        <v-select v-model="selectedParent" :label="$t('Parent Category')" :items="parentCategories"
                             item-title="name" item-value="id" hide-details clearable @update:model-value="applyFilters"
                             variant="outlined" density="comfortable">
                             <template v-slot:prepend-inner>
                                 <v-icon color="primary" size="small">mdi-folder-outline</v-icon>
                             </template>
                             <template v-slot:prepend-item>
-                                <v-list-item title="Root Categories" value="root"
+                                <v-list-item :title="$t('Root Categories')" value="root"
                                     @click="selectedParent = 'root'"></v-list-item>
                                 <v-divider></v-divider>
                             </template>
@@ -59,7 +59,7 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" md="3">
-                        <v-select v-model="selectedStatus" label="Status" :items="statusOptions" item-title="title"
+                        <v-select v-model="selectedStatus" :label="$t('Status')" :items="statusOptions" item-title="title"
                             item-value="value" hide-details clearable @update:model-value="applyFilters"
                             variant="outlined" density="comfortable">
                             <template v-slot:prepend-inner>
@@ -128,19 +128,18 @@
         <v-dialog v-model="deleteDialog" max-width="500">
             <v-card>
                 <v-card-title class="text-h5">
-                    Confirm Delete
+                    {{ $t('Confirm Delete') }}
                 </v-card-title>
                 <v-card-text>
-                    Are you sure you want to delete the category "{{ categoryToDelete?.name }}"? This action cannot be
-                    undone.
+                    {{ $t('Are you sure you want to delete the category') }} "{{ categoryToDelete?.name }}"? {{ $t('This action cannot be undone.') }}
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue-darken-1" variant="text" @click="closeDeleteDialog">
-                        Cancel
+                        {{ $t('Cancel') }}
                     </v-btn>
                     <v-btn color="error" variant="flat" @click="deleteCategory" :loading="deleting">
-                        Delete
+                        {{ $t('Delete') }}
                     </v-btn>
                 </v-card-actions>
             </v-card>

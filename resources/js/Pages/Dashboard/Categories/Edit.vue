@@ -1,17 +1,17 @@
 <template>
 
-    <Head :title="`Edit ${category.name}`" />
+    <Head :title="`${$t('Edit')} ${category.name}`" />
 
     <DashboardLayout>
         <template #header>
             <div class="d-flex align-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Edit Category: {{ category.name }}
+                    {{ $t('Edit Category') }}: {{ category.name }}
                 </h2>
                 <v-spacer></v-spacer>
                 <Link :href="route('dashboard.categories.index')">
                 <v-btn color="secondary" prepend-icon="mdi-arrow-left" variant="outlined">
-                    Back to Categories
+                    {{ $t('Back to Categories') }}
                 </v-btn>
                 </Link>
             </div>
