@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Products Management" />
+    <Head :title="t('Product Management')" />
 
     <DashboardLayout>
         <template #header>

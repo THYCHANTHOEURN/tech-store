@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Admin Dashboard" />
+    <Head :title="t('Admin Dashboard')" />
 
     <DashboardLayout>
         <template #header>

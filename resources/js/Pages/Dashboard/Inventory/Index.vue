@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Inventory Management" />
+    <Head :title="$t('Inventory Management')" />
 
     <DashboardLayout>
         <template #header>
