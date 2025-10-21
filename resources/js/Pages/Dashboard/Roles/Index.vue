@@ -128,7 +128,7 @@
     import { ref, computed } from 'vue';
     import FilterBar from '@/Components/Dashboard/FilterBar.vue';
     import SearchField from '@/Components/Dashboard/SearchField.vue';
-    import { debounce } from 'lodash';
+    import debounce from 'lodash.debounce';
 
     const props = defineProps({
         roles: Object,

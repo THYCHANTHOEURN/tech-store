@@ -160,7 +160,7 @@
     import DashboardLayout from '@/Layouts/DashboardLayout.vue';
     import { Head, router, Link } from '@inertiajs/vue3';
     import { ref, computed } from 'vue';
-    import { debounce } from 'lodash';
+    import debounce from 'lodash.debounce';
     import FilterBar from '@/Components/Dashboard/FilterBar.vue';
     import SearchField from '@/Components/Dashboard/SearchField.vue';
 

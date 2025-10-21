@@ -29,7 +29,7 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
-import { debounce } from 'lodash';
+import debounce from 'lodash.debounce';
 
 const props = defineProps({
   modelValue: {
