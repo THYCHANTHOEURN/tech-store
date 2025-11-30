@@ -9,6 +9,10 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\AllowedInclude;
 
 class InventoryController extends Controller
 {
@@ -38,43 +42,54 @@ class InventoryController extends Controller
         ];
 
         // Get products based on filter
-        $filter = $request->get('filter', 'all');
-        $query  = Product::with(['category', 'brand', 'primaryImage']);
-
-        switch ($filter) {
-            case 'out_of_stock':
-                $query->outOfStock();
-                break;
-            case 'critical_stock':
-                $query->criticalStock();
-                break;
-            case 'low_stock':
-                $query->lowStock();
-                break;
-            case 'overstock':
-                $query->overstock();
-                break;
-            default:
-                // Show all products
-                break;
-        }
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('sku', 'like', "%{$search}%");
-            });
-        }
-
         $perPage = (int) $request->input('per_page', 10);
-        $products = $query->orderBy('stock', 'asc')->paginate($perPage)->appends($request->query());
+
+        $products = QueryBuilder::for(Product::class)
+            ->allowedIncludes(['category', 'brand', 'primaryImage'])
+            ->allowedFilters([
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($q) use ($value) {
+                        $q->where('name', 'like', "%{$value}%")
+                          ->orWhere('sku', 'like', "%{$value}%");
+                    });
+                }),
+                AllowedFilter::callback('filter', function ($query, $value) {
+                    switch ($value) {
+                        case 'out_of_stock':
+                            $query->outOfStock();
+                            break;
+                        case 'critical_stock':
+                            $query->criticalStock();
+                            break;
+                        case 'low_stock':
+                            $query->lowStock();
+                            break;
+                        case 'overstock':
+                            $query->overstock();
+                            break;
+                    }
+                }),
+            ])
+            ->allowedSorts([
+                'stock',
+                'name',
+                'price',
+                'created_at',
+            ])
+            ->defaultSort('stock')
+            ->with(['category', 'brand', 'primaryImage'])
+            ->paginate($perPage)
+            ->appends($request->query());
 
         return Inertia::render('Dashboard/Inventory/Index', [
             'stats'     => $stats,
             'products'  => $products,
             'settings'  => $settings,
-            'filters'   => $request->only(['filter', 'search', 'per_page']),
+            'filters'   => [
+                'filter'    => $request->input('filter.filter'),
+                'search'    => $request->input('filter.search'),
+                'per_page'  => $request->input('per_page', 10),
+            ],
         ]);
     }
 

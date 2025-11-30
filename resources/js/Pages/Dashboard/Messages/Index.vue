@@ -157,8 +157,8 @@
     const filterMessages = () => {
         loading.value = true;
         router.get(route('dashboard.messages.index'), {
-            search: search.value,
-            status: selectedStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[status]': selectedStatus.value || undefined,
             sort_field: sortBy.value,
             sort_order: sortOrder.value,
             page: 1, // Reset to first page when filtering
@@ -201,8 +201,8 @@
     const changePage = (newPage) => {
         loading.value = true;
         router.get(route('dashboard.messages.index'), {
-            search: search.value,
-            status: selectedStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[status]': selectedStatus.value || undefined,
             sort_field: sortBy.value,
             sort_order: sortOrder.value,
             page: newPage,

@@ -14,6 +14,10 @@ use Inertia\Inertia;
 use App\Exports\OrderExport;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\AllowedInclude;
 
 class OrderController extends Controller
 {
@@ -29,35 +33,36 @@ class OrderController extends Controller
     {
         $this->authorize('viewAny', Order::class);
 
-        $query = Order::query()->with('user');
-
-        // Handle search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where('uuid', 'like', "%{$search}%")
-                ->orWhereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
-                });
-        }
-
-        // Handle order status filter
-        if ($request->filled('order_status') && $request->order_status != 'all') {
-            $query->where('status', $request->order_status);
-        }
-
-        // Handle payment status filter
-        if ($request->filled('payment_status') && $request->payment_status != 'all') {
-            $query->where('payment_status', $request->payment_status);
-        }
-
-        // Handle sorting
-        $sortField = $request->input('sort_field', 'created_at');
-        $sortOrder = $request->input('sort_order', 'desc');
-        $query->orderBy($sortField, $sortOrder);
-
         $perPage = (int) $request->input('per_page', 10);
-        $orders = $query->paginate($perPage)->appends($request->query());
+
+        $orders = QueryBuilder::for(Order::class)
+            ->allowedIncludes(['user', 'items', 'items.product'])
+            ->allowedFilters([
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($q) use ($value) {
+                        $q->where('uuid', 'like', "%{$value}%")
+                          ->orWhereHas('user', function ($userQuery) use ($value) {
+                              $userQuery->where('name', 'like', "%{$value}%")
+                                        ->orWhere('email', 'like', "%{$value}%");
+                          });
+                    });
+                }),
+                AllowedFilter::exact('order_status', 'status'),
+                AllowedFilter::exact('payment_status'),
+            ])
+            ->allowedSorts([
+                AllowedSort::field('sort_field', 'created_at'),
+                'uuid',
+                'total_amount',
+                'status',
+                'payment_status',
+                'created_at',
+                'updated_at',
+            ])
+            ->defaultSort('-created_at')
+            ->with('user')
+            ->paginate($perPage)
+            ->appends($request->query());
 
         // Convert enum values to arrays for dropdowns
         $orderStatuses = collect(OrderStatus::cases())->map(fn ($status) => [
@@ -72,7 +77,12 @@ class OrderController extends Controller
 
         return Inertia::render('Dashboard/Orders/Index', [
             'orders'            => $orders,
-            'filters'           => $request->only(['search', 'order_status', 'payment_status', 'per_page']),
+            'filters'           => [
+                'search'         => $request->input('filter.search'),
+                'order_status'   => $request->input('filter.order_status'),
+                'payment_status' => $request->input('filter.payment_status'),
+                'per_page'       => $request->input('per_page', 10),
+            ],
             'orderStatuses'     => $orderStatuses,
             'paymentStatuses'   => $paymentStatuses,
         ]);

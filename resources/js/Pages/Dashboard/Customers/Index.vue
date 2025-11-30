@@ -194,8 +194,8 @@
         loading.value = true;
         page.value = 1; // Reset to first page when filters change
         router.get(route('dashboard.customers.index'), {
-            search: search.value,
-            status: selectedStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[status]': selectedStatus.value !== 'all' ? selectedStatus.value : undefined,
             sort_field: sortBy.value,
             sort_order: sortOrder.value,
             per_page: perPage.value, // Include per_page parameter
@@ -259,8 +259,8 @@
     const changePage = (newPage) => {
         loading.value = true;
         router.get(route('dashboard.customers.index'), {
-            search: search.value,
-            status: selectedStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[status]': selectedStatus.value !== 'all' ? selectedStatus.value : undefined,
             sort_field: sortBy.value,
             sort_order: sortOrder.value,
             page: newPage,

@@ -12,6 +12,10 @@ use Inertia\Inertia;
 use App\Exports\CategoryExport;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\AllowedInclude;
 
 class CategoryController extends Controller
 {
@@ -27,46 +31,55 @@ class CategoryController extends Controller
     {
         $this->authorize('viewAny', Category::class);
 
-        $query = Category::with(['parent']);
-
-        // Handle search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        // Handle parent filter
-        if ($request->filled('parent') && $request->parent != 'null') {
-            if ($request->parent == 'root') {
-                $query->whereNull('parent_id');
-            } else {
-                $query->where('parent_id', $request->parent);
-            }
-        }
-
-        // Handle status filter
-        if ($request->filled('status') && $request->status != 'all') {
-            $status = $request->status === 'active';
-            $query->where('status', $status);
-        }
-
-        // Handle sorting
-        $sortField = $request->input('sort_field', 'created_at');
-        $sortOrder = $request->input('sort_order', 'desc');
-        $query->orderBy($sortField, $sortOrder);
-
         $perPage = (int) $request->input('per_page', 10);
-        $categories = $query->paginate($perPage)->appends($request->query());
+
+        $categories = QueryBuilder::for(Category::class)
+            ->allowedIncludes(['parent', 'children'])
+            ->allowedFilters([
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($q) use ($value) {
+                        $q->where('name', 'like', "%{$value}%")
+                          ->orWhere('description', 'like', "%{$value}%");
+                    });
+                }),
+                AllowedFilter::callback('parent', function ($query, $value) {
+                    if ($value === 'root') {
+                        $query->whereNull('parent_id');
+                    } else {
+                        $query->where('parent_id', $value);
+                    }
+                }),
+                AllowedFilter::callback('status', function ($query, $value) {
+                    if ($value === 'active') {
+                        $query->where('status', true);
+                    } elseif ($value === 'inactive') {
+                        $query->where('status', false);
+                    }
+                }),
+            ])
+            ->allowedSorts([
+                AllowedSort::field('sort_field', 'created_at'),
+                'name',
+                'status',
+                'created_at',
+                'updated_at',
+            ])
+            ->defaultSort('-created_at')
+            ->with('parent')
+            ->paginate($perPage)
+            ->appends($request->query());
 
         // Get parent categories for filter dropdown
         $parentCategories = Category::whereNull('parent_id')->get();
 
         return Inertia::render('Dashboard/Categories/Index', [
             'categories'        => $categories,
-            'filters'           => $request->only(['search', 'parent', 'status', 'per_page']),
+            'filters'           => [
+                'search'    => $request->input('filter.search'),
+                'parent'    => $request->input('filter.parent'),
+                'status'    => $request->input('filter.status'),
+                'per_page'  => $request->input('per_page', 10),
+            ],
             'parentCategories'  => $parentCategories,
         ]);
     }

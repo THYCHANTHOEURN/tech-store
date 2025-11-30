@@ -6,7 +6,7 @@ import { createI18n } from 'vue-i18n';
 import en from './lang/en.json'; // Create this file for English translations
 import km from './lang/km.json';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { createApp, h } from 'vue';
+import { createApp, h, watch, nextTick } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import vuetify from './Plugins/vuetify';
 import RichTextEditor from './Components/RichTextEditor.vue';
@@ -48,21 +48,15 @@ createInertiaApp({
         app.component('Link', Link);
         app.component('RichTextEditor', RichTextEditor);
 
-        app.mount(el);
+        // Watch for locale changes and persist to localStorage
+        watch(
+            () => i18n.global.locale.value,
+            (newLocale) => {
+                localStorage.setItem('locale', newLocale);
+            }
+        );
 
-        // Correct way to persist locale changes
-        // Use a watcher after mounting
-        app.config.globalProperties.$nextTick(() => {
-            // Use Vue's watch API
-            import('vue').then(({ watch }) => {
-                watch(
-                    () => i18n.global.locale.value,
-                    (newLocale) => {
-                        localStorage.setItem('locale', newLocale);
-                    }
-                );
-            });
-        });
+        app.mount(el);
 
         return app;
     },

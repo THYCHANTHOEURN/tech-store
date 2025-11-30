@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\AllowedInclude;
 
 class MessageController extends Controller
 {
@@ -25,38 +29,46 @@ class MessageController extends Controller
     {
         $this->authorize('viewAny', MessageThread::class);
 
-        $query = MessageThread::with(['user', 'lastMessage'])
-            ->orderBy('last_message_at', 'desc');
-
-        // Handle search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('subject', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($userQuery) use ($search) {
-                      $userQuery->where('name', 'like', "%{$search}%")
-                               ->orWhere('email', 'like', "%{$search}%");
-                  });
-            });
-        }
-
-        // Filter by status
-        if ($request->filled('status') && in_array($request->status, ['active', 'closed', 'unread'])) {
-            if ($request->status === 'unread') {
-                $query->whereHas('messages', function($q) {
-                    $q->where('user_id', '!=', null)
-                      ->where('is_read', false);
-                });
-            } else {
-                $query->where('status', $request->status);
-            }
-        }
-
-        $threads = $query->paginate(15);
+        $threads = QueryBuilder::for(MessageThread::class)
+            ->allowedIncludes(['user', 'lastMessage'])
+            ->allowedFilters([
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($q) use ($value) {
+                        $q->where('subject', 'like', "%{$value}%")
+                          ->orWhereHas('user', function ($userQuery) use ($value) {
+                              $userQuery->where('name', 'like', "%{$value}%")
+                                        ->orWhere('email', 'like', "%{$value}%");
+                          });
+                    });
+                }),
+                AllowedFilter::callback('status', function ($query, $value) {
+                    if ($value === 'unread') {
+                        $query->whereHas('messages', function ($q) {
+                            $q->where('user_id', '!=', null)
+                              ->where('is_read', false);
+                        });
+                    } else {
+                        $query->where('status', $value);
+                    }
+                }),
+            ])
+            ->allowedSorts([
+                'created_at',
+                'updated_at',
+                'last_message_at',
+                'status',
+            ])
+            ->defaultSort('-last_message_at')
+            ->with(['user', 'lastMessage'])
+            ->paginate(15)
+            ->appends($request->query());
 
         return Inertia::render('Dashboard/Messages/Index', [
-            'threads' => $threads,
-            'filters' => $request->only(['search', 'status'])
+            'threads'   => $threads,
+            'filters' => [
+                'search' => $request->input('filter.search'),
+                'status' => $request->input('filter.status'),
+            ]
         ]);
     }
 
@@ -167,7 +179,7 @@ class MessageController extends Controller
     public function unreadCount()
     {
         $this->authorize('viewAny', MessageThread::class);
-        
+
         $count = \App\Models\Message::whereHas('thread', function($query) {
                 $query->where('status', 'active');
             })

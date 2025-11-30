@@ -17,6 +17,10 @@ use App\Exports\ProductsTemplateExport;
 use App\Imports\ProductsImport;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\AllowedInclude;
 
 class ProductController extends Controller
 {
@@ -32,57 +36,50 @@ class ProductController extends Controller
     {
         $this->authorize('viewAny', Product::class);
 
-        $query = Product::with(['category', 'brand', 'primaryImage']);
-
-        // Handle search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('sku', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        // Handle filters
-        if ($request->filled('category') && $request->category != 'null') {
-            $query->where('category_id', $request->category);
-        }
-
-        if ($request->filled('brand') && $request->brand != 'null') {
-            $query->where('brand_id', $request->brand);
-        }
-
-        if ($request->filled('status') && $request->status != 'all') {
-            switch ($request->status) {
-                case 'published':
-                    $query->where('status', true);
-                    break;
-                case 'unpublished':
-                    $query->where('status', false);
-                    break;
-            }
-        }
-
-        if ($request->filled('featured') && $request->featured != 'all') {
-            switch ($request->featured) {
-                case 'featured':
-                    $query->where('featured', operator: true);
-                    break;
-                case 'not-featured':
-                    $query->where('featured', false);
-                    break;
-            }
-        }
-
-        // Handle sorting
-        $sortField  = $request->input('sort_field', 'created_at');
-        $sortOrder  = $request->input('sort_order', 'desc');
-        $query->orderBy($sortField, $sortOrder);
-
-        // Handle custom pagination size
         $perPage = (int) $request->input('per_page', 10);
-        $products   = $query->paginate($perPage)->appends($request->query());
+
+        $products = QueryBuilder::for(Product::class)
+            ->allowedIncludes(['category', 'brand', 'primaryImage', 'productImages'])
+            ->allowedFilters([
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($q) use ($value) {
+                        $q->where('name', 'like', "%{$value}%")
+                          ->orWhere('sku', 'like', "%{$value}%")
+                          ->orWhere('description', 'like', "%{$value}%");
+                    });
+                }),
+                AllowedFilter::exact('category', 'category_id'),
+                AllowedFilter::exact('brand', 'brand_id'),
+                AllowedFilter::callback('status', function ($query, $value) {
+                    if ($value === 'published') {
+                        $query->where('status', true);
+                    } elseif ($value === 'unpublished') {
+                        $query->where('status', false);
+                    }
+                }),
+                AllowedFilter::callback('featured', function ($query, $value) {
+                    if ($value === 'featured') {
+                        $query->where('featured', true);
+                    } elseif ($value === 'not-featured') {
+                        $query->where('featured', false);
+                    }
+                }),
+            ])
+            ->allowedSorts([
+                AllowedSort::field('sort_field', 'created_at'),
+                'name',
+                'sku',
+                'price',
+                'stock',
+                'status',
+                'featured',
+                'created_at',
+                'updated_at',
+            ])
+            ->defaultSort('-created_at')
+            ->with(['category', 'brand', 'primaryImage'])
+            ->paginate($perPage)
+            ->appends($request->query());
 
         // Get all categories and brands for filters
         $categories = Category::all();
@@ -90,7 +87,14 @@ class ProductController extends Controller
 
         return Inertia::render('Dashboard/Products/Index', [
             'products'      => $products,
-            'filters'       => $request->only(['search', 'category', 'brand', 'status', 'featured', 'per_page']),
+            'filters'       => [
+                'search'    => $request->input('filter.search'),
+                'category'  => $request->input('filter.category'),
+                'brand'     => $request->input('filter.brand'),
+                'status'    => $request->input('filter.status'),
+                'featured'  => $request->input('filter.featured'),
+                'per_page'  => $request->input('per_page', 10),
+            ],
             'categories'    => $categories,
             'brands'        => $brands,
         ]);

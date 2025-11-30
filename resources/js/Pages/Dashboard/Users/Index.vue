@@ -213,9 +213,9 @@
     const applyFilters = () => {
         loading.value = true;
         router.get(route('dashboard.users.index'), {
-            search: search.value,
-            role: filters.value.role,
-            status: filters.value.status,
+            'filter[search]': search.value || undefined,
+            'filter[role]': filters.value.role !== 'all' ? filters.value.role : undefined,
+            'filter[status]': filters.value.status !== 'all' ? filters.value.status : undefined,
             page: 1, // Reset to first page when filtering
             per_page: perPage.value, // Include per_page parameter
         }, {
@@ -260,9 +260,9 @@
     const changePage = (newPage) => {
         loading.value = true;
         router.get(route('dashboard.users.index'), {
-            search: search.value,
-            role: filters.value.role,
-            status: filters.value.status,
+            'filter[search]': search.value || undefined,
+            'filter[role]': filters.value.role !== 'all' ? filters.value.role : undefined,
+            'filter[status]': filters.value.status !== 'all' ? filters.value.status : undefined,
             page: newPage,
             per_page: perPage.value, // Include per_page parameter
         }, {

@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
 
 class CustomerController extends Controller
 {
@@ -28,41 +31,45 @@ class CustomerController extends Controller
     {
         $this->authorize('viewAnyCustomer', User::class);
 
-        $query = User::role(RolesEnum::CUSTOMER->value)->with('roles');
-
-        // Handle search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
-            });
-        }
-
-        // Handle status filter
-        if ($request->filled('status') && $request->status != 'all') {
-            switch ($request->status) {
-                case 'verified':
-                    $query->whereNotNull('email_verified_at');
-                    break;
-                case 'unverified':
-                    $query->whereNull('email_verified_at');
-                    break;
-            }
-        }
-
-        // Handle sorting
-        $sortField = $request->input('sort_field', 'created_at');
-        $sortOrder = $request->input('sort_order', 'desc');
-        $query->orderBy($sortField, $sortOrder);
-
         $perPage = (int) $request->input('per_page', 10);
-        $customers = $query->paginate($perPage)->appends($request->query());
+
+        $customers = QueryBuilder::for(User::role(RolesEnum::CUSTOMER->value))
+            ->allowedIncludes(['roles'])
+            ->allowedFilters([
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($q) use ($value) {
+                        $q->where('name', 'like', "%{$value}%")
+                          ->orWhere('email', 'like', "%{$value}%")
+                          ->orWhere('phone', 'like', "%{$value}%");
+                    });
+                }),
+                AllowedFilter::callback('status', function ($query, $value) {
+                    if ($value === 'verified') {
+                        $query->whereNotNull('email_verified_at');
+                    } elseif ($value === 'unverified') {
+                        $query->whereNull('email_verified_at');
+                    }
+                }),
+            ])
+            ->allowedSorts([
+                AllowedSort::field('sort_field', 'created_at'),
+                'name',
+                'email',
+                'created_at',
+                'updated_at',
+            ])
+            ->defaultSort('-created_at')
+            ->with('roles')
+            ->paginate($perPage)
+            ->appends($request->query());
 
         return Inertia::render('Dashboard/Customers/Index', [
             'customers' => $customers,
-            'filters'   => $request->only(['search', 'status', 'per_page']),
+            'filters'   => [
+                'search'    => $request->input('filter.search'),
+                'status'    => $request->input('filter.status'),
+                'per_page'  => $request->input('per_page', 10),
+            ],
         ]);
     }
 

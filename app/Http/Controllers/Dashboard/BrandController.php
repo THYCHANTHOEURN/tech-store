@@ -12,6 +12,9 @@ use Inertia\Inertia;
 use App\Exports\BrandExport;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
 
 class BrandController extends Controller
 {
@@ -27,40 +30,42 @@ class BrandController extends Controller
     {
         $this->authorize('viewAny', Brand::class);
 
-        $query = Brand::query();
-
-        // Handle search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        // Handle status filter
-        if ($request->filled('status') && $request->status != 'all') {
-            switch ($request->status) {
-                case 'active':
-                    $query->where('status', true);
-                    break;
-                case 'inactive':
-                    $query->where('status', false);
-                    break;
-            }
-        }
-
-        // Handle sorting
-        $sortField = $request->input('sort_field', 'created_at');
-        $sortOrder = $request->input('sort_order', 'desc');
-        $query->orderBy($sortField, $sortOrder);
-
         $perPage = (int) $request->input('per_page', 10);
-        $brands = $query->paginate($perPage)->appends($request->query());
+
+        $brands = QueryBuilder::for(Brand::class)
+            ->allowedFilters([
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($q) use ($value) {
+                        $q->where('name', 'like', "%{$value}%")
+                          ->orWhere('description', 'like', "%{$value}%");
+                    });
+                }),
+                AllowedFilter::callback('status', function ($query, $value) {
+                    if ($value === 'active') {
+                        $query->where('status', true);
+                    } elseif ($value === 'inactive') {
+                        $query->where('status', false);
+                    }
+                }),
+            ])
+            ->allowedSorts([
+                AllowedSort::field('sort_field', 'created_at'),
+                'name',
+                'status',
+                'created_at',
+                'updated_at',
+            ])
+            ->defaultSort('-created_at')
+            ->paginate($perPage)
+            ->appends($request->query());
 
         return Inertia::render('Dashboard/Brands/Index', [
             'brands'    => $brands,
-            'filters'   => $request->only(['search', 'status', 'per_page']),
+            'filters'   => [
+                'search'    => $request->input('filter.search'),
+                'status'    => $request->input('filter.status'),
+                'per_page'  => $request->input('per_page', 10),
+            ],
         ]);
     }
 
@@ -262,7 +267,7 @@ class BrandController extends Controller
     public function export(Request $request)
     {
         $this->authorize('export', Brand::class);
-        
+
         $format     = $request->input('format', 'xlsx');
         $filename   = 'brands-' . date('Y-m-d') . '.' . $format;
 

@@ -168,7 +168,7 @@
     const applyFilters = () => {
         loading.value = true;
         router.get(route('dashboard.roles.index'), {
-            search: search.value,
+            'filter[search]': search.value || undefined,
             page: 1, // Reset to first page when filtering
             per_page: perPage.value, // Include per_page parameter
         }, {
@@ -203,7 +203,7 @@
     const changePage = (newPage) => {
         loading.value = true;
         router.get(route('dashboard.roles.index'), {
-            search: search.value,
+            'filter[search]': search.value || undefined,
             page: newPage,
             per_page: perPage.value, // Include per_page parameter
         }, {

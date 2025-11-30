@@ -390,11 +390,11 @@
         loading.value = true;
         page.value = 1; // Always reset to first page when filtering
         router.get(route('dashboard.products.index'), {
-            search: search.value || undefined,
-            category: selectedCategory.value || undefined,
-            brand: selectedBrand.value || undefined,
-            status: selectedStatus.value,
-            featured: selectedFeatured.value,
+            'filter[search]': search.value || undefined,
+            'filter[category]': selectedCategory.value || undefined,
+            'filter[brand]': selectedBrand.value || undefined,
+            'filter[status]': selectedStatus.value !== 'all' ? selectedStatus.value : undefined,
+            'filter[featured]': selectedFeatured.value !== 'all' ? selectedFeatured.value : undefined,
             page: page.value,
             per_page: perPage.value,
         }, {
@@ -452,11 +452,11 @@
     const changePage = (newPage) => {
         loading.value = true;
         router.get(route('dashboard.products.index'), {
-            search: search.value,
-            category: selectedCategory.value,
-            brand: selectedBrand.value,
-            status: selectedStatus.value,
-            featured: selectedFeatured.value,
+            'filter[search]': search.value || undefined,
+            'filter[category]': selectedCategory.value || undefined,
+            'filter[brand]': selectedBrand.value || undefined,
+            'filter[status]': selectedStatus.value !== 'all' ? selectedStatus.value : undefined,
+            'filter[featured]': selectedFeatured.value !== 'all' ? selectedFeatured.value : undefined,
             page: newPage,
             per_page: perPage.value,
         }, {

@@ -14,6 +14,10 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\AllowedInclude;
 
 class UserController extends Controller
 {
@@ -29,55 +33,59 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        // Exclude customers from this view as they are managed in CustomerController
-        $query = User::query()
-            ->with('roles')
-            ->whereHas('roles', function($q) {
-                $q->where('name', '!=', RolesEnum::CUSTOMER->value);
-            });
-
-        // Handle search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
-            });
-        }
-
-        // Handle role filter
-        if ($request->filled('role') && $request->role != 'all') {
-            $query->whereHas('roles', function($q) use ($request) {
-                $q->where('name', $request->role);
-            });
-        }
-
-        // Handle status filter
-        if ($request->filled('status') && $request->status != 'all') {
-            switch ($request->status) {
-                case 'verified':
-                    $query->whereNotNull('email_verified_at');
-                    break;
-                case 'unverified':
-                    $query->whereNull('email_verified_at');
-                    break;
-            }
-        }
-
-        // Handle sorting
-        $sortField = $request->input('sort_field', 'created_at');
-        $sortOrder = $request->input('sort_order', 'desc');
-        $query->orderBy($sortField, $sortOrder);
-
         $perPage = (int) $request->input('per_page', 10);
-        $users = $query->paginate($perPage)->appends($request->query());
+
+        // Exclude customers from this view
+        $users = QueryBuilder::for(
+            User::whereHas('roles', function ($query) {
+                $query->where('name', '!=', RolesEnum::CUSTOMER->value);
+            })
+        )
+            ->allowedIncludes(['roles'])
+            ->allowedFilters([
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($q) use ($value) {
+                        $q->where('name', 'like', "%{$value}%")
+                          ->orWhere('email', 'like', "%{$value}%")
+                          ->orWhere('phone', 'like', "%{$value}%");
+                    });
+                }),
+                AllowedFilter::callback('role', function ($query, $value) {
+                    $query->whereHas('roles', function ($q) use ($value) {
+                        $q->where('name', $value);
+                    });
+                }),
+                AllowedFilter::callback('status', function ($query, $value) {
+                    if ($value === 'verified') {
+                        $query->whereNotNull('email_verified_at');
+                    } elseif ($value === 'unverified') {
+                        $query->whereNull('email_verified_at');
+                    }
+                }),
+            ])
+            ->allowedSorts([
+                AllowedSort::field('sort_field', 'created_at'),
+                'name',
+                'email',
+                'created_at',
+                'updated_at',
+            ])
+            ->defaultSort('-created_at')
+            ->with('roles')
+            ->paginate($perPage)
+            ->appends($request->query());
+
         $roles = Role::where('name', '!=', RolesEnum::CUSTOMER->value)->get();
 
         return Inertia::render('Dashboard/Users/Index', [
             'users'     => $users,
             'roles'     => $roles,
-            'filters'   => $request->only(['search', 'role', 'status', 'per_page']),
+            'filters'   => [
+                'search'    => $request->input('filter.search'),
+                'role'      => $request->input('filter.role'),
+                'status'    => $request->input('filter.status'),
+                'per_page'  => $request->input('per_page', 10),
+            ],
         ]);
     }
 

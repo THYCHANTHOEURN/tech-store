@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
 
 class BannerController extends Controller
 {
@@ -26,42 +29,40 @@ class BannerController extends Controller
     {
         $this->authorize('viewAny', Banner::class);
 
-        $query = Banner::query();
-
-        // Handle search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where('title', 'like', "%{$search}%");
-        }
-
-        // Handle position filter
-        if ($request->filled('position') && $request->position != 'all') {
-            $query->where('position', $request->position);
-        }
-
-        // Handle status filter
-        if ($request->filled('status') && $request->status != 'all') {
-            switch ($request->status) {
-                case 'active':
-                    $query->where('status', true);
-                    break;
-                case 'inactive':
-                    $query->where('status', false);
-                    break;
-            }
-        }
-
-        // Handle sorting
-        $sortField = $request->input('sort_field', 'created_at');
-        $sortOrder = $request->input('sort_order', 'desc');
-        $query->orderBy($sortField, $sortOrder);
-
         $perPage = (int) $request->input('per_page', 10);
-        $banners = $query->paginate($perPage)->appends($request->query());
+
+        $banners = QueryBuilder::for(Banner::class)
+            ->allowedFilters([
+                AllowedFilter::partial('search', 'title'),
+                AllowedFilter::exact('position'),
+                AllowedFilter::callback('status', function ($query, $value) {
+                    if ($value === 'active') {
+                        $query->where('status', true);
+                    } elseif ($value === 'inactive') {
+                        $query->where('status', false);
+                    }
+                }),
+            ])
+            ->allowedSorts([
+                AllowedSort::field('sort_field', 'created_at'),
+                'title',
+                'position',
+                'status',
+                'created_at',
+                'updated_at',
+            ])
+            ->defaultSort('-created_at')
+            ->paginate($perPage)
+            ->appends($request->query());
 
         return Inertia::render('Dashboard/Banners/Index', [
             'banners'   => $banners,
-            'filters'   => $request->only(['search', 'position', 'status', 'per_page']),
+            'filters'   => [
+                'search'    => $request->input('filter.search'),
+                'position'  => $request->input('filter.position'),
+                'status'    => $request->input('filter.status'),
+                'per_page'  => $request->input('per_page', 10),
+            ],
             'positions' => [
                 ['label' => 'Slider', 'value' => Banner::POSITION_SLIDER],
                 ['label' => 'Side', 'value' => Banner::POSITION_SIDE],

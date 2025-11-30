@@ -220,9 +220,9 @@
     const applyFilters = () => {
         loading.value = true;
         router.get(route('dashboard.categories.index'), {
-            search: search.value || undefined,
-            parent: selectedParent.value || undefined,
-            status: selectedStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[parent]': selectedParent.value || undefined,
+            'filter[status]': selectedStatus.value !== 'all' ? selectedStatus.value : undefined,
             page: 1,
             per_page: perPage.value, // Include per_page parameter
         }, {
@@ -264,9 +264,9 @@
     const changePage = (newPage) => {
         loading.value = true;
         router.get(route('dashboard.categories.index'), {
-            search: search.value,
-            parent: selectedParent.value,
-            status: selectedStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[parent]': selectedParent.value || undefined,
+            'filter[status]': selectedStatus.value !== 'all' ? selectedStatus.value : undefined,
             page: newPage,
             per_page: perPage.value, // Include per_page parameter
         }, {

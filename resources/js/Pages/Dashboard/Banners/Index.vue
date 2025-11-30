@@ -210,9 +210,9 @@
     const applyFilters = () => {
         loading.value = true;
         router.get(route('dashboard.banners.index'), {
-            search: search.value,
-            position: selectedPosition.value,
-            status: selectedStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[position]': selectedPosition.value || undefined,
+            'filter[status]': selectedStatus.value !== 'all' ? selectedStatus.value : undefined,
             page: 1, // Reset to first page when filtering
             per_page: perPage.value, // Include per_page parameter
         }, {
@@ -257,9 +257,9 @@
     const changePage = (newPage) => {
         loading.value = true;
         router.get(route('dashboard.banners.index'), {
-            search: search.value,
-            position: selectedPosition.value,
-            status: selectedStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[position]': selectedPosition.value || undefined,
+            'filter[status]': selectedStatus.value !== 'all' ? selectedStatus.value : undefined,
             page: newPage,
             per_page: perPage.value, // Include per_page parameter
         }, {

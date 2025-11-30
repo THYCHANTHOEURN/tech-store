@@ -191,8 +191,8 @@
     const applyFilters = () => {
         loading.value = true;
         router.get(route('dashboard.brands.index'), {
-            search: search.value,
-            status: selectedStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[status]': selectedStatus.value !== 'all' ? selectedStatus.value : undefined,
             page: 1, // Reset to first page on filter change
             per_page: perPage.value, // Include per_page parameter
         }, {
@@ -233,8 +233,8 @@
     const changePage = (newPage) => {
         loading.value = true;
         router.get(route('dashboard.brands.index'), {
-            search: search.value,
-            status: selectedStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[status]': selectedStatus.value !== 'all' ? selectedStatus.value : undefined,
             page: newPage,
             per_page: perPage.value, // Include per_page parameter
         }, {

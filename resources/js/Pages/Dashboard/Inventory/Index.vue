@@ -378,8 +378,8 @@
     const applyFilters = () => {
         loading.value = true
         router.get(route('dashboard.inventory.index'), {
-            search: search.value || undefined,
-            filter: selectedFilter.value,
+            'filter[search]': search.value || undefined,
+            'filter[filter]': selectedFilter.value !== 'all' ? selectedFilter.value : undefined,
             page: 1,
             per_page: perPage.value, // Include per_page parameter
         }, {
@@ -405,8 +405,8 @@
     const changePage = (newPage) => {
         loading.value = true
         router.get(route('dashboard.inventory.index'), {
-            search: search.value,
-            filter: selectedFilter.value,
+            'filter[search]': search.value || undefined,
+            'filter[filter]': selectedFilter.value !== 'all' ? selectedFilter.value : undefined,
             page: newPage,
             per_page: perPage.value, // Include per_page parameter
         }, {

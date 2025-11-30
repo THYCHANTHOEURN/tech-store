@@ -240,9 +240,9 @@
     const applyFilters = () => {
         loading.value = true;
         router.get(route('dashboard.orders.index'), {
-            search: search.value,
-            order_status: selectedOrderStatus.value,
-            payment_status: selectedPaymentStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[order_status]': selectedOrderStatus.value !== 'all' ? selectedOrderStatus.value : undefined,
+            'filter[payment_status]': selectedPaymentStatus.value !== 'all' ? selectedPaymentStatus.value : undefined,
             page: 1, // Reset to first page on filter change
             per_page: perPage.value, // Include per_page parameter
         }, {
@@ -287,9 +287,9 @@
     const changePage = (newPage) => {
         loading.value = true;
         router.get(route('dashboard.orders.index'), {
-            search: search.value,
-            order_status: selectedOrderStatus.value,
-            payment_status: selectedPaymentStatus.value,
+            'filter[search]': search.value || undefined,
+            'filter[order_status]': selectedOrderStatus.value !== 'all' ? selectedOrderStatus.value : undefined,
+            'filter[payment_status]': selectedPaymentStatus.value !== 'all' ? selectedPaymentStatus.value : undefined,
             page: newPage,
             per_page: perPage.value, // Include per_page parameter
         }, {

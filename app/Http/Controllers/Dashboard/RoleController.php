@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\AllowedInclude;
 
 class RoleController extends Controller
 {
@@ -24,27 +28,31 @@ class RoleController extends Controller
     {
         $this->authorize('viewAny', Role::class);
 
-        $query = Role::query()->with('permissions')
-            ->withCount('users')
-            ->withCount('permissions');
-
-        // Handle search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where('name', 'like', "%{$search}%");
-        }
-
-        // Handle sorting
-        $sortField = $request->input('sort_field', 'created_at');
-        $sortOrder = $request->input('sort_order', 'desc');
-        $query->orderBy($sortField, $sortOrder);
-
         $perPage = (int) $request->input('per_page', 10);
-        $roles = $query->paginate($perPage)->appends($request->query());
+
+        $roles = QueryBuilder::for(Role::class)
+            ->allowedIncludes(['permissions'])
+            ->allowedFilters([
+                AllowedFilter::partial('search', 'name'),
+            ])
+            ->allowedSorts([
+                AllowedSort::field('sort_field', 'created_at'),
+                'name',
+                'created_at',
+                'updated_at',
+            ])
+            ->defaultSort('-created_at')
+            ->withCount(['users', 'permissions'])
+            ->with('permissions')
+            ->paginate($perPage)
+            ->appends($request->query());
 
         return Inertia::render('Dashboard/Roles/Index', [
-            'roles'   => $roles,
-            'filters' => $request->only(['search', 'per_page']),
+            'roles'     => $roles,
+            'filters' => [
+                'search'    => $request->input('filter.search'),
+                'per_page'  => $request->input('per_page', 10),
+            ],
         ]);
     }
 
