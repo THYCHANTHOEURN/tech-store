@@ -16,7 +16,7 @@
 
                         <!-- Description -->
                         <RichTextEditor v-model="form.description" :label="$t('Product Description')"
-                            :error="errors?.description" required placeholder="Enter product description here..."
+                            :error="errors?.description" placeholder="Enter product description here..."
                             :min-height="300" variant="outlined" density="comfortable" />
 
 

@@ -14,13 +14,14 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use App\Exports\ProductsExport;
 use App\Exports\ProductsTemplateExport;
+use App\Http\Requests\Dashboard\Product\ProductStoreRequest;
+use App\Http\Requests\Dashboard\Product\ProductUpdateRequest;
 use App\Imports\ProductsImport;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
-use Spatie\QueryBuilder\AllowedInclude;
 
 class ProductController extends Controller
 {
@@ -121,26 +122,14 @@ class ProductController extends Controller
     /**
      * Store a newly created product in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  ProductStoreRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(ProductStoreRequest $request)
     {
         $this->authorize('create', Product::class);
 
-        $validated = $request->validate([
-            'name'          => 'required|string|max:255',
-            'category_id'   => 'required|exists:categories,id',
-            'brand_id'      => 'required|exists:brands,id',
-            'price'         => 'required|numeric|min:0',
-            'sale_price'    => 'nullable|numeric|min:0|lt:price',
-            'stock'         => 'required|integer|min:0',
-            'description'   => 'nullable|string',
-            'status'        => 'required|boolean',
-            'featured'      => 'required|boolean',
-            'images'        => 'sometimes|array',
-            'images.*'      => 'image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        $validated = $request->validated();
 
         // Generate slug
         $slug           = Str::slug($validated['name']);
@@ -251,30 +240,15 @@ class ProductController extends Controller
     /**
      * Update the specified product in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  ProductUpdateRequest  $request
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Product $product)
+    public function update(ProductUpdateRequest $request, Product $product)
     {
         $this->authorize('update', $product);
 
-        $validated = $request->validate([
-            'name'              => 'required|string|max:255',
-            'category_id'       => 'required|exists:categories,id',
-            'brand_id'          => 'required|exists:brands,id',
-            'price'             => 'required|numeric|min:0',
-            'sale_price'        => 'nullable|numeric|min:0|lt:price',
-            'stock'             => 'required|integer|min:0',
-            'description'       => 'nullable|string',
-            'status'            => 'required|boolean',
-            'featured'          => 'required|boolean',
-            'images'            => 'sometimes|array',
-            'images.*'          => 'image|mimes:jpeg,png,jpg|max:2048',
-            'remove_images'     => 'sometimes|array',
-            'remove_images.*'   => 'exists:product_images,id',
-            'primary_image'     => 'sometimes|nullable|exists:product_images,id',
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 
