@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use App\Exports\CategoryExport;
+use App\Http\Requests\Dashboard\Category\CategoryStoreRequest;
+use App\Http\Requests\Dashboard\Category\CategoryUpdateRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -103,20 +105,14 @@ class CategoryController extends Controller
     /**
      * Store a newly created category in storage.
      *
-     * @param  Request  $request
+     * @param  \App\Http\Requests\Dashboard\Category\CategoryStoreRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(CategoryStoreRequest $request)
     {
         $this->authorize('create', Category::class);
 
-        $validated = $request->validate([
-            'name'              => 'required|string|max:255',
-            'parent_id'         => 'nullable|exists:categories,id',
-            'description'       => 'nullable|string',
-            'status'            => 'required|boolean',
-            'image'             => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        $validated = $request->validated();
 
         // Generate slug
         $slug           = Str::slug($validated['name']);
@@ -199,21 +195,15 @@ class CategoryController extends Controller
     /**
      * Update the specified category in storage.
      *
-     * @param  Request  $request
+     * @param  \App\Http\Requests\Dashboard\Category\CategoryUpdateRequest  $request
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Category $category)
+    public function update(CategoryUpdateRequest $request, Category $category)
     {
         $this->authorize('update', $category);
 
-        $validated = $request->validate([
-            'name'          => 'required|string|max:255',
-            'parent_id'     => 'nullable|exists:categories,id',
-            'description'   => 'nullable|string',
-            'status'        => 'required|boolean',
-            'image'         => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        $validated = $request->validated();
 
         // Make sure category is not set as its own parent
         if ($validated['parent_id'] == $category->id) {
