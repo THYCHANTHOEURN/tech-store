@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dashboard;
 use App\Enums\RolesEnum;
 use App\Exports\CustomerExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\Customer\CustomerStoreRequest;
+use App\Http\Requests\Dashboard\Customer\CustomerUpdateRequest;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -88,20 +90,14 @@ class CustomerController extends Controller
     /**
      * Store a newly created customer in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \App\Http\Requests\Dashboard\Customer\CustomerStoreRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(CustomerStoreRequest $request)
     {
         $this->authorize('createCustomer', User::class);
 
-        $validated = $request->validate([
-            'name'      => ['required', 'string', 'max:255'],
-            'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password'  => ['required', 'string', 'min:8'],
-            'phone'     => ['nullable', 'string', 'max:20'],
-            'address'   => ['nullable', 'string'],
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 
@@ -189,11 +185,11 @@ class CustomerController extends Controller
     /**
      * Update the specified customer in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Dashboard\Customer\CustomerUpdateRequest  $request
      * @param  \App\Models\User  $customer
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, User $customer)
+    public function update(CustomerUpdateRequest $request, User $customer)
     {
         $this->authorize('updateCustomer', $customer);
 
@@ -203,13 +199,7 @@ class CustomerController extends Controller
                 ->with('error', 'User is not a customer');
         }
 
-        $validated = $request->validate([
-            'name'      => ['required', 'string', 'max:255'],
-            'email'     => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($customer->id)],
-            'password'  => ['nullable', 'string', 'min:8'],
-            'phone'     => ['nullable', 'string', 'max:20'],
-            'address'   => ['nullable', 'string'],
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 

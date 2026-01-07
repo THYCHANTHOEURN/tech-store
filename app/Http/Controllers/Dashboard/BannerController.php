@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Exports\BannerExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\Banner\BannerStoreRequest;
+use App\Http\Requests\Dashboard\Banner\BannerUpdateRequest;
 use App\Models\Banner;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -92,20 +94,14 @@ class BannerController extends Controller
     /**
      * Store a newly created banner in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Dashboard\Banner\BannerStoreRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(BannerStoreRequest $request)
     {
         $this->authorize('create', Banner::class);
 
-        $validated = $request->validate([
-            'title'     => ['required', 'string', 'max:255'],
-            'link'      => ['required', 'string', 'max:255'],
-            'position'  => ['required', 'string', 'in:' . Banner::POSITION_SLIDER . ',' . Banner::POSITION_SIDE . ',' . Banner::POSITION_PROMO],
-            'status'    => ['required', 'boolean'],
-            'image'     => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 
@@ -178,21 +174,15 @@ class BannerController extends Controller
     /**
      * Update the specified banner in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Dashboard\Banner\BannerUpdateRequest  $request
      * @param  \App\Models\Banner  $banner
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Banner $banner)
+    public function update(BannerUpdateRequest $request, Banner $banner)
     {
         $this->authorize('update', $banner);
 
-        $validated = $request->validate([
-            'title'     => ['required', 'string', 'max:255'],
-            'link'      => ['required', 'string', 'max:255'],
-            'position'  => ['required', 'string', 'in:' . Banner::POSITION_SLIDER . ',' . Banner::POSITION_SIDE . ',' . Banner::POSITION_PROMO],
-            'status'    => ['required', 'boolean'],
-            'image'     => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 

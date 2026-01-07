@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dashboard;
 use App\Enums\RolesEnum;
 use App\Exports\UserExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\User\UserStoreRequest;
+use App\Http\Requests\Dashboard\User\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -109,21 +111,14 @@ class UserController extends Controller
     /**
      * Store a newly created user in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Dashboard\User\UserStoreRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
         $this->authorize('create', User::class);
 
-        $validated = $request->validate([
-            'name'      => ['required', 'string', 'max:255'],
-            'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password'  => ['required', 'string', 'min:8'],
-            'phone'     => ['nullable', 'string', 'max:20'],
-            'address'   => ['nullable', 'string'],
-            'role'      => ['required', 'exists:roles,name'],
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 
@@ -204,11 +199,11 @@ class UserController extends Controller
     /**
      * Update the specified user in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Dashboard\User\UserUpdateRequest  $request
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, User $user)
+    public function update(UserUpdateRequest $request, User $user)
     {
         $this->authorize('update', $user);
 
@@ -218,14 +213,7 @@ class UserController extends Controller
                 ->with('error', 'Please use customer management for this user.');
         }
 
-        $validated = $request->validate([
-            'name'      => ['required', 'string', 'max:255'],
-            'email'     => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'password'  => ['nullable', 'string', 'min:8'],
-            'phone'     => ['nullable', 'string', 'max:20'],
-            'address'   => ['nullable', 'string'],
-            'role'      => ['required', 'exists:roles,name'],
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 

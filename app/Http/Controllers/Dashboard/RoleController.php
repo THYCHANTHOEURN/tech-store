@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\Role\RoleStoreRequest;
+use App\Http\Requests\Dashboard\Role\RoleUpdateRequest;
 use App\Models\Role;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -75,17 +77,14 @@ class RoleController extends Controller
     /**
      * Store a newly created role in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Dashboard\Role\RoleStoreRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(RoleStoreRequest $request)
     {
         $this->authorize('create', Role::class);
 
-        $validated = $request->validate([
-            'name'        => ['required', 'string', 'max:255', 'unique:roles'],
-            'permissions' => ['nullable', 'array'],
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 
@@ -156,18 +155,15 @@ class RoleController extends Controller
     /**
      * Update the specified role in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Dashboard\Role\RoleUpdateRequest  $request
      * @param  \Spatie\Permission\Models\Role  $role
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Role $role)
+    public function update(RoleUpdateRequest $request, Role $role)
     {
         $this->authorize('update', $role);
 
-        $validated = $request->validate([
-            'name'        => ['required', 'string', 'max:255', Rule::unique('roles')->ignore($role->id)],
-            'permissions' => ['nullable', 'array'],
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 

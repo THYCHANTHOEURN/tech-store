@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use App\Exports\BrandExport;
+use App\Http\Requests\Dashboard\Brand\BrandStoreRequest;
+use App\Http\Requests\Dashboard\Brand\BrandUpdateRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -84,19 +86,14 @@ class BrandController extends Controller
     /**
      * Store a newly created brand in storage.
      *
-     * @param  Request  $request
+     * @param  \App\Http\Requests\Dashboard\Brand\BrandStoreRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(BrandStoreRequest $request)
     {
         $this->authorize('create', Brand::class);
 
-        $validated = $request->validate([
-            'name'          => ['required', 'string', 'max:255'],
-            'description'   => ['nullable', 'string'],
-            'status'        => ['required', 'boolean'],
-            'logo'          => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
-        ]);
+        $validated = $request->validated();
 
         // Generate slug
         $slug           = Str::slug($validated['name']);
@@ -173,20 +170,15 @@ class BrandController extends Controller
     /**
      * Update the specified brand in storage.
      *
-     * @param  Request  $request
+     * @param  \App\Http\Requests\Dashboard\Brand\BrandUpdateRequest  $request
      * @param  \App\Models\Brand  $brand
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Brand $brand)
+    public function update(BrandUpdateRequest $request, Brand $brand)
     {
         $this->authorize('update', $brand);
 
-        $validated = $request->validate([
-            'name'          => ['required', 'string', 'max:255'],
-            'description'   => ['nullable', 'string'],
-            'status'        => ['required', 'boolean'],
-            'logo'          => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 

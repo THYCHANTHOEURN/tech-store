@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Exports\OrderExport;
+use App\Http\Requests\Dashboard\Order\OrderStoreRequest;
+use App\Http\Requests\Dashboard\Order\OrderUpdateRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -124,25 +126,14 @@ class OrderController extends Controller
     /**
      * Store a newly created order in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Dashboard\Order\OrderStoreRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(OrderStoreRequest $request)
     {
         $this->authorize('create', Order::class);
 
-        $validated = $request->validate([
-            'user_id'               => 'required|exists:users,id',
-            'shipping_address'      => 'required|string',
-            'phone'                 => 'required|string|max:20',
-            'payment_method'        => 'required|string',
-            'status'                => 'required|in:' . implode(',', array_column(OrderStatus::cases(), 'value')),
-            'payment_status'        => 'required|in:' . implode(',', array_column(PaymentStatus::cases(), 'value')),
-            'items'                 => 'required|array|min:1',
-            'items.*.product_id'    => 'required|exists:products,id',
-            'items.*.quantity'      => 'required|integer|min:1',
-            'items.*.price'         => 'required|numeric|min:0',
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 
@@ -286,17 +277,11 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Order $order)
+    public function update(OrderUpdateRequest $request, Order $order)
     {
         $this->authorize('update', $order);
 
-        $validated = $request->validate([
-            'shipping_address'      => 'required|string',
-            'phone'                 => 'required|string|max:20',
-            'payment_method'        => 'required|string',
-            'status'                => 'required|in:' . implode(',', array_column(OrderStatus::cases(), 'value')),
-            'payment_status'        => 'required|in:' . implode(',', array_column(PaymentStatus::cases(), 'value')),
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 
