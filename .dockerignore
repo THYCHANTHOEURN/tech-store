@@ -26,6 +26,5 @@ auth.json
 .phpunit.cache
 .phpunit.result.cache
 tests/
-database/factories/
 bootstrap/cache/*
 storage/debugbar/*
