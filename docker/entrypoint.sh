@@ -11,9 +11,24 @@ if [ -n "$MYSQL_ATTR_SSL_CA" ]; then
         -----BEGIN*)
             mkdir -p "$(dirname "$CERT_PATH")"
             echo "Writing Aiven CA to $CERT_PATH"
-            cat > "$CERT_PATH" <<'AIVEN_CA'
-$MYSQL_ATTR_SSL_CA
-AIVEN_CA
+            # Handle three common forms:
+            # 1) Raw PEM with newlines (normal)
+            # 2) PEM with literal '\n' sequences (from some dashboards)
+            # 3) Base64-encoded PEM
+            if printf '%s' "$MYSQL_ATTR_SSL_CA" | grep -q "-----BEGIN" >/dev/null 2>&1; then
+                # Convert literal \n into newlines and strip CRs
+                printf '%b' "$MYSQL_ATTR_SSL_CA" | tr -d '\r' > "$CERT_PATH"
+            else
+                # Might be base64; try to decode safely
+                if printf '%s' "$MYSQL_ATTR_SSL_CA" | grep -Eq '^[A-Za-z0-9+/=[:space:]]+$'; then
+                    printf '%s' "$MYSQL_ATTR_SSL_CA" | tr -d '\r\n' | base64 -d > "$CERT_PATH" 2>/dev/null || {
+                        # fallback: write raw and hope for the best
+                        printf '%s' "$MYSQL_ATTR_SSL_CA" > "$CERT_PATH"
+                    }
+                else
+                    printf '%s' "$MYSQL_ATTR_SSL_CA" | tr -d '\r' > "$CERT_PATH"
+                fi
+            fi
             chmod 644 "$CERT_PATH" || true
             export MYSQL_ATTR_SSL_CA=$CERT_PATH
             ;;
