@@ -28,6 +28,10 @@ services:
         value: avnadmin
       - key: DB_SSLMODE
         value: require
+      - key: RUN_DB_SEED_ON_STARTUP
+        value: "false"
+      - key: FORCE_MIGRATE_FRESH_SEED
+        value: "false"
       - key: LOG_CHANNEL
         value: stack
       - key: LOG_LEVEL

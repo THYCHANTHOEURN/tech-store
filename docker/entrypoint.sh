@@ -42,11 +42,33 @@ if [ -n "$MYSQL_ATTR_SSL_CA" ]; then
 fi
 
 if [ -n "$DB_HOST" ] && [ -n "$DB_DATABASE" ] && [ -n "$DB_USERNAME" ]; then
+    if [ "$FORCE_MIGRATE_FRESH_SEED" = "true" ]; then
+        echo "FORCE_MIGRATE_FRESH_SEED=true -> running migrate:fresh --seed"
+        php artisan migrate:fresh --seed --force
+    else
         if php artisan migrate:status --no-interaction >/dev/null 2>&1; then
-                php artisan migrate --force
+            php artisan migrate --force
+            if [ "$RUN_DB_SEED_ON_STARTUP" = "true" ]; then
+                echo "RUN_DB_SEED_ON_STARTUP=true -> running db:seed"
+                php artisan db:seed --force
+            fi
         else
-                php artisan migrate:fresh --seed --force
+            php artisan migrate:fresh --seed --force
         fi
+    fi
+fi
+
+exec apache2-foreground
+
+# Ensure Apache listens on all IPv4 interfaces (some images default to IPv6/::1)
+if [ -f /etc/apache2/ports.conf ]; then
+    sed -i 's/^Listen 80$/Listen 0.0.0.0:80/' /etc/apache2/ports.conf || true
+fi
+
+# Provide a ServerName to suppress warnings and ensure proper virtual host behavior
+if [ ! -f /etc/apache2/conf-available/servername.conf ]; then
+    printf 'ServerName localhost\n' > /etc/apache2/conf-available/servername.conf
+    a2enconf servername >/dev/null 2>&1 || true
 fi
 
 exec apache2-foreground
