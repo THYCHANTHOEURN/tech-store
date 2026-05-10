@@ -19,7 +19,7 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: tech-store-mysql-tech-store-db.aivencloud.com
+        value: tech-store-mysql-tech-store-db.i.aivencloud.com
       - key: DB_PORT
         value: "20564"
       - key: DB_DATABASE
