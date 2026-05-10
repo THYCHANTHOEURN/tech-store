@@ -3,8 +3,8 @@ import './bootstrap';
 
 import { createInertiaApp, Head, Link} from '@inertiajs/vue3';
 import { createI18n } from 'vue-i18n';
-import en from './lang/en.json'; // Create this file for English translations
-import km from './lang/km.json';
+import en from './Lang/en.json';
+import km from './Lang/km.json';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h, watch, nextTick } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
