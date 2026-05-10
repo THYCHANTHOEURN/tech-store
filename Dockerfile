@@ -67,11 +67,18 @@ COPY --from=node_builder /app/public/build ./public/build
 # Install PHP dependencies
 RUN composer install --optimize-autoloader --no-dev --no-interaction
 
+# Download static demo resources during image build so the app has them on first boot
+RUN php artisan storage:link || true && php artisan assets:download
+
 # Create required directories and set permissions
 RUN mkdir -p storage/logs && \
     chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html && \
     chmod -R 775 storage bootstrap/cache
+
+# Add startup entrypoint for automatic migrations on boot
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Expose port
 EXPOSE 80
@@ -80,5 +87,5 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost/ || exit 1
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Start via entrypoint so migrations run before Apache starts
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
