@@ -7,7 +7,6 @@ import en from './Lang/en.json';
 import km from './Lang/km.json';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h, watch, nextTick } from 'vue';
-import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import vuetify from './Plugins/vuetify';
 import RichTextEditor from './Components/RichTextEditor.vue';
 import VueApexCharts from 'vue3-apexcharts';
@@ -29,7 +28,6 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) });
 
         app.use(plugin);
-        app.use(ZiggyVue);
         app.use(vuetify);
 
         // Set up vue-i18n
