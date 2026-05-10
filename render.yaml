@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: tech-store
+    env: docker
+    region: oregon
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        value: base64:YOUR_APP_KEY_HERE
+      - key: APP_URL
+        value: https://tech-store-prod.onrender.com
+      - key: APP_NAME
+        value: TechStore
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: tech-store-mysql-tech-store-db.aivencloud.com
+      - key: DB_PORT
+        value: "20564"
+      - key: DB_DATABASE
+        value: defaultdb
+      - key: DB_USERNAME
+        value: avnadmin
+      - key: DB_SSLMODE
+        value: require
+      - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_LEVEL
+        value: error
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
