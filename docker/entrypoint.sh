@@ -98,4 +98,12 @@ if [ "${AUTO_MIGRATE_ON_STARTUP:-true}" = "true" ] && [ -n "$DB_HOST" ] && [ -n 
     fi
 fi
 
+# Regenerate Ziggy routes JS so frontend has up-to-date route definitions
+# This helps when the build pipeline didn't run `php artisan ziggy:generate`
+# and ensures `resources/js/ziggy.js` matches the runtime `APP_URL`.
+if command -v php >/dev/null 2>&1; then
+    echo "Generating Ziggy routes file (resources/js/ziggy.js)"
+    php artisan ziggy:generate --out=resources/js/ziggy.js || true
+fi
+
 wait "$APACHE_PID"

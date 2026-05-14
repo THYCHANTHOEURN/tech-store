@@ -10,6 +10,8 @@ import { createApp, h, watch, nextTick } from 'vue';
 import vuetify from './Plugins/vuetify';
 import RichTextEditor from './Components/RichTextEditor.vue';
 import VueApexCharts from 'vue3-apexcharts';
+import { Ziggy } from './ziggy';
+import route from 'ziggy-js';
 
 // const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 // Use document.querySelector to get the site name from a meta tag that we'll add
@@ -53,6 +55,20 @@ createInertiaApp({
                 localStorage.setItem('locale', newLocale);
             }
         );
+
+        // Expose Ziggy and the `route()` helper globally so compiled bundles and
+        // components can call `route('name')` without runtime errors.
+        if (typeof window !== 'undefined') {
+            try {
+                window.Ziggy = Object.assign(typeof window.Ziggy !== 'undefined' ? window.Ziggy : {}, Ziggy || {});
+            } catch (e) {
+                window.Ziggy = Ziggy || window.Ziggy || {};
+            }
+            window.route = route;
+        }
+
+        // Make `route` available inside Vue components via globalProperties
+        app.config.globalProperties.route = route;
 
         app.mount(el);
 
