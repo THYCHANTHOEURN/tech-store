@@ -5,12 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         {{-- <title inertia>{{ config('app.name', 'Laravel') }}</title> --}}
-        
+
         <!-- Title on the page -->
         <title inertia>{{ \App\Models\Setting::get('site_name', config('app.name', 'Tech Store')) }}</title>
 
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
+        <link rel="icon" type="image/png" href="{{ secure_asset('images/favicon.png') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
