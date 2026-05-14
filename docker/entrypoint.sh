@@ -85,12 +85,13 @@ if [ "${AUTO_MIGRATE_ON_STARTUP:-true}" = "true" ] && [ -n "$DB_HOST" ] && [ -n 
     if php artisan migrate:status --no-interaction >/dev/null 2>&1; then
         if [ "$FORCE_MIGRATE_FRESH_SEED" = "true" ]; then
             echo "FORCE_MIGRATE_FRESH_SEED=true -> running migrate:fresh --seed"
-            php artisan migrate:fresh --seed --force || true
+            php artisan migrate:fresh --seed --force
         else
-            php artisan migrate --force || true
+            echo "Running migrations..."
+            php artisan migrate --force
             if [ "$RUN_DB_SEED_ON_STARTUP" = "true" ]; then
                 echo "RUN_DB_SEED_ON_STARTUP=true -> running db:seed"
-                php artisan db:seed --force || true
+                php artisan db:seed --force
             fi
         fi
     else
