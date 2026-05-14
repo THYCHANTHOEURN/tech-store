@@ -67,36 +67,50 @@ apache2-foreground &
 APACHE_PID=$!
 echo "Apache started on port ${APP_PORT} (pid ${APACHE_PID})"
 
+echo "=== Database & Migration Configuration ==="
+echo "AUTO_MIGRATE_ON_STARTUP: ${AUTO_MIGRATE_ON_STARTUP:-true}"
+echo "FORCE_MIGRATE_FRESH_SEED: ${FORCE_MIGRATE_FRESH_SEED:-false}"
+echo "RUN_DB_SEED_ON_STARTUP: ${RUN_DB_SEED_ON_STARTUP:-false}"
+echo "DB_HOST: ${DB_HOST:-NOT SET}"
+echo "DB_DATABASE: ${DB_DATABASE:-NOT SET}"
+echo "DB_USERNAME: ${DB_USERNAME:-NOT SET}"
+echo "========================================"
+
 if [ "${AUTO_MIGRATE_ON_STARTUP:-true}" = "true" ] && [ -n "$DB_HOST" ] && [ -n "$DB_DATABASE" ] && [ -n "$DB_USERNAME" ]; then
     # Wait for DB readiness, but don't block forever.
     MAX_ATTEMPTS=12
     SLEEP_SECONDS=5
     attempt=1
-    until php artisan migrate:status --no-interaction >/dev/null 2>&1; do
+    
+    echo "Testing database connection..."
+    until php artisan migrate:status --no-interaction 2>&1; do
         if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
-            echo "Database still unreachable after $((MAX_ATTEMPTS * SLEEP_SECONDS))s, skipping migrations"
+            echo "❌ Database still unreachable after $((MAX_ATTEMPTS * SLEEP_SECONDS))s, skipping migrations"
             break
         fi
-        echo "Waiting for DB to become available (attempt $attempt/$MAX_ATTEMPTS)"
+        echo "⏳ Waiting for DB to become available (attempt $attempt/$MAX_ATTEMPTS)..."
         attempt=$((attempt + 1))
         sleep $SLEEP_SECONDS
     done
 
-    if php artisan migrate:status --no-interaction >/dev/null 2>&1; then
+    echo "Checking if migrations are needed..."
+    if php artisan migrate:status --no-interaction 2>&1 | head -5; then
         if [ "$FORCE_MIGRATE_FRESH_SEED" = "true" ]; then
-            echo "FORCE_MIGRATE_FRESH_SEED=true -> running migrate:fresh --seed"
+            echo "🔄 FORCE_MIGRATE_FRESH_SEED=true -> running migrate:fresh --seed"
             php artisan migrate:fresh --seed --force
         else
-            echo "Running migrations..."
+            echo "📦 Running migrations..."
             php artisan migrate --force
             if [ "$RUN_DB_SEED_ON_STARTUP" = "true" ]; then
-                echo "RUN_DB_SEED_ON_STARTUP=true -> running db:seed"
+                echo "🌱 RUN_DB_SEED_ON_STARTUP=true -> running db:seed"
                 php artisan db:seed --force
             fi
         fi
     else
-        echo "Skipping migrate/seed because database is not ready"
+        echo "❌ Skipping migrate/seed because database is not ready"
     fi
+else
+    echo "⏭️  Skipping migrations: AUTO_MIGRATE_ON_STARTUP disabled or DB credentials missing"
 fi
 
 # Regenerate Ziggy routes JS so frontend has up-to-date route definitions
