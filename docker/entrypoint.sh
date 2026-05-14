@@ -76,16 +76,22 @@ echo "DB_DATABASE: ${DB_DATABASE:-NOT SET}"
 echo "DB_USERNAME: ${DB_USERNAME:-NOT SET}"
 echo "========================================"
 
+# Always run storage:link first
+echo "🔗 Creating storage symlink..."
+php artisan storage:link 2>&1 || true
+
 if [ "${AUTO_MIGRATE_ON_STARTUP:-true}" = "true" ] && [ -n "$DB_HOST" ] && [ -n "$DB_DATABASE" ] && [ -n "$DB_USERNAME" ]; then
-    # Wait for DB readiness, but don't block forever.
+    # Wait for DB readiness with timeout, but don't block forever.
     MAX_ATTEMPTS=12
     SLEEP_SECONDS=5
     attempt=1
-    
+    DB_READY=false
+
     echo "Testing database connection..."
-    until php artisan migrate:status --no-interaction 2>&1; do
-        if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
-            echo "❌ Database still unreachable after $((MAX_ATTEMPTS * SLEEP_SECONDS))s, skipping migrations"
+    while [ $attempt -le $MAX_ATTEMPTS ]; do
+        if timeout 5 php artisan migrate:status --no-interaction >/dev/null 2>&1; then
+            echo "✅ Database is ready!"
+            DB_READY=true
             break
         fi
         echo "⏳ Waiting for DB to become available (attempt $attempt/$MAX_ATTEMPTS)..."
@@ -93,8 +99,10 @@ if [ "${AUTO_MIGRATE_ON_STARTUP:-true}" = "true" ] && [ -n "$DB_HOST" ] && [ -n 
         sleep $SLEEP_SECONDS
     done
 
-    echo "Checking if migrations are needed..."
-    if php artisan migrate:status --no-interaction 2>&1 | head -5; then
+    if [ "$DB_READY" = "true" ]; then
+        echo "📋 Checking migration status..."
+        php artisan migrate:status --no-interaction
+        
         if [ "$FORCE_MIGRATE_FRESH_SEED" = "true" ]; then
             echo "🔄 FORCE_MIGRATE_FRESH_SEED=true -> running migrate:fresh --seed"
             php artisan migrate:fresh --seed --force
@@ -107,7 +115,7 @@ if [ "${AUTO_MIGRATE_ON_STARTUP:-true}" = "true" ] && [ -n "$DB_HOST" ] && [ -n 
             fi
         fi
     else
-        echo "❌ Skipping migrate/seed because database is not ready"
+        echo "❌ Database unreachable after ${MAX_ATTEMPTS} attempts, skipping migrations"
     fi
 else
     echo "⏭️  Skipping migrations: AUTO_MIGRATE_ON_STARTUP disabled or DB credentials missing"
