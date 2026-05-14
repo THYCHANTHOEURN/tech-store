@@ -11,7 +11,7 @@ import vuetify from './Plugins/vuetify';
 import RichTextEditor from './Components/RichTextEditor.vue';
 import VueApexCharts from 'vue3-apexcharts';
 import { Ziggy } from './ziggy';
-import route from 'ziggy-js';
+import { route } from 'ziggy-js';
 
 // const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 // Use document.querySelector to get the site name from a meta tag that we'll add
