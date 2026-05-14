@@ -42,39 +42,18 @@ if [ -n "$MYSQL_ATTR_SSL_CA" ]; then
 fi
 
 if [ -n "$DB_HOST" ] && [ -n "$DB_DATABASE" ] && [ -n "$DB_USERNAME" ]; then
-    # Wait for the database to become reachable, but don't block forever.
-    MAX_ATTEMPTS=12
-    SLEEP_SECONDS=5
-    attempt=1
-    until php artisan migrate:status --no-interaction >/dev/null 2>&1; do
-        if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
-            echo "Database still unreachable after $((MAX_ATTEMPTS * SLEEP_SECONDS))s, skipping migrations and starting web server"
-            break
-        fi
-        echo "Waiting for DB to become available (attempt $attempt/$MAX_ATTEMPTS)"
-        attempt=$((attempt + 1))
-        sleep $SLEEP_SECONDS
-    done
-
-    if [ "$FORCE_MIGRATE_FRESH_SEED" = "true" ]; then
-        echo "FORCE_MIGRATE_FRESH_SEED=true -> running migrate:fresh --seed"
-        php artisan migrate:fresh --seed --force || true
-    else
-        if php artisan migrate:status --no-interaction >/dev/null 2>&1; then
-            php artisan migrate --force || true
-            if [ "$RUN_DB_SEED_ON_STARTUP" = "true" ]; then
-                echo "RUN_DB_SEED_ON_STARTUP=true -> running db:seed"
-                php artisan db:seed --force || true
-            fi
-        else
-            php artisan migrate:fresh --seed --force || true
-        fi
-    fi
+    :
 fi
 
-# Ensure Apache listens on all IPv4 interfaces (some images default to IPv6/::1)
+APP_PORT="${PORT:-80}"
+
+# Ensure Apache listens on the platform-provided port and all IPv4 interfaces.
 if [ -f /etc/apache2/ports.conf ]; then
-    sed -i 's/^Listen 80$/Listen 0.0.0.0:80/' /etc/apache2/ports.conf || true
+    sed -i -E "s/^Listen .*/Listen 0.0.0.0:${APP_PORT}/" /etc/apache2/ports.conf || true
+fi
+
+if [ -f /etc/apache2/sites-available/000-default.conf ]; then
+    sed -i -E "s/<VirtualHost \*:([0-9]+)>/<VirtualHost *:${APP_PORT}>/" /etc/apache2/sites-available/000-default.conf || true
 fi
 
 # Provide a ServerName to suppress warnings and ensure proper virtual host behavior
@@ -83,5 +62,40 @@ if [ ! -f /etc/apache2/conf-available/servername.conf ]; then
     a2enconf servername >/dev/null 2>&1 || true
 fi
 
-# Start Apache in the foreground
-exec apache2-foreground
+# Start Apache first so Render can detect an open port quickly.
+apache2-foreground &
+APACHE_PID=$!
+echo "Apache started on port ${APP_PORT} (pid ${APACHE_PID})"
+
+if [ "${AUTO_MIGRATE_ON_STARTUP:-true}" = "true" ] && [ -n "$DB_HOST" ] && [ -n "$DB_DATABASE" ] && [ -n "$DB_USERNAME" ]; then
+    # Wait for DB readiness, but don't block forever.
+    MAX_ATTEMPTS=12
+    SLEEP_SECONDS=5
+    attempt=1
+    until php artisan migrate:status --no-interaction >/dev/null 2>&1; do
+        if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+            echo "Database still unreachable after $((MAX_ATTEMPTS * SLEEP_SECONDS))s, skipping migrations"
+            break
+        fi
+        echo "Waiting for DB to become available (attempt $attempt/$MAX_ATTEMPTS)"
+        attempt=$((attempt + 1))
+        sleep $SLEEP_SECONDS
+    done
+
+    if php artisan migrate:status --no-interaction >/dev/null 2>&1; then
+        if [ "$FORCE_MIGRATE_FRESH_SEED" = "true" ]; then
+            echo "FORCE_MIGRATE_FRESH_SEED=true -> running migrate:fresh --seed"
+            php artisan migrate:fresh --seed --force || true
+        else
+            php artisan migrate --force || true
+            if [ "$RUN_DB_SEED_ON_STARTUP" = "true" ]; then
+                echo "RUN_DB_SEED_ON_STARTUP=true -> running db:seed"
+                php artisan db:seed --force || true
+            fi
+        fi
+    else
+        echo "Skipping migrate/seed because database is not ready"
+    fi
+fi
+
+wait "$APACHE_PID"

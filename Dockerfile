@@ -85,7 +85,7 @@ EXPOSE 80
 
 # Health check: give the container more time to start (migrations, caches)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f --max-time 5 http://localhost/ || exit 1
+    CMD sh -c 'curl -fsS --max-time 5 "http://localhost:${PORT:-80}/" || exit 1'
 
 # Start via entrypoint so migrations run before Apache starts
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
