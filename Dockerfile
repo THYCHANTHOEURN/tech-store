@@ -83,9 +83,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 # Expose port
 EXPOSE 80
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost/ || exit 1
+# Health check: give the container more time to start (migrations, caches)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f --max-time 5 http://localhost/ || exit 1
 
 # Start via entrypoint so migrations run before Apache starts
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

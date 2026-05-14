@@ -42,23 +42,35 @@ if [ -n "$MYSQL_ATTR_SSL_CA" ]; then
 fi
 
 if [ -n "$DB_HOST" ] && [ -n "$DB_DATABASE" ] && [ -n "$DB_USERNAME" ]; then
+    # Wait for the database to become reachable, but don't block forever.
+    MAX_ATTEMPTS=12
+    SLEEP_SECONDS=5
+    attempt=1
+    until php artisan migrate:status --no-interaction >/dev/null 2>&1; do
+        if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+            echo "Database still unreachable after $((MAX_ATTEMPTS * SLEEP_SECONDS))s, skipping migrations and starting web server"
+            break
+        fi
+        echo "Waiting for DB to become available (attempt $attempt/$MAX_ATTEMPTS)"
+        attempt=$((attempt + 1))
+        sleep $SLEEP_SECONDS
+    done
+
     if [ "$FORCE_MIGRATE_FRESH_SEED" = "true" ]; then
         echo "FORCE_MIGRATE_FRESH_SEED=true -> running migrate:fresh --seed"
-        php artisan migrate:fresh --seed --force
+        php artisan migrate:fresh --seed --force || true
     else
         if php artisan migrate:status --no-interaction >/dev/null 2>&1; then
-            php artisan migrate --force
+            php artisan migrate --force || true
             if [ "$RUN_DB_SEED_ON_STARTUP" = "true" ]; then
                 echo "RUN_DB_SEED_ON_STARTUP=true -> running db:seed"
-                php artisan db:seed --force
+                php artisan db:seed --force || true
             fi
         else
-            php artisan migrate:fresh --seed --force
+            php artisan migrate:fresh --seed --force || true
         fi
     fi
 fi
-
-exec apache2-foreground
 
 # Ensure Apache listens on all IPv4 interfaces (some images default to IPv6/::1)
 if [ -f /etc/apache2/ports.conf ]; then
@@ -71,4 +83,5 @@ if [ ! -f /etc/apache2/conf-available/servername.conf ]; then
     a2enconf servername >/dev/null 2>&1 || true
 fi
 
+# Start Apache in the foreground
 exec apache2-foreground
